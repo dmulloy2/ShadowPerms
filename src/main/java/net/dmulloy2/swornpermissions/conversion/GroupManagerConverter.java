@@ -163,8 +163,6 @@ public class GroupManagerConverter
 		plugin.getLogHandler().log("Successfully converted from GroupManager! Took {0} ms!", System.currentTimeMillis() - start);
 	}
 
-	private ExecutorService e;
-
 	private final Map<UUID, User> loadUsersFromFile(File file)
 	{
 		Map<UUID, User> uuidMap = new HashMap<UUID, User>();
@@ -243,8 +241,8 @@ public class GroupManagerConverter
 				fetchers.add(new UUIDFetcher(namesList));
 			}
 
-			e = Executors.newFixedThreadPool(3);
-			List<Future<Map<String, UUID>>> results = e.invokeAll(fetchers);
+			ExecutorService service = Executors.newFixedThreadPool(3);
+			List<Future<Map<String, UUID>>> results = service.invokeAll(fetchers);
 
 			for (Future<Map<String, UUID>> result : results)
 			{

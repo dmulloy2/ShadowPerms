@@ -60,7 +60,7 @@ public class PermissionsExConverter
 		File dir = new File(worlds, worldName);
 		if (! dir.exists())
 			dir.mkdirs();
-		
+
 		try
 		{
 			plugin.getLogHandler().log("Converting groups!");
@@ -69,17 +69,17 @@ public class PermissionsExConverter
 			if (! groups.isEmpty())
 			{
 				plugin.getLogHandler().log("Converting {0} groups!", groups.size());
-				
+
 				File saveTo = new File(dir, "groups.yml");
 				if (! saveTo.exists())
 					saveTo.createNewFile();
-	
+
 				YamlConfiguration fc = YamlConfiguration.loadConfiguration(saveTo);
 				for (Entry<String, WorldGroup> entry : groups.entrySet())
 				{
 					fc.set("groups." + entry.getKey(), entry.getValue().serialize());
 				}
-	
+
 				fc.save(saveTo);
 			}
 		}
@@ -100,13 +100,13 @@ public class PermissionsExConverter
 				File saveTo = new File(dir, "users.yml");
 				if (! saveTo.exists())
 					saveTo.createNewFile();
-	
+
 				YamlConfiguration fc = YamlConfiguration.loadConfiguration(saveTo);
 				for (Entry<UUID, User> entry : users.entrySet())
 				{
 					fc.set("users." + entry.getKey().toString(), entry.getValue().serialize());
 				}
-	
+
 				fc.save(saveTo);
 			}
 		}
@@ -149,8 +149,6 @@ public class PermissionsExConverter
 		return ret;
 	}
 
-	private ExecutorService e;
-
 	private final Map<UUID, User> loadUsersFromFile()
 	{
 		Map<UUID, User> uuidMap = new HashMap<UUID, User>();
@@ -166,7 +164,7 @@ public class PermissionsExConverter
 			{
 				String name = entry.getKey();
 				User user = new User(plugin, name);
-	
+
 				MemorySection section = (MemorySection) entry.getValue();
 
 				List<String> groups = section.getStringList("group");
@@ -196,7 +194,7 @@ public class PermissionsExConverter
 
 				List<String> permissions = section.getStringList("permissions");
 				user.setPermissionNodes(new HashSet<String>(permissions));
-	
+
 				if (uuidCache.containsKey(name))
 				{
 					UUID uuid = uuidCache.get(name);
@@ -219,7 +217,7 @@ public class PermissionsExConverter
 			return uuidMap;
 
 		// Attempt to lookup UUIDs for new system
-		
+
 		try
 		{
 			List<String> names = new ArrayList<String>(nameMap.keySet());
@@ -230,15 +228,15 @@ public class PermissionsExConverter
 				builder.add(ImmutableList.copyOf(names.subList(namesCopied, Math.min(namesCopied + 100, names.size()))));
 				namesCopied += 100;
 			}
-	
+
 			List<UUIDFetcher> fetchers = new ArrayList<UUIDFetcher>();
 			for (List<String> namesList : builder.build())
 			{
 				fetchers.add(new UUIDFetcher(namesList));
 			}
-	
-			e = Executors.newFixedThreadPool(3);
-			List<Future<Map<String, UUID>>> results = e.invokeAll(fetchers);
+
+			ExecutorService service = Executors.newFixedThreadPool(3);
+			List<Future<Map<String, UUID>>> results = service.invokeAll(fetchers);
 
 			for (Future<Map<String, UUID>> result : results)
 			{
