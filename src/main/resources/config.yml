@@ -1,0 +1,42 @@
+# SwornPermissions Configuration
+# By dmulloy2
+
+# Auto Save - how often data files are saved (in minutes)
+autoSave:
+  enabled: true
+  interval: 15
+
+# Whether or not to allow command blocks to execute
+# SwornPermission commands. Use at your own risk.
+# input - boolean
+allowCommandBlocks: false
+
+# User Mirrors
+# Worlds in this list will have their user files mirrored.
+# If '*' is an element, per-world user files will be disabled,
+# defaulting to that world's user files.
+# If 'undefined_worlds' is an element, all unlisted worlds will
+# default to that world.
+userMirrors:
+  "world":
+    - "world_nether"
+    - "world_the_end"
+    - "undefined_worlds"
+
+# Group Mirrors - save as above, just with groups.
+groupMirrors:
+  "world":
+    - "world_nether"
+    - "world_the_end"
+    - "undefined_worlds"
+
+# Chat Formatting
+chatFormatting: true
+
+# Basic Chat Format
+# Variables:
+# {prefix} - the chatting player's prefix
+# {name} - the chatting player's name
+# {suffix} - the chatting player's suffix
+# {message} - the chat message
+chatFormat: '{prefix}{name}{suffix}: {message}'

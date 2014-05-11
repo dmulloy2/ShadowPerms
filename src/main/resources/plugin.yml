@@ -1,0 +1,109 @@
+name: SwornPermissions
+main: net.dmulloy2.swornpermissions.SwornPermissions
+version: ${project.version} (Build ${project.build.number})
+author: dmulloy2
+description: Comprehensive permission, chat, and world management system.
+softdepend: [Vault]
+commands:
+  swornperms:
+    description: SwornPermissions root command
+    usage: /<command> <args>
+    aliases: [perms, perm, swornpermissions]
+permissions:
+  swornpermissions.admin:
+    description: Full access to SwornPermissions commands
+    default: op
+    children:
+      swornpermissions.manage.users: true
+      swornpermissions.manage.groups: true
+      swornpermissions.chat.color: true
+      swornpermissions.chat.formatting: true
+      swornpermissions.chat.rainbow: true
+      swornpermissions.cmd.reload: true
+  swornpermissions.manage.users:
+    description: Manage users' permissions
+    default: false
+    children:
+      swornpermissions.user.view.info: true
+      swornpermissions.user.add.subgroup: true
+      swornpermissions.user.add.permission: true
+      swornpermissions.user.remove.subgroup: true
+      swornpermissions.user.remove.permission: true
+      swornpermissions.user.set.group: true
+      swornpermissions.user.set.prefix: true
+      swornpermissions.user.set.suffix: true
+      swornpermissions.user.set.option: true
+      swornpermissions.user.has.permission: true
+      swornpermissions.user.has.group: true
+      swornpermissions.user.has.option: true
+      swornpermissions.user.list.permissions: true
+  swornpermissions.user.view.info:
+    default: false
+  swornpermissions.user.add.subgroup:
+    default: false
+  swornpermissions.user.add.permission:
+    default: false
+  swornpermissions.user.remove.subgroup:
+    default: false
+  swornpermissions.user.remove.permission:
+    default: false
+  swornpermissions.user.set.group:
+    default: false
+  swornpermissions.user.set.prefix:
+    default: false
+  swornpermissions.user.set.suffix:
+    default: false
+  swornpermissions.user.set.option:
+    default: false
+  swornpermissions.user.has.permission:
+    default: false
+  swornpermissions.user.has.group:
+    default: false
+  swornpermissions.user.has.option:
+    default: false
+  swornpermissions.user.list.permissions:
+    default: false
+  swornpermissions.manage.groups:
+    description: Manage groups' permissions
+    default: false
+    children:
+      swornpermissions.group.view.info: true
+      swornpermissions.group.add.permission: true
+      swornpermissions.group.remove.permission: true
+      swornpermissions.group.set.prefix: true
+      swornpermissions.group.set.suffix: true
+      swornpermissions.group.set.option: true
+      swornpermissions.group.has.permission: true
+      swornpermissions.group.has.option: true
+      swornpermissions.group.list.permissions: true
+      swornpermissions.group.list.users: true
+  swornpermissions.group.view.info:
+    default: false
+  swornpermissions.group.add.permission:
+    default: false
+  swornpermissions.group.remove.permission:
+    default: false
+  swornpermissions.group.set.prefix:
+    default: false
+  swornpermissions.group.set.suffix:
+    default: false
+  swornpermissions.group.set.option:
+    default: false
+  swornpermissions.group.has.permission:
+    default: false
+  swornpermissions.group.has.option:
+    default: false
+  swornpermissions.group.list.users:
+    default: false
+  swornpermissions.group.list.permissions:
+    default: false
+  swornpermissions.chat.color:
+    default: false
+  swornpermissions.chat.formatting:
+    default: false
+  swornpermissions.chat.rainbow:
+    default: false
+  swornpermissions.cmd.reload:
+    default: false
+  swornpermissions.cmd.version:
+    default: true
