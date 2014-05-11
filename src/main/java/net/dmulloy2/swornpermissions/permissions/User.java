@@ -410,6 +410,12 @@ public class User extends Permissible
 		return prefix;
 	}
 
+	public final void resetPrefix()
+	{
+		options.remove("prefix");
+		this.prefix = findPrefix();
+	}
+
 	private final String findPrefix()
 	{
 		if (options.containsKey("prefix"))
@@ -427,6 +433,12 @@ public class User extends Permissible
 		}
 
 		return "";
+	}
+
+	public final void resetSuffix()
+	{
+		options.remove("suffix");
+		this.suffix = "";
 	}
 
 	// ---- Generic Methods

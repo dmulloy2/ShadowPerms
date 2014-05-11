@@ -197,6 +197,16 @@ public abstract class SwornPermissionsCommand implements CommandExecutor
 		sender.sendMessage(FormatUtil.format("&e" + message, objects));
 	}
 
+	protected final void sendMessage(Player player, String message, Object... objects)
+	{
+		player.sendMessage(FormatUtil.format(message, objects));
+	}
+
+	protected final void sendpMessage(Player player, String message, Object... objects)
+	{
+		sendMessage(player, plugin.getPrefix() + message, objects);
+	}
+
 	protected final void err(String string, Object... objects)
 	{
 		sendMessage("&cError: &4" + string, objects);
@@ -205,6 +215,18 @@ public abstract class SwornPermissionsCommand implements CommandExecutor
 	protected void invalidArgs()
 	{
 		err("Invalid arguments! Try: " + getUsageTemplate(false));
+	}
+
+	protected final User getUser(boolean msg)
+	{
+		if (! isPlayer())
+		{
+			if (msg)
+				err("You must be a player to do this!");
+			return null;
+		}
+
+		return plugin.getPermissionHandler().getUser(player);
 	}
 
 	protected final User getUser(int arg, World world, boolean msg)

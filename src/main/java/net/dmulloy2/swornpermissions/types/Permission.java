@@ -44,6 +44,16 @@ public enum Permission
 	CHAT_FORMATTING("chat.formatting"),
 	CHAT_RAINBOW("chat.rainbow"),
 
+	// Prefixes
+	CMD_PREFIX("cmd.prefix"),
+	CMD_PREFIX_RESET("cmd.prefix.reset"),
+	CMD_PREFIX_RESET_OTHERS("cmd.prefix.reset.others"),
+
+	// Suffixes
+	CMD_SUFFIX("cmd.suffix"),
+	CMD_SUFFIX_RESET("cmd.suffix.reset"),
+	CMD_SUFFIX_RESET_OTHERS("cmd.suffix.reset.others"),
+
 	// Other Commands
 	CMD_RELOAD("cmd.reload"),
 	CMD_VERSION("cmd.version");

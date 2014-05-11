@@ -2,6 +2,8 @@
 # By dmulloy2
 
 # Auto Save - how often data files are saved (in minutes)
+# enabled - boolean
+# interval - integer
 autoSave:
   enabled: true
   interval: 15
@@ -31,12 +33,31 @@ groupMirrors:
     - "undefined_worlds"
 
 # Chat Formatting
+# Whether or not to format chat with SwornChat
+# input - boolean
 chatFormatting: true
 
-# Basic Chat Format
-# Variables:
+# Chat Format
+# Accepted variables:
 # {prefix} - the chatting player's prefix
 # {name} - the chatting player's name
 # {suffix} - the chatting player's suffix
 # {message} - the chat message
+# input - string
 chatFormat: '{prefix}{name}{suffix}: {message}'
+
+# Debug
+# input - boolean
+debug: false
+
+# Settings for /prefix and /suffix
+# maxLength (int) - Maximum length
+# forceSpace (boolean) - Whether or not to force a space before or after, respectively
+
+prefix:
+  maxLength: 10
+  forceSpace: false
+
+suffix:
+  maxLength: 10
+  forceSpace: false

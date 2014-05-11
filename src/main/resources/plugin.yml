@@ -19,7 +19,18 @@ permissions:
       swornpermissions.chat.color: true
       swornpermissions.chat.formatting: true
       swornpermissions.chat.rainbow: true
+      swornpermissions.cmd.prefix: true
       swornpermissions.cmd.reload: true
+      swornpermissions.cmd.suffix: true
+      swornpermissions.moderator: true
+  swornpermissions.moderator:
+    description: Allows access to commands meant for mods
+    default: false
+    children:
+      swornpermissions.cmd.prefix.reset: true
+      swornpermissions.cmd.prefix.reset.others: true
+      swornpermissions.cmd.suffix.reset: true
+      swornpermissions.cmd.suffix.reset.others: true
   swornpermissions.manage.users:
     description: Manage users' permissions
     default: false
@@ -107,3 +118,15 @@ permissions:
     default: false
   swornpermissions.cmd.version:
     default: true
+  swornpermissions.cmd.prefix:
+    default: false
+  swornpermissions.cmd.prefix.reset:
+    default: false
+  swornpermissions.cmd.prefix.reset.others:
+    default: false
+  swornpermissions.cmd.suffix:
+    default: false
+  swornpermissions.cmd.suffix.reset:
+    default: false
+  swornpermissions.cmd.suffix.reset.others:
+    default: false
