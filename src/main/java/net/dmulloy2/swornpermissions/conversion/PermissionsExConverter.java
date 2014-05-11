@@ -168,28 +168,32 @@ public class PermissionsExConverter
 				User user = new User(plugin, name);
 	
 				MemorySection section = (MemorySection) entry.getValue();
-	
+
 				List<String> groups = section.getStringList("group");
 				if (! groups.isEmpty())
 				{
 					String group = groups.get(0);
 					user.setGroupName(group);
-		
+
 					List<String> subGroups = groups.subList(1, groups.size());
 					if (! subGroups.isEmpty())
 						user.setSubGroupNames(new HashSet<String>(subGroups));
 				}
-	
+
+				Map<String, Object> options = new HashMap<String, Object>();
 				if (section.isSet("options"))
-				{
-					Map<String, Object> options = section.getConfigurationSection("options").getValues(false);
-					String prefix = section.getString("prefix", "");
-					String suffix = section.getString("suffix", "");
+					options.putAll(section.getConfigurationSection("options").getValues(false));
+
+				String prefix = section.getString("prefix", "");
+				if (! prefix.isEmpty())
 					options.put("prefix", prefix);
+
+				String suffix = section.getString("suffix", "");
+				if (! suffix.isEmpty())
 					options.put("suffix", suffix);
-					user.setOptions(options);
-				}
-				
+
+				user.setOptions(options);
+
 				List<String> permissions = section.getStringList("permissions");
 				user.setPermissionNodes(new HashSet<String>(permissions));
 	
