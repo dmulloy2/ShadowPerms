@@ -32,21 +32,14 @@ public class SwornPermissionsVault extends Permission
 	{
 		Set<String> ret = new HashSet<String>();
 
-		// Ugly code :(
 		Map<String, Map<String, WorldGroup>> groupMaps = plugin.getPermissionHandler().getWorldGroups();
 		for (Entry<String, Map<String, WorldGroup>> entry : groupMaps.entrySet())
 		{
-			for (Entry<String, WorldGroup> entry1 : entry.getValue().entrySet())
-			{
-				ret.add(entry1.getKey());
-			}
+			ret.addAll(entry.getValue().keySet());
 		}
 
 		Map<String, ServerGroup> serverGroups = plugin.getPermissionHandler().getServerGroups();
-		for (String name : serverGroups.keySet())
-		{
-			ret.add(name);
-		}
+		ret.addAll(serverGroups.keySet());
 
 		return ret.toArray(new String[0]);
 	}

@@ -232,7 +232,7 @@ public abstract class SwornPermissionsCommand implements CommandExecutor
 			return getGroup(args[arg], world, msg);
 
 		if (msg)
-			err("User not specified!");
+			err("Group not specified!");
 		return null;
 	}
 

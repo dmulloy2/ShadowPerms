@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.logging.Level;
 
 import net.dmulloy2.swornpermissions.SwornPermissions;
 import net.dmulloy2.swornpermissions.util.Util;
@@ -192,9 +193,9 @@ public class User extends Permissible
 			// Recalculate permissions
 			getPlayer().recalculatePermissions();
 		}
-		catch (Exception e)
+		catch (Throwable ex)
 		{
-			plugin.getLogHandler().debug(Util.getUsefulStack(e, "applying permissions"));
+			plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(ex, "applying permissions for " + name));
 		}
 	}
 

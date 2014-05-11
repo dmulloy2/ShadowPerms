@@ -157,10 +157,10 @@ public abstract class Permissible implements ConfigurationSerializable
 			permissionNode = permissionNode.toLowerCase();
 			boolean value = ! permissionNode.startsWith("-");
 			permissions.put(value ? permissionNode : permissionNode.substring(1), value);
-			plugin.getLogHandler().debug("Applied permission {0}, value = {1}", permissionNode, value);
+			// plugin.getLogHandler().debug("Applied permission {0}, value = {1}", permissionNode, value);
 		}
 
-		plugin.getLogHandler().debug("Updated map: {0}", permissions);
+		// plugin.getLogHandler().debug("Updated map: {0}", permissions);
 		this.permissions = permissions;
 	}
 
@@ -170,7 +170,7 @@ public abstract class Permissible implements ConfigurationSerializable
 	// positive node will be chosen.
 	protected final List<String> sort(Set<String> permissions)
 	{
-		plugin.getLogHandler().debug("Sorting list: {0}", permissions);
+		// plugin.getLogHandler().debug("Sorting list: {0}", permissions);
 		Set<String> ret = new HashSet<String>();
 
 		// Add * permission first
@@ -205,13 +205,13 @@ public abstract class Permissible implements ConfigurationSerializable
 
 		List<String> sorted = new ArrayList<String>(ret);
 		Collections.reverse(sorted);
-		plugin.getLogHandler().debug("Sorted list: {0}", sorted);
+		// plugin.getLogHandler().debug("Sorted list: {0}", sorted);
 		return sorted;
 	}
 
 	protected final List<String> getAllChildren(List<String> permissions)
 	{
-		plugin.getLogHandler().debug("Getting all children of {0}", permissions);
+		// plugin.getLogHandler().debug("Getting all children of {0}", permissions);
 		List<String> ret = new ArrayList<String>();
 
 		for (String permission : permissions)
@@ -223,7 +223,7 @@ public abstract class Permissible implements ConfigurationSerializable
 			List<String> children = getChildren(node);
 			if (children != null)
 			{
-				plugin.getLogHandler().debug("Children: {0}", children);
+				// plugin.getLogHandler().debug("Children: {0}", children);
 				for (String child : children)
 				{
 					child = negative ? "-" + child : child;
@@ -232,7 +232,7 @@ public abstract class Permissible implements ConfigurationSerializable
 			}
 		}
 
-		plugin.getLogHandler().debug("All children: {0}", ret);
+		// plugin.getLogHandler().debug("All children: {0}", ret);
 		return ret;
 	}
 
