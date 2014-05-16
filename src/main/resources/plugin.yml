@@ -9,6 +9,22 @@ commands:
     description: SwornPermissions root command
     usage: /<command> <args>
     aliases: [perms, perm, swornpermissions]
+  prefix:
+    description: Sets your prefix
+    usage: /<command> <args>
+    aliases: [pre]
+  suffix:
+    description: Sets your suffix
+    usage: /<command> <args>
+    aliases: [suf]
+  prefixreset:
+    description: Reset a player's prefix
+    usage: /<command> <player>
+    aliases: [prer]
+  suffixreset:
+    description: Reset a player's suffix
+    usage: /<command> <player>
+    aliases: [sufr]
 permissions:
   swornpermissions.admin:
     description: Full access to SwornPermissions commands
