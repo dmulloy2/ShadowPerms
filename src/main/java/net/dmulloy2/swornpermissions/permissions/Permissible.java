@@ -218,6 +218,13 @@ public abstract class Permissible implements ConfigurationSerializable
 
 		for (String node : permissions)
 		{
+			// '*' is handled later
+			if (node.equals("*"))
+			{
+				ret.add("*");
+				continue;
+			}
+
 			ret.add(node);
 			boolean negative = node.startsWith("-");
 			node = negative ? node.substring(1) : node;
