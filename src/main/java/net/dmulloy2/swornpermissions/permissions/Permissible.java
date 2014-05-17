@@ -146,21 +146,25 @@ public abstract class Permissible implements ConfigurationSerializable
 
 	protected final void updatePermissionMap()
 	{
-		// Manipulate the permissionNodes list
+		// Sort the nodes
 		List<String> permissionNodes = sort(getAllPermissionNodes());
+
+		// Get matching permissions
+		permissionNodes = getMatchingNodes(permissionNodes);
+
+		// Get children
 		permissionNodes = getAllChildren(permissionNodes);
 
 		Map<String, Boolean> permissions = new LinkedHashMap<String, Boolean>();
 
+		// Values
 		for (String permissionNode : permissionNodes)
 		{
 			permissionNode = permissionNode.toLowerCase();
 			boolean value = ! permissionNode.startsWith("-");
 			permissions.put(value ? permissionNode : permissionNode.substring(1), value);
-			// plugin.getLogHandler().debug("Applied permission {0}, value = {1}", permissionNode, value);
 		}
 
-		// plugin.getLogHandler().debug("Updated map: {0}", permissions);
 		this.permissions = permissions;
 	}
 
@@ -170,7 +174,6 @@ public abstract class Permissible implements ConfigurationSerializable
 	// positive node will be chosen.
 	protected final List<String> sort(Set<String> permissions)
 	{
-		// plugin.getLogHandler().debug("Sorting list: {0}", permissions);
 		Set<String> ret = new HashSet<String>();
 
 		// Add * permission first
@@ -205,13 +208,36 @@ public abstract class Permissible implements ConfigurationSerializable
 
 		List<String> sorted = new ArrayList<String>(ret);
 		Collections.reverse(sorted);
-		// plugin.getLogHandler().debug("Sorted list: {0}", sorted);
 		return sorted;
+	}
+
+	// Wildcard support
+	protected final List<String> getMatchingNodes(List<String> permissions)
+	{
+		List<String> ret = new ArrayList<String>();
+
+		for (String node : permissions)
+		{
+			ret.add(node);
+			boolean negative = node.startsWith("-");
+			node = negative ? node.substring(1) : node;
+
+			for (Permission permission : plugin.getServer().getPluginManager().getPermissions())
+			{
+				String name = permission.getName();
+				if (name.matches(node))
+				{
+					name = negative ? "-" + name : name;
+					ret.add(name);
+				}
+			}
+		}
+
+		return ret;
 	}
 
 	protected final List<String> getAllChildren(List<String> permissions)
 	{
-		// plugin.getLogHandler().debug("Getting all children of {0}", permissions);
 		List<String> ret = new ArrayList<String>();
 
 		for (String permission : permissions)
@@ -223,7 +249,6 @@ public abstract class Permissible implements ConfigurationSerializable
 			List<String> children = getChildren(node);
 			if (children != null)
 			{
-				// plugin.getLogHandler().debug("Children: {0}", children);
 				for (String child : children)
 				{
 					child = negative ? "-" + child : child;
@@ -232,7 +257,6 @@ public abstract class Permissible implements ConfigurationSerializable
 			}
 		}
 
-		// plugin.getLogHandler().debug("All children: {0}", ret);
 		return ret;
 	}
 
