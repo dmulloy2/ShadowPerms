@@ -23,6 +23,7 @@ public class CmdListGroups extends SwornPermissionsCommand
 		this.name = "listgroups";
 		this.description = "List available groups";
 		this.permission = Permission.GROUP_LIST;
+		this.usesPrefix = true;
 	}
 
 	@Override

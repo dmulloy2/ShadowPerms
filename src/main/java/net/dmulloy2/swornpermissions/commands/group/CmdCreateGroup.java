@@ -20,6 +20,7 @@ public class CmdCreateGroup extends SwornPermissionsCommand
 		this.name = "creategroup";
 		this.description = "Creates a group";
 		this.permission = Permission.GROUP_CREATE;
+		this.usesPrefix = true;
 	}
 
 	@Override

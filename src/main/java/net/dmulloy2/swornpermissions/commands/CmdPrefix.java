@@ -42,6 +42,8 @@ public class CmdPrefix extends SwornPermissionsCommand
 			return;
 		}
 
+		if (plugin.getConfig().getBoolean("prefix.forceReset"))
+			prefix = prefix + "&r";
 		if (plugin.getConfig().getBoolean("prefix.forceSpace"))
 			prefix = prefix + " ";
 

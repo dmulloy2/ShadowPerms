@@ -52,12 +52,15 @@ debug: false
 
 # Settings for /prefix and /suffix
 # maxLength (int) - Maximum length
+# forceReset (boolean) - Whether or not to force an '&r' after the prefix or suffix
 # forceSpace (boolean) - Whether or not to force a space before or after, respectively
 
 prefix:
   maxLength: 10
+  forceReset: true
   forceSpace: false
 
 suffix:
   maxLength: 10
+  forceReset: true
   forceSpace: false
