@@ -48,3 +48,7 @@ IV. File Structure
     - Server Groups and Config
   2. Worlds
     - Users file and Groups file
+
+V. Useful Links
+  - Download: http://ci.shadowvolt.com/job/SwornPermissions
+  - Permissions: https://github.com/dmulloy2/SwornPermissions/blob/master/src/main/resources/plugin.yml
