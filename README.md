@@ -2,7 +2,7 @@ SwornPermissions
 ====
 
 I. Installation
-  - Remove PermissionsEx.jar (leave the file), PExChat, and SimpleSuffixes
+  - Remove any other permission or chat systems
   - Drop SwornPermissions.jar into /plugins/
   - Start the server
   - SwornPermissions will automatically convert from PermissionsEx or GroupManager
@@ -14,7 +14,7 @@ II. Integration
     - Remove EssentialsChat (if installed)
   2. SwornNations / Factions
     - For chat formatting, append '[FACTION]' to the front of 'chat-format' of SwornPermissions config.yml
-    - Make sure 'SwornPermissions' is in the 'softdepends' section of the Factions plugin.yml
+    - Make sure 'SwornPermissions' is in the 'softdepends' section of the SwornNations / Factions plugin.yml
 
 III. Command Structure
   1. Information
