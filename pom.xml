@@ -17,8 +17,8 @@
       <url>http://repo.md-5.net/content/repositories/snapshots/</url>
     </repository>
     <repository>
-      <id>vault-repo</id>
-	  <url>http://ci.herocraftonline.com/plugin/repository/everything/</url>
+      <id>essentials-repo</id>
+      <url>http://repo.ess3.net/content/repositories/public/</url>
     </repository>
   </repositories>
 
@@ -93,7 +93,7 @@
     <dependency>
       <groupId>net.milkbowl.vault</groupId>
       <artifactId>Vault</artifactId>
-      <version>1.2.31</version>
+      <version>1.2.32</version>
     </dependency>
   </dependencies>
 </project>

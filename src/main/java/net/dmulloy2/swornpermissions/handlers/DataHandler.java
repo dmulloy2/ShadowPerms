@@ -4,6 +4,10 @@
 package net.dmulloy2.swornpermissions.handlers;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -337,7 +341,7 @@ public class DataHandler implements Reloadable
 
 			File groupsFile = new File(worldFolder, "groups.yml");
 			if (! groupsFile.exists())
-				groupsFile.createNewFile();
+				copy(plugin.getResource("groups.yml"), groupsFile);
 
 			FileConfiguration groups = YamlConfiguration.loadConfiguration(groupsFile);
 			groupConfigs.put(world.getName(), groups);
@@ -430,10 +434,7 @@ public class DataHandler implements Reloadable
 		{
 			File file = new File(plugin.getDataFolder(), "serverGroups.yml");
 			if (! file.exists())
-			{
 				file.createNewFile();
-				// TODO: Save default server groups file
-			}
 
 			this.serverGroups = YamlConfiguration.loadConfiguration(file);
 		}
@@ -457,6 +458,28 @@ public class DataHandler implements Reloadable
 		{
 			plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(e, "saving server groups"));
 		}
+	}
+
+	private final void copy(InputStream stream, File destination) throws IOException
+	{
+		if (! destination.exists())
+			destination.createNewFile();
+
+		OutputStream out = new FileOutputStream(destination);
+
+		int len;
+		byte[] buf = new byte[1024];
+
+		while ((len = stream.read(buf)) > 0)
+		{
+			out.write(buf, 0, len);
+		}
+
+		try
+		{
+			out.close();
+			stream.close();
+		} catch (Throwable ex) { }
 	}
 
 	@Override

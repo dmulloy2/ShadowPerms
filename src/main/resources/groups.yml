@@ -1,0 +1,18 @@
+groups:
+  default:
+    default: true
+    permissions:
+    - essentials.help
+    - essentials.mail
+    - essentials.ban.notify
+    - essentials.afk
+    - essentials.helpop
+    - essentials.list
+    - essentials.msg
+    - essentials.motd
+    - essentials.spawn
+    - essentials.mail.send
+    - essentials.sethome
+    - essentials.home
+    options:
+      prefix: '&f[&2Default&f] '

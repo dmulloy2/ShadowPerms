@@ -146,6 +146,13 @@ public class User extends Permissible
 			if (groupName == null || groupName.isEmpty())
 			{
 				this.group = plugin.getPermissionHandler().getDefaultGroup(newWorld);
+
+				if (group == null)
+				{
+					plugin.getLogHandler().log(Level.SEVERE, "Failed to find a default group! {0} will not have any perms!", name);
+					return;
+				}
+
 				this.groupName = group.getName();
 			}
 
