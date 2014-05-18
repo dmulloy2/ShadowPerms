@@ -32,6 +32,6 @@ public class CmdSetPrefix extends UserCommand
 
 		user.setPrefix(prefix);
 
-		sendpMessage("Set user {0}''s prefix to \"{1}&e\"", user.getName(), prefix);
+		sendpMessage("Set user &b{0}&e''s prefix to \"&f{1}&e\"", user.getName(), prefix);
 	}
 }

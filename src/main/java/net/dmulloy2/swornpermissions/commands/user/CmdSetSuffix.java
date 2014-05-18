@@ -31,6 +31,6 @@ public class CmdSetSuffix extends UserCommand
 
 		user.setSuffix(suffix);
 
-		sendpMessage("Set user {0}''s suffix to \"{1}&e\"", user.getName(), suffix);
+		sendpMessage("Set user &b{0}&e''s suffix to \"&f{1}&e\"", user.getName(), suffix);
 	}
 }

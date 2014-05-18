@@ -40,6 +40,6 @@ public class CmdSetGroup extends UserCommand
 		user.setGroup(group);
 		user.updatePermissions(true);
 
-		sendpMessage("User {0} moved to group {1} in world {2}", user.getName(), group.getName(), world.getName());
+		sendpMessage("User &b{0} &emoved to group &b{1} &ein world &b{2}&e.", user.getName(), group.getName(), world.getName());
 	}
 }

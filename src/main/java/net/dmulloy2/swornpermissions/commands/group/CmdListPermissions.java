@@ -33,7 +33,7 @@ public class CmdListPermissions extends GroupCommand
 		Set<String> permissions = group.getPermissionNodes();
 		if (! permissions.isEmpty())
 		{
-			sendMessage("Permissions: {0}", new StringJoiner("&b, &e").appendAll(permissions.toArray(new String[0])));
+			sendMessage("&bPermissions&e: {0}", new StringJoiner("&b, &e").appendAll(permissions.toArray(new String[0])));
 		}
 		else
 		{
@@ -47,7 +47,7 @@ public class CmdListPermissions extends GroupCommand
 			for (Group parent : parents)
 				joiner.append(parent.getName());
 	
-			sendMessage("And all from: {0}", joiner.toString());
+			sendMessage("&bAnd all from&e: {0}", joiner.toString());
 		}
 	}
 }

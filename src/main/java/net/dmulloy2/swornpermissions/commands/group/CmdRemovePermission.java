@@ -29,13 +29,13 @@ public class CmdRemovePermission extends GroupCommand
 		String permission = args[0];
 		if (! group.hasPermission(permission))
 		{
-			sendpMessage("Group {0} does not have permission ''{1}.''", group.getName(), permission);
+			sendpMessage("Group &b{0} &edoes not have permission ''&b{1}&e.''", group.getName(), permission);
 			return;
 		}
 
 		group.removePermission(permission);
 		group.update();
 
-		sendpMessage("Permission ''{0}'' removed from group {1}''s permissions.", permission, group.getName());
+		sendpMessage("Permission ''&b{0}&e'' removed from group &b{1}&e''s permissions.", permission, group.getName());
 	}
 }

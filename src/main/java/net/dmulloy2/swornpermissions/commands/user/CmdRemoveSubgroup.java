@@ -29,13 +29,13 @@ public class CmdRemoveSubgroup extends UserCommand
 		String group = args[0];
 		if (! user.isInSubGroup(group))
 		{
-			sendpMessage("User {0} is not in sub group {1}.", user.getName(), group);
+			sendpMessage("User &b{0} &eis not in sub group &b{1}&e.", user.getName(), group);
 			return;
 		}
 
 		user.removeSubGroup(group);
 		user.updatePermissions(true);
 
-		sendpMessage("Sub group {0} removed from user {1}''s permissions.", group, user.getName());
+		sendpMessage("Sub group &b{0} &eremoved from user &b{1}&e''s permissions.", group, user.getName());
 	}
 }

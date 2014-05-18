@@ -28,12 +28,12 @@ public class CmdHasOption extends UserCommand
 		String key = args[0];
 		if (user.hasOption(key))
 		{
-			sendpMessage("User {0} has option ''{1}''", user.getName(), key);
-			sendpMessage("Value: {0}", user.getOption(key));
+			sendpMessage("User &b{0} &ehas option ''&b{1}&e''", user.getName(), key);
+			sendpMessage("Value: &b{0}", user.getOption(key));
 		}
 		else
 		{
-			sendpMessage("User {0} does not have option ''{1}''", user.getName(), key);
+			sendpMessage("User &b{0} &edoes not have option ''&b{1}&e''", user.getName(), key);
 		}
 	}
 }

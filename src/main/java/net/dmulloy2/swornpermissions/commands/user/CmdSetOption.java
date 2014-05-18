@@ -28,8 +28,6 @@ public class CmdSetOption extends UserCommand
 	@Override
 	public void perform()
 	{
-		// Syntax for options: String: "[value]", Boolean: "b:[value]", Integer: "i:[value]", Double: "d:[value]"
-
 		String key = args[3];
 		Object val = null;
 
@@ -48,8 +46,8 @@ public class CmdSetOption extends UserCommand
 		user.setOption(key, val);
 
 		if (val == null)
-			sendpMessage("Option ''{0}'' removed from user {1}.", key, user.getName());
+			sendpMessage("Option ''&b{0}&e'' removed from user &b{1}&e.", key, user.getName());
 		else
-			sendpMessage("Option ''{0}'' set to ''{1}'' for user {2}.", key, val, user.getName());
+			sendpMessage("Option ''&b{0}&e'' set to ''&b{1}&e'' for user &b{2}&e.", key, val, user.getName());
 	}
 }

@@ -28,20 +28,21 @@ public class CmdHasPermission extends GroupCommand
 		String permission = args[0];
 		if (group.hasPermission(permission))
 		{
-			sendpMessage("Group {0} has access to permission {1}.", group.getName(), permission);
+			sendpMessage("Group &b{0} &ehas access to permission &b{1}&e.", group.getName(), permission);
 
 			String node = group.getMatchingPermission(permission);
 			if (! node.equalsIgnoreCase(permission))
 			{
-				sendpMessage("Matching node: {0}", node);
+				sendpMessage("Matching node: &b{0}", node);
 			}
 		}
 		else
 		{
-			sendpMessage("Group {0} does not have access to permission {1}.", group.getName(), permission);
+			sendpMessage("Group &b{0} &edoes not have access to permission &b{1}&e.", group.getName(), permission);
 
 			String node = group.getMatchingPermission(permission);
-			if (node != null) sendpMessage("Negated, node: {0}", node);
+			if (node != null)
+				sendpMessage("Negated, node: &b{0}", node);
 		}
 	}
 }

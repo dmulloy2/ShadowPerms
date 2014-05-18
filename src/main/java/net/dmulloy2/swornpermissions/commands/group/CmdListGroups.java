@@ -33,16 +33,16 @@ public class CmdListGroups extends SwornPermissionsCommand
 		StringBuilder line = new StringBuilder();
 
 		// Server Groups
-		line.append("&eServer Groups: ");
+		line.append("&bServer Groups&e: ");
 
-		StringJoiner joiner = new StringJoiner("&e, &b");
+		StringJoiner joiner = new StringJoiner("&b, &e");
 		joiner.appendAll(plugin.getPermissionHandler().getServerGroups().keySet());
 		line.append(joiner.toString());
 		lines.add(line.toString());
 
 		// World Groups
 		line = new StringBuilder();
-		line.append("&eWorld Groups: ");
+		line.append("&bWorld Groups&e: ");
 
 		joiner.newString();
 		joiner.appendAll(plugin.getPermissionHandler().getWorldGroups().get(getWorld().getName()).keySet());

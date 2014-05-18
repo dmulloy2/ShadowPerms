@@ -33,13 +33,13 @@ public class CmdAddSubgroup extends UserCommand
 
 		if (user.isInGroup(group.getName()))
 		{
-			sendpMessage("Group {0} is already available to user {1}.", group.getName(), user.getName());
+			sendpMessage("Group &b{0} &eis already available to user {1}.", group.getName(), user.getName());
 			return;
 		}
 
 		user.addSubGroup(group);
 		user.updatePermissions(true);
 
-		sendpMessage("Group {0} added to user {1}''s permissions.", group.getName());
+		sendpMessage("Group &b{0} &eadded to user &b{1}&e''s permissions.", group.getName());
 	}
 }

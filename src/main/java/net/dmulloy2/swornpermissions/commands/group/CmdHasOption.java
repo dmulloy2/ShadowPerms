@@ -28,12 +28,12 @@ public class CmdHasOption extends GroupCommand
 		String key = args[0];
 		if (group.hasOption(key))
 		{
-			sendpMessage("Group {0} has option ''{1}''", group.getName(), key);
-			sendpMessage("Value: {0}", group.getOption(key));
+			sendpMessage("Group &b{0} &ehas option ''&b{1}&e''", group.getName(), key);
+			sendpMessage("Value: &b{0}", group.getOption(key));
 		}
 		else
 		{
-			sendpMessage("Group {0} does not have option ''{1}''", group.getName(), key);
+			sendpMessage("Group &b{0} &edoes not have option ''&b{1}&e''", group.getName(), key);
 		}
 	}
 }

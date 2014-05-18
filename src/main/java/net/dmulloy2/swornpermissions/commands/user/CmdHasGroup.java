@@ -28,15 +28,15 @@ public class CmdHasGroup extends UserCommand
 		String group = args[0];
 		if (user.isInGroup(group))
 		{
-			sendpMessage("User {0} is in group {1}.", user.getName(), group);
+			sendpMessage("User &b{0} &eis in group &b{1}&e.", user.getName(), group);
 		}
 		else if (user.isInSubGroup(group))
 		{
-			sendpMessage("User {0} is in sub group {1}.", user.getName(), group);
+			sendpMessage("User &b{0} &ehas sub group {1}.", user.getName(), group);
 		}
 		else
 		{
-			sendpMessage("User {0} is not in group {1}.", user.getName(), group);
+			sendpMessage("User &b{0} &eis not in group {1}.", user.getName(), group);
 		}
 	}
 }

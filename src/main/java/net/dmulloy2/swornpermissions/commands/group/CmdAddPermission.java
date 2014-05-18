@@ -29,14 +29,14 @@ public class CmdAddPermission extends GroupCommand
 		String permission = args[0];
 		if (group.hasPermission(permission))
 		{
-			sendpMessage("Group {0} already has this permission.", group.getName());
-			sendpMessage("Node: {0}", group.getMatchingPermission(permission));
+			sendpMessage("Group &b{0} &ealready has this permission.", group.getName());
+			sendpMessage("Node: &b{0}", group.getMatchingPermission(permission));
 			return;
 		}
 
 		group.addPermission(permission);
 		group.update();
 
-		sendpMessage("Permission ''{0}'' added to group {1}''s permissions.", permission, group.getName());
+		sendpMessage("Permission ''&b{0}&e'' added to group &b{1}&e''s permissions.", permission, group.getName());
 	}
 }

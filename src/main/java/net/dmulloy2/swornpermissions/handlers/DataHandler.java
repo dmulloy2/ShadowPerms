@@ -178,9 +178,8 @@ public class DataHandler implements Reloadable
 
 	public final FileConfiguration getUserConfig(String world)
 	{
-		String parent = getUsersParent(world);
-		if (parent != null)
-			world = parent;
+		world = getUsersParent(world);
+		world = world.toLowerCase();
 
 		return userConfigs.get(world);
 	}
@@ -192,9 +191,8 @@ public class DataHandler implements Reloadable
 
 	public final FileConfiguration getGroupConfig(String world)
 	{
-		String parent = getGroupsParent(world);
-		if (parent != null)
-			world = parent;
+		world = getGroupsParent(world);
+		world = world.toLowerCase();
 
 		return groupConfigs.get(world);
 	}
@@ -218,6 +216,8 @@ public class DataHandler implements Reloadable
 
 	public final String getUsersParent(String world)
 	{
+		world = world.toLowerCase();
+
 		for (Entry<String, List<String>> entry : userMirrors.entrySet())
 		{
 			if (entry.getValue().contains(world))
@@ -234,11 +234,13 @@ public class DataHandler implements Reloadable
 
 	public final boolean areUsersLinked(String world1, String world2)
 	{
+		world1 = world1.toLowerCase();
 		if (userMirrors.containsKey(world1))
 		{
 			return userMirrors.get(world1).contains(world2);
 		}
 
+		world2 = world2.toLowerCase();
 		if (userMirrors.containsKey(world2))
 		{
 			return userMirrors.get(world2).contains(world1);
@@ -266,6 +268,8 @@ public class DataHandler implements Reloadable
 
 	public final String getGroupsParent(String world)
 	{
+		world = world.toLowerCase();
+
 		for (Entry<String, List<String>> entry : groupMirrors.entrySet())
 		{
 			if (entry.getValue().contains(world))
@@ -282,11 +286,13 @@ public class DataHandler implements Reloadable
 
 	public final boolean areGroupsLinked(String world1, String world2)
 	{
+		world1 = world1.toLowerCase();
 		if (groupMirrors.containsKey(world1))
 		{
 			return groupMirrors.get(world1).contains(world2);
 		}
 
+		world2 = world2.toLowerCase();
 		if (groupMirrors.containsKey(world2))
 		{
 			return groupMirrors.get(world2).contains(world1);
@@ -307,8 +313,12 @@ public class DataHandler implements Reloadable
 			for (Entry<String, Object> entry : values.entrySet())
 			{
 				String parent = entry.getKey();
-				List<String> children = (List<String>) entry.getValue();
-				userMirrors.put(parent, children);
+
+				List<String> children = new ArrayList<String>();
+				for (String child : (List<String>) entry.getValue())
+					children.add(child.toLowerCase());
+
+				userMirrors.put(parent.toLowerCase(), children);
 			}
 		}
 
@@ -318,8 +328,12 @@ public class DataHandler implements Reloadable
 			for (Entry<String, Object> entry : values.entrySet())
 			{
 				String parent = entry.getKey();
-				List<String> children = (List<String>) entry.getValue();
-				groupMirrors.put(parent, children);
+
+				List<String> children = new ArrayList<String>();
+				for (String child : (List<String>) entry.getValue())
+					children.add(child.toLowerCase());
+
+				groupMirrors.put(parent.toLowerCase(), children);
 			}
 		}
 	}
@@ -363,7 +377,13 @@ public class DataHandler implements Reloadable
 
 	public final boolean isWorldLoaded(World world)
 	{
-		return loadedWorlds.contains(world.getName());
+		return isWorldLoaded(world.getName());
+	}
+
+	public final boolean isWorldLoaded(String world)
+	{
+		world = world.toLowerCase();
+		return loadedWorlds.contains(world);
 	}
 
 	public final User loadUser(String world, String name)
@@ -373,6 +393,7 @@ public class DataHandler implements Reloadable
 			return null;
 
 		world = getUsersParent(world);
+		world = world.toLowerCase();
 
 		String key = op.getUniqueId().toString();
 		FileConfiguration config = getUserConfig(world);
@@ -395,6 +416,7 @@ public class DataHandler implements Reloadable
 		String world = player.getWorld().getName();
 
 		world = getUsersParent(world);
+		world = world.toLowerCase();
 
 		String key = player.getUniqueId().toString();
 		FileConfiguration config = getUserConfig(world);
@@ -409,6 +431,7 @@ public class DataHandler implements Reloadable
 	public final List<User> loadAllUsers(String world)
 	{
 		world = getUsersParent(world);
+		world = world.toLowerCase();
 
 		List<User> ret = new ArrayList<User>();
 

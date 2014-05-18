@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 
 import net.dmulloy2.swornpermissions.SwornPermissions;
 
@@ -32,7 +33,6 @@ public class WorldGroup extends Group
 	{
 		this(plugin, name, world);
 		this.loadFromDisk(section);
-		this.loadParentGroups(section);
 	}
 
 	// ---- I/O
@@ -42,19 +42,18 @@ public class WorldGroup extends Group
 	{
 		super.loadFromDisk(section);
 		this.defaultGroup = section.getBoolean("default", false);
+		this.parents = new HashSet<String>(section.getStringList("parents"));
 	}
 
-	public void loadParentGroups(MemorySection section)
+	public void loadParentGroups()
 	{
-		this.parents = new HashSet<String>(section.getStringList("parents"));
-
 		for (String parent : parents)
 		{
 			Group group = plugin.getPermissionHandler().getGroup(worldName, parent);
 			if (group != null)
-			{
 				parentGroups.add(group);
-			}
+			else
+				plugin.getLogHandler().log(Level.WARNING, "Could not find parent group \"{0}\" for group {1}", parent, name);
 		}
 	}
 

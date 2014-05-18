@@ -48,8 +48,8 @@ public class CmdSetOption extends GroupCommand
 		group.setOption(key, val);
 
 		if (val == null)
-			sendpMessage("Option ''{0}'' removed from group {1}.", key, group.getName());
+			sendpMessage("Option ''&b{0}&e'' removed from group &b{1}&e.", key, group.getName());
 		else
-			sendpMessage("Option ''{0}'' set to ''{1}'' for group {2}.", key, val, group.getName());
+			sendpMessage("Option ''&b{0}&e'' set to ''&b{1}&e'' for group &b{2}&e.", key, val, group.getName());
 	}
 }

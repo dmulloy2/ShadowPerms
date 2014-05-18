@@ -29,8 +29,8 @@ public class CmdAddPermission extends UserCommand
 		String permission = args[0];
 		if (user.hasPermission(permission))
 		{
-			sendpMessage("User {0} already has this permission.", user.getName());
-			sendpMessage("Node: {0}", user.getMatchingPermission(permission));
+			sendpMessage("User &b{0} &ealready has this permission.", user.getName());
+			sendpMessage("Node: &b{0}", user.getMatchingPermission(permission));
 			return;
 		}
 

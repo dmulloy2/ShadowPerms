@@ -89,6 +89,7 @@ public class PermissionHandler implements Reloadable
 			world = getDefaultWorld().getName();
 
 		world = plugin.getDataHandler().getUsersParent(world);
+		world = world.toLowerCase();
 
 		// Attempt to grab from online users
 		for (User user : users.get(world))
@@ -103,7 +104,7 @@ public class PermissionHandler implements Reloadable
 
 		// Only track online users
 		if (user.isOnline())
-			users.get(world).add(user);
+			users.get(world.toLowerCase()).add(user);
 
 		return user;
 	}
@@ -115,7 +116,7 @@ public class PermissionHandler implements Reloadable
 
 	public final List<User> getUsers(String world)
 	{
-		return users.get(world);
+		return users.get(world.toLowerCase());
 	}
 
 	public final List<User> getAllUsers(World world)
@@ -125,6 +126,8 @@ public class PermissionHandler implements Reloadable
 
 	public final List<User> getAllUsers(String world)
 	{
+		world = world.toLowerCase();
+
 		List<User> ret = new ArrayList<User>();
 
 		ret.addAll(getUsers(world));
@@ -148,13 +151,18 @@ public class PermissionHandler implements Reloadable
 
 	public final void removeUser(String name)
 	{
-		users.remove(name);
+		users.remove(name.toLowerCase());
 	}
 
 	public final void moveUser(User user, World oldWorld, World newWorld)
 	{
-		users.get(oldWorld.getName()).remove(user);
-		users.get(newWorld.getName()).add(user);
+		moveUser(user, oldWorld.getName(), newWorld.getName());
+	}
+
+	public final void moveUser(User user, String oldWorld, String newWorld)
+	{
+		users.get(oldWorld.toLowerCase()).remove(user);
+		users.get(newWorld.toLowerCase()).add(user);
 	}
 
 	public final boolean isValidPlayer(Player player)
@@ -181,6 +189,7 @@ public class PermissionHandler implements Reloadable
 	public final boolean isRegistered(String id, String world)
 	{
 		world = plugin.getDataHandler().getUsersParent(world);
+		world = world.toLowerCase();
 
 		for (User user : getUsers(world))
 		{
@@ -213,6 +222,7 @@ public class PermissionHandler implements Reloadable
 			return serverGroups.get(name);
 
 		world = plugin.getDataHandler().getUsersParent(world);
+		world = world.toLowerCase();
 
 		return worldGroups.get(world).get(name);
 	}
@@ -224,7 +234,7 @@ public class PermissionHandler implements Reloadable
 
 	public Collection<WorldGroup> getGroups(String world)
 	{
-		return worldGroups.get(world).values();
+		return worldGroups.get(world.toLowerCase()).values();
 	}
 
 	public Set<Group> getAllGroups()
@@ -244,14 +254,14 @@ public class PermissionHandler implements Reloadable
 	public ServerGroup createServerGroup(String name)
 	{
 		ServerGroup group = new ServerGroup(plugin, name);
-		serverGroups.put(name, group);
+		serverGroups.put(name.toLowerCase(), group);
 		return group;
 	}
 
 	public WorldGroup createWorldGroup(String name, World world)
 	{
 		WorldGroup group = new WorldGroup(plugin, name, world.getName());
-		worldGroups.get(world.getName()).put(name, group);
+		worldGroups.get(world.getName().toLowerCase()).put(name.toLowerCase(), group);
 		return group;
 	}
 
@@ -270,6 +280,7 @@ public class PermissionHandler implements Reloadable
 	public final Group getDefaultGroup(String world)
 	{
 		world = plugin.getDataHandler().getUsersParent(world);
+		world = world.toLowerCase();
 
 		return defaultGroups.get(world);
 	}
@@ -383,9 +394,9 @@ public class PermissionHandler implements Reloadable
 		for (Entry<String, FileConfiguration> entry : data.getGroupConfigs().entrySet())
 		{
 			String world = entry.getKey();
-			if (! worldGroups.containsKey(world))
+			if (! worldGroups.containsKey(world.toLowerCase()))
 			{
-				worldGroups.put(world, new HashMap<String, WorldGroup>());
+				worldGroups.put(world.toLowerCase(), new HashMap<String, WorldGroup>());
 			}
 
 			fc = entry.getValue();
@@ -395,6 +406,7 @@ public class PermissionHandler implements Reloadable
 				continue;
 			}
 
+			// Load groups
 			Map<String, Object> values = fc.getConfigurationSection("groups").getValues(false);
 			for (Entry<String, Object> entry1 : values.entrySet())
 			{
@@ -403,7 +415,7 @@ public class PermissionHandler implements Reloadable
 					String groupName = entry1.getKey();
 					MemorySection section = (MemorySection) entry1.getValue();
 					WorldGroup group = new WorldGroup(plugin, groupName, world, section);
-					worldGroups.get(world).put(groupName.toLowerCase(), group);
+					worldGroups.get(world.toLowerCase()).put(groupName.toLowerCase(), group);
 
 					if (group.isDefaultGroup())
 						defaultGroups.put(world.toLowerCase(), group);
@@ -412,6 +424,13 @@ public class PermissionHandler implements Reloadable
 				{
 					plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(e, "loading world group " + entry1.getKey()));
 				}
+			}
+
+			// Update groups
+			for (WorldGroup group : worldGroups.get(world.toLowerCase()).values())
+			{
+				group.loadParentGroups();
+				group.update();
 			}
 		}
 	}
@@ -426,8 +445,8 @@ public class PermissionHandler implements Reloadable
 
 	public final void registerWorld(World world)
 	{
-		if (! users.containsKey(world.getName()))
-			users.put(world.getName(), new ArrayList<User>());
+		if (! users.containsKey(world.getName().toLowerCase()))
+			users.put(world.getName().toLowerCase(), new ArrayList<User>());
 	}
 
 	@Override

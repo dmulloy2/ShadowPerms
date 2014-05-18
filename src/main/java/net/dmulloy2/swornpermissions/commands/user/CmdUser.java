@@ -12,6 +12,7 @@ import java.util.Set;
 import net.dmulloy2.swornpermissions.SwornPermissions;
 import net.dmulloy2.swornpermissions.commands.SwornPermissionsCommand;
 import net.dmulloy2.swornpermissions.permissions.User;
+import net.dmulloy2.swornpermissions.types.Permission;
 import net.dmulloy2.swornpermissions.types.StringJoiner;
 import net.dmulloy2.swornpermissions.util.FormatUtil;
 
@@ -112,6 +113,12 @@ public class CmdUser extends SwornPermissionsCommand
 
 	private final void printUserInfo(User user)
 	{
+		if (! hasPermission(Permission.USER_VIEW_INFO))
+		{
+			err("You do not have permission to perform this command!");
+			return;
+		}
+
 		sendMessage("&3====[ &e{0} &3]====", user.getName());
 		sendMessage("Group: &b{0}", user.getGroup().getName());
 

@@ -12,6 +12,7 @@ import java.util.Set;
 import net.dmulloy2.swornpermissions.SwornPermissions;
 import net.dmulloy2.swornpermissions.commands.SwornPermissionsCommand;
 import net.dmulloy2.swornpermissions.permissions.Group;
+import net.dmulloy2.swornpermissions.types.Permission;
 import net.dmulloy2.swornpermissions.types.StringJoiner;
 
 import org.bukkit.World;
@@ -107,28 +108,34 @@ public class CmdGroup extends SwornPermissionsCommand
 
 	private final void printGroupInfo(Group group)
 	{
+		if (! hasPermission(Permission.USER_VIEW_INFO))
+		{
+			err("You do not have permission to perform this command!");
+			return;
+		}
+
 		sendMessage("&3====[ &e{0} &3]====", group.getName());
 
 		Set<String> permissions = group.getPermissionNodes();
 		if (permissions.size() > 0)
 		{
-			sendMessage("Permissions: {0}", new StringJoiner("&b, &e").appendAll(permissions.toArray(new String[0])));
+			sendMessage("&bPermissions&e: {0}", new StringJoiner("&b, &e").appendAll(permissions.toArray(new String[0])));
 		}
 
 		Set<Group> parents = group.getParentGroups();
 		if (parents.size() > 0)
 		{
-			sendMessage("Parents:");
+			sendMessage("&bParents&e:");
 			for (Group parent : parents)
 			{
-				sendMessage("  &e- &b{0}", parent.getName());
+				sendMessage("  &b- &e{0}", parent.getName());
 			}
 		}
 
 		Map<String, Object> options = group.getOptions();
 		if (options.size() > 0)
 		{
-			sendMessage("Options:");
+			sendMessage("&bOptions&e:");
 			for (Entry<String, Object> entry : options.entrySet())
 			{
 				sendMessage("  &e{0}: &b{1}", entry.getKey(), entry.getValue());

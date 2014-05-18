@@ -66,6 +66,21 @@ public class SwornPermissions extends JavaPlugin implements Reloadable
 	private @Getter String prefix = FormatUtil.format("&3[&eSwornPerms&3]&e ");
 
 	@Override
+	public void onLoad()
+	{
+		/** Vault Integration **/
+		PluginManager pm = getServer().getPluginManager();
+		if (pm.getPlugin("Vault") != null)
+		{
+			SwornPermissionsVault perms = new SwornPermissionsVault(this);
+			getServer().getServicesManager().register(Permission.class, perms, this, ServicePriority.Highest);
+
+			SwornChatVault chat = new SwornChatVault(this, perms);
+			getServer().getServicesManager().register(Chat.class, chat, this, ServicePriority.Highest);
+		}
+	}
+
+	@Override
 	public void onEnable()
 	{
 		long start = System.currentTimeMillis();
@@ -116,16 +131,6 @@ public class SwornPermissions extends JavaPlugin implements Reloadable
 		pm.registerEvents(new ChatListener(this), this);
 		pm.registerEvents(new PlayerListener(this), this);
 		pm.registerEvents(new WorldListener(this), this);
-
-		/** Register Permissions and Chat for Vault **/
-		if (pm.isPluginEnabled("Vault"))
-		{
-			SwornPermissionsVault perms = new SwornPermissionsVault(this);
-			getServer().getServicesManager().register(Permission.class, perms, this, ServicePriority.Highest);
-
-			SwornChatVault chat = new SwornChatVault(this, perms);
-			getServer().getServicesManager().register(Chat.class, chat, this, ServicePriority.High);
-		}
 
 		logHandler.log("{0} has been enabled ({1}ms)", getDescription().getFullName(), System.currentTimeMillis() - start);
 	}

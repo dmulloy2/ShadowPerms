@@ -29,13 +29,13 @@ public class CmdRemovePermission extends UserCommand
 		String permission = args[0];
 		if (! user.hasPermission(permission))
 		{
-			sendpMessage("User {0} does not have permission ''{1}.''", user.getName(), permission);
+			sendpMessage("User &b{0} &edoes not have permission ''&b{1}&e.''", user.getName(), permission);
 			return;
 		}
 
 		user.removePermission(permission);
 		user.updatePermissions(true);
 
-		sendpMessage("Permission ''{0}'' removed from user {1}''s permissions.", permission, user.getName());
+		sendpMessage("Permission ''&b{0}&e'' removed from user &b{1}&e''s permissions.", permission, user.getName());
 	}
 }

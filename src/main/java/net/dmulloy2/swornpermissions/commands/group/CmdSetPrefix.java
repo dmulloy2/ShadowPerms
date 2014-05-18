@@ -31,6 +31,6 @@ public class CmdSetPrefix extends GroupCommand
 
 		group.setPrefix(prefix);
 
-		sendpMessage("Set group {0}''s prefix to \"{1}&e\"", group.getName(), prefix);
+		sendpMessage("Set group &b{0}&e''s prefix to \"&f{1}&e\"", group.getName(), prefix);
 	}
 }
