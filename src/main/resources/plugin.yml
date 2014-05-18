@@ -104,6 +104,8 @@ permissions:
       swornpermissions.group.has.option: true
       swornpermissions.group.list.permissions: true
       swornpermissions.group.list.users: true
+      swornpermissions.group.list: true
+      swornpermissions.group.create: true
   swornpermissions.group.view.info:
     default: false
   swornpermissions.group.add.permission:
@@ -123,6 +125,10 @@ permissions:
   swornpermissions.group.list.users:
     default: false
   swornpermissions.group.list.permissions:
+    default: false
+  swornpermissions.group.list:
+    default: false
+  swornpermissions.group.create:
     default: false
   swornpermissions.chat.color:
     default: false

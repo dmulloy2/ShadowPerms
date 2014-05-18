@@ -31,8 +31,10 @@ public enum Permission
 
 	GROUP_ADD_PERMISSION("group.add.permission"),
 	GROUP_VIEW_INFO("group.view.info"),
+	GROUP_CREATE("group.create"),
 	GROUP_HAS_OPTION("group.has.option"),
 	GROUP_HAS_PERMISSION("group.has.permission"),
+	GROUP_LIST("group.list"),
 	GROUP_LIST_PERMISSIONS("group.list.permissions"),
 	GROUP_LIST_USERS("group.list.users"),
 	GROUP_REMOVE_PERMISSION("group.remove.permission"),

@@ -239,6 +239,22 @@ public class PermissionHandler implements Reloadable
 		return ret;
 	}
 
+	// ---- Group Creation
+
+	public ServerGroup createServerGroup(String name)
+	{
+		ServerGroup group = new ServerGroup(plugin, name);
+		serverGroups.put(name, group);
+		return group;
+	}
+
+	public WorldGroup createWorldGroup(String name, World world)
+	{
+		WorldGroup group = new WorldGroup(plugin, name, world.getName());
+		worldGroups.get(world.getName()).put(name, group);
+		return group;
+	}
+
 	// ---- Defaults
 
 	public final Group getDefaultGroup()
@@ -326,7 +342,7 @@ public class PermissionHandler implements Reloadable
 	{
 		for (Entry<String, List<User>> entry : new HashMap<String, List<User>>(users).entrySet())
 		{
-			for (User user : entry.getValue())
+			for (User user : new ArrayList<User>(entry.getValue()))
 			{
 				if (! user.isOnline())
 					users.get(entry.getKey()).remove(user);

@@ -31,7 +31,7 @@ public abstract class GroupCommand extends SwornPermissionsCommand
 	public GroupCommand(SwornPermissions plugin)
 	{
 		super(plugin);
-		this.requiredArgs.add("user");
+		this.requiredArgs.add("group");
 	}
 
 	public void execute(CommandSender sender, Group group, World world, String[] args)
