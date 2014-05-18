@@ -108,7 +108,7 @@ public class CmdGroup extends SwornPermissionsCommand
 
 	private final void printGroupInfo(Group group)
 	{
-		if (! hasPermission(Permission.USER_VIEW_INFO))
+		if (! hasPermission(Permission.GROUP_VIEW_INFO))
 		{
 			err("You do not have permission to perform this command!");
 			return;
