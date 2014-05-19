@@ -91,7 +91,7 @@ public class DataHandler implements Reloadable
 	{
 		for (String world : loadedWorlds)
 		{
-			if (! areUsersMirrored(world))
+			if (! plugin.getMirrorHandler().areUsersMirrored(world))
 			{
 				try
 				{
@@ -112,7 +112,6 @@ public class DataHandler implements Reloadable
 					{
 						if (user.shouldBeSaved())
 						{
-							// fc.set("users." + user.getSaveName(), user.serialize());
 							fc.createSection("users." + user.getSaveName(), user.serialize());
 						}
 						else
@@ -139,7 +138,7 @@ public class DataHandler implements Reloadable
 	{
 		for (String world : loadedWorlds)
 		{
-			if (! areGroupsMirrored(world))
+			if (! plugin.getMirrorHandler().areGroupsMirrored(world))
 			{
 				try
 				{
@@ -179,7 +178,7 @@ public class DataHandler implements Reloadable
 
 	public final FileConfiguration getUserConfig(String world)
 	{
-		world = getUsersParent(world);
+		world = plugin.getMirrorHandler().getUsersParent(world);
 		world = world.toLowerCase();
 
 		return userConfigs.get(world);
@@ -192,156 +191,17 @@ public class DataHandler implements Reloadable
 
 	public final FileConfiguration getGroupConfig(String world)
 	{
-		world = getGroupsParent(world);
+		world = plugin.getMirrorHandler().getGroupsParent(world);
 		world = world.toLowerCase();
 
 		return groupConfigs.get(world);
 	}
 
-	// ---- User Mirrors
-
-	public final boolean areUsersMirrored(World world)
-	{
-		return areUsersMirrored(world.getName());
-	}
-
-	public final boolean areUsersMirrored(String world)
-	{
-		return ! getUsersParent(world).equals(world);
-	}
-
-	public final String getUsersParent(World world)
-	{
-		return getUsersParent(world.getName());
-	}
-
-	public final String getUsersParent(String world)
-	{
-		world = world.toLowerCase();
-
-		for (Entry<String, List<String>> entry : userMirrors.entrySet())
-		{
-			if (entry.getValue().contains(world))
-				return entry.getKey();
-		}
-
-		return world;
-	}
-
-	public final boolean areUsersLinked(World world1, World world2)
-	{
-		return areUsersLinked(world1.getName(), world2.getName());
-	}
-
-	public final boolean areUsersLinked(String world1, String world2)
-	{
-		world1 = world1.toLowerCase();
-		if (userMirrors.containsKey(world1))
-		{
-			return userMirrors.get(world1).contains(world2);
-		}
-
-		world2 = world2.toLowerCase();
-		if (userMirrors.containsKey(world2))
-		{
-			return userMirrors.get(world2).contains(world1);
-		}
-
-		return false;
-	}
-
-	// ---- Group Mirrors
-
-	public final boolean areGroupsMirrored(World world)
-	{
-		return areGroupsMirrored(world.getName());
-	}
-
-	public final boolean areGroupsMirrored(String world)
-	{
-		return ! getGroupsParent(world).equals(world);
-	}
-
-	public final String getGroupsParent(World world)
-	{
-		return getGroupsParent(world.getName());
-	}
-
-	public final String getGroupsParent(String world)
-	{
-		world = world.toLowerCase();
-
-		for (Entry<String, List<String>> entry : groupMirrors.entrySet())
-		{
-			if (entry.getValue().contains(world))
-				return entry.getKey();
-		}
-
-		return world;
-	}
-
-	public final boolean areGroupsLinked(World world1, World world2)
-	{
-		return areGroupsLinked(world1.getName(), world2.getName());
-	}
-
-	public final boolean areGroupsLinked(String world1, String world2)
-	{
-		world1 = world1.toLowerCase();
-		if (groupMirrors.containsKey(world1))
-		{
-			return groupMirrors.get(world1).contains(world2);
-		}
-
-		world2 = world2.toLowerCase();
-		if (groupMirrors.containsKey(world2))
-		{
-			return groupMirrors.get(world2).contains(world1);
-		}
-
-		return false;
-	}
-
 	// ---- Loading
-
-	@SuppressWarnings("unchecked")
-	public final void loadMirrors()
-	{
-		FileConfiguration config = plugin.getConfig();
-		if (config.isSet("userMirrors"))
-		{
-			Map<String, Object> values = config.getConfigurationSection("userMirrors").getValues(false);
-			for (Entry<String, Object> entry : values.entrySet())
-			{
-				String parent = entry.getKey();
-
-				List<String> children = new ArrayList<String>();
-				for (String child : (List<String>) entry.getValue())
-					children.add(child.toLowerCase());
-
-				userMirrors.put(parent.toLowerCase(), children);
-			}
-		}
-
-		if (config.isSet("groupMirrors"))
-		{
-			Map<String, Object> values = config.getConfigurationSection("groupMirrors").getValues(false);
-			for (Entry<String, Object> entry : values.entrySet())
-			{
-				String parent = entry.getKey();
-
-				List<String> children = new ArrayList<String>();
-				for (String child : (List<String>) entry.getValue())
-					children.add(child.toLowerCase());
-
-				groupMirrors.put(parent.toLowerCase(), children);
-			}
-		}
-	}
 
 	public final void loadWorld(World world)
 	{
-		if (isWorldLoaded(world) || areGroupsMirrored(world))
+		if (isWorldLoaded(world))
 			return;
 
 		try
@@ -352,21 +212,37 @@ public class DataHandler implements Reloadable
 
 			File worldFolder = new File(dir, world.getName());
 			if (! worldFolder.exists())
-				worldFolder.mkdirs();
+				worldFolder.mkdir();
 
 			File groupsFile = new File(worldFolder, "groups.yml");
 			if (! groupsFile.exists())
-				copy(plugin.getResource("groups.yml"), groupsFile);
+			{
+				if (plugin.getMirrorHandler().areGroupsMirroredByDefault())
+					plugin.getMirrorHandler().addGroupMirror(plugin.getMirrorHandler().getDefaultGroupWorld(), world.getName());
+				else
+					copy(plugin.getResource("groups.yml"), groupsFile);
+			}
 
-			FileConfiguration groups = YamlConfiguration.loadConfiguration(groupsFile);
-			groupConfigs.put(world.getName(), groups);
+			if (groupsFile.exists())
+			{
+				FileConfiguration groups = YamlConfiguration.loadConfiguration(groupsFile);
+				groupConfigs.put(world.getName(), groups);
+			}
 
 			File usersFile = new File(worldFolder, "users.yml");
 			if (! usersFile.exists())
-				usersFile.createNewFile();
+			{
+				if (plugin.getMirrorHandler().areUsersMirroredByDefault())
+					plugin.getMirrorHandler().addUserMirror(plugin.getMirrorHandler().getDefaultUserWorld(), world.getName());
+				else
+					usersFile.createNewFile();
+			}
 
-			FileConfiguration users = YamlConfiguration.loadConfiguration(usersFile);
-			userConfigs.put(world.getName(), users);
+			if (usersFile.exists())
+			{
+				FileConfiguration users = YamlConfiguration.loadConfiguration(usersFile);
+				userConfigs.put(world.getName(), users);
+			}
 
 			loadedWorlds.add(world.getName());
 		}
@@ -393,7 +269,7 @@ public class DataHandler implements Reloadable
 		if (op == null)
 			return null;
 
-		world = getUsersParent(world);
+		world = plugin.getMirrorHandler().getUsersParent(world);
 		world = world.toLowerCase();
 
 		String key = op.getUniqueId().toString();
@@ -416,7 +292,7 @@ public class DataHandler implements Reloadable
 	{
 		String world = player.getWorld().getName();
 
-		world = getUsersParent(world);
+		world = plugin.getMirrorHandler().getUsersParent(world);
 		world = world.toLowerCase();
 
 		String key = player.getUniqueId().toString();
@@ -431,7 +307,7 @@ public class DataHandler implements Reloadable
 
 	public final List<User> loadAllUsers(String world)
 	{
-		world = getUsersParent(world);
+		world = plugin.getMirrorHandler().getUsersParent(world);
 		world = world.toLowerCase();
 
 		List<User> ret = new ArrayList<User>();
@@ -515,9 +391,6 @@ public class DataHandler implements Reloadable
 
 		this.groupConfigs = Maps.newHashMap();
 		this.userConfigs = Maps.newHashMap();
-
-		// ---- Load Mirrors
-		this.loadMirrors();
 
 		// ---- Load Worlds
 		this.loadedWorlds = new ArrayList<String>();

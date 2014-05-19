@@ -88,7 +88,7 @@ public class PermissionHandler implements Reloadable
 		if (world == null)
 			world = getDefaultWorld().getName();
 
-		world = plugin.getDataHandler().getUsersParent(world);
+		world = plugin.getMirrorHandler().getUsersParent(world);
 		world = world.toLowerCase();
 
 		// Attempt to grab from online users
@@ -156,8 +156,8 @@ public class PermissionHandler implements Reloadable
 
 	public final User moveWorld(Player player, String oldWorld, String newWorld)
 	{
-		oldWorld = plugin.getDataHandler().getUsersParent(oldWorld);
-		newWorld = plugin.getDataHandler().getUsersParent(newWorld);
+		oldWorld = plugin.getMirrorHandler().getUsersParent(oldWorld);
+		newWorld = plugin.getMirrorHandler().getUsersParent(newWorld);
 
 		User oldUser = getUser(oldWorld, player.getName());
 
@@ -196,7 +196,7 @@ public class PermissionHandler implements Reloadable
 
 	public final boolean isRegistered(String id, String world)
 	{
-		world = plugin.getDataHandler().getUsersParent(world);
+		world = plugin.getMirrorHandler().getUsersParent(world);
 		world = world.toLowerCase();
 
 		for (User user : getUsers(world))
@@ -229,7 +229,7 @@ public class PermissionHandler implements Reloadable
 		if (name.startsWith("s:"))
 			return serverGroups.get(name);
 
-		world = plugin.getDataHandler().getUsersParent(world);
+		world = plugin.getMirrorHandler().getUsersParent(world);
 		world = world.toLowerCase();
 
 		return worldGroups.get(world).get(name);
@@ -287,7 +287,7 @@ public class PermissionHandler implements Reloadable
 
 	public final Group getDefaultGroup(String world)
 	{
-		world = plugin.getDataHandler().getUsersParent(world);
+		world = plugin.getMirrorHandler().getUsersParent(world);
 		world = world.toLowerCase();
 
 		return defaultGroups.get(world);
@@ -453,8 +453,11 @@ public class PermissionHandler implements Reloadable
 
 	public final void registerWorld(World world)
 	{
-		if (! users.containsKey(world.getName().toLowerCase()))
-			users.put(world.getName().toLowerCase(), new ArrayList<User>());
+		if (! plugin.getMirrorHandler().areUsersMirrored(world))
+		{
+			if (! users.containsKey(world.getName().toLowerCase()))
+				users.put(world.getName().toLowerCase(), new ArrayList<User>());
+		}
 	}
 
 	@Override

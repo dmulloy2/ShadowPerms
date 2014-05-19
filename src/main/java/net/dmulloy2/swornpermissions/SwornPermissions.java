@@ -34,6 +34,7 @@ import net.dmulloy2.swornpermissions.handlers.ChatHandler;
 import net.dmulloy2.swornpermissions.handlers.CommandHandler;
 import net.dmulloy2.swornpermissions.handlers.DataHandler;
 import net.dmulloy2.swornpermissions.handlers.LogHandler;
+import net.dmulloy2.swornpermissions.handlers.MirrorHandler;
 import net.dmulloy2.swornpermissions.handlers.PermissionHandler;
 import net.dmulloy2.swornpermissions.listeners.ChatListener;
 import net.dmulloy2.swornpermissions.listeners.PlayerListener;
@@ -57,6 +58,7 @@ public class SwornPermissions extends JavaPlugin implements Reloadable
 {
 	private @Getter PermissionHandler permissionHandler;
 	private @Getter CommandHandler commandHandler;
+	private @Getter MirrorHandler mirrorHandler;
 	private @Getter ChatHandler chatHandler;
 	private @Getter DataHandler dataHandler;
 	private @Getter LogHandler logHandler;
@@ -105,6 +107,7 @@ public class SwornPermissions extends JavaPlugin implements Reloadable
 		/** Define Other Handlers **/
 		dataHandler = new DataHandler(this);
 		chatHandler = new ChatHandler(this);
+		mirrorHandler = new MirrorHandler(this);
 		commandHandler = new CommandHandler(this);
 
 		permissionHandler = new PermissionHandler(this);

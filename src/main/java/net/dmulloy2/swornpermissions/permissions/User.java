@@ -137,7 +137,7 @@ public class User extends Permissible
 
 		boolean updatePermissions = false;
 
-		if (oldWorld == null || force || ! plugin.getDataHandler().areGroupsLinked(oldWorld, newWorld))
+		if (oldWorld == null || force || ! plugin.getMirrorHandler().areGroupsLinked(oldWorld, newWorld))
 		{
 			this.group = null;
 			this.subGroups = new HashSet<Group>();

@@ -18,6 +18,7 @@ import org.bukkit.entity.Player;
 
 public class ChatHandler implements Reloadable
 {
+	private boolean formatChat;
 	private String chatFormat;
 
 	private final SwornPermissions plugin;
@@ -38,6 +39,9 @@ public class ChatHandler implements Reloadable
 	 */
 	public final String parseChatMessage(Player player, String message)
 	{
+		if (! formatChat)
+			return message;
+
 		User user = plugin.getPermissionHandler().getUser(player);
 
 		// Characters that mess with chat
@@ -126,6 +130,7 @@ public class ChatHandler implements Reloadable
 	@Override
 	public void reload()
 	{
+		this.formatChat = plugin.getConfig().getBoolean("formatChat", true);
 		this.chatFormat = plugin.getConfig().getString("chatFormat");
 	}
 }
