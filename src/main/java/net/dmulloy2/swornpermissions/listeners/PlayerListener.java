@@ -40,8 +40,8 @@ public class PlayerListener implements Listener
 	{
 		Player player = event.getPlayer();
 
-		User user = plugin.getPermissionHandler().getUser(player);
-		user.updatePermissions(false);
+		User user = plugin.getPermissionHandler().moveWorld(player, event.getFrom(), player.getWorld());
+		user.updatePermissions(true);
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)

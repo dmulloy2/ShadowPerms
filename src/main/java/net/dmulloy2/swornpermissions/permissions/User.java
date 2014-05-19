@@ -216,13 +216,12 @@ public class User extends Permissible
 	public final boolean isOnline()
 	{
 		Player player = getPlayer();
-		return player != null && player.isOnline();
+		return player != null && player.isOnline() && player.getWorld().equals(world);
 	}
 
 	public final void onQuit()
 	{
 		removeAttachment();
-		plugin.getPermissionHandler().removeUser(getName());
 	}
 
 	// ---- UUID Management

@@ -40,6 +40,9 @@ public class ChatHandler implements Reloadable
 	{
 		User user = plugin.getPermissionHandler().getUser(player);
 
+		// Characters that mess with chat
+		message = message.replace("%", "%%");
+
 		// Define Available Variables
 		String prefix = user.getPrefix();
 		String suffix = user.getSuffix();

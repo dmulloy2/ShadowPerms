@@ -112,7 +112,8 @@ public class DataHandler implements Reloadable
 					{
 						if (user.shouldBeSaved())
 						{
-							fc.set("users." + user.getSaveName(), user.serialize());
+							// fc.set("users." + user.getSaveName(), user.serialize());
+							fc.createSection("users." + user.getSaveName(), user.serialize());
 						}
 						else
 						{
@@ -157,7 +158,7 @@ public class DataHandler implements Reloadable
 					FileConfiguration fc = YamlConfiguration.loadConfiguration(file);
 					for (Group group : plugin.getPermissionHandler().getGroups(world))
 					{
-						fc.set("groups." + group.getSaveName(), group.serialize());
+						fc.createSection("groups." + group.getSaveName(), group.serialize());
 					}
 
 					fc.save(file);

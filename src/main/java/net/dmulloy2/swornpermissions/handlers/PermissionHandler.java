@@ -149,20 +149,28 @@ public class PermissionHandler implements Reloadable
 		}
 	}
 
-	public final void removeUser(String name)
+	public final User moveWorld(Player player, World oldWorld, World newWorld)
 	{
-		users.remove(name.toLowerCase());
+		return moveWorld(player, oldWorld.getName(), newWorld.getName());
 	}
 
-	public final void moveUser(User user, World oldWorld, World newWorld)
+	public final User moveWorld(Player player, String oldWorld, String newWorld)
 	{
-		moveUser(user, oldWorld.getName(), newWorld.getName());
-	}
+		oldWorld = plugin.getDataHandler().getUsersParent(oldWorld);
+		newWorld = plugin.getDataHandler().getUsersParent(newWorld);
 
-	public final void moveUser(User user, String oldWorld, String newWorld)
-	{
-		users.get(oldWorld.toLowerCase()).remove(user);
-		users.get(newWorld.toLowerCase()).add(user);
+		User oldUser = getUser(oldWorld, player.getName());
+
+		if (oldWorld.equalsIgnoreCase(newWorld))
+		{
+			// Nothing changed, return the old user
+			return oldUser;
+		}
+
+		// Get the new user, update, and return
+		User newUser = getUser(newWorld, player.getName());
+		users.get(newUser).add(newUser);
+		return newUser;
 	}
 
 	public final boolean isValidPlayer(Player player)
