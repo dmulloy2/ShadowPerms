@@ -45,7 +45,7 @@ public class PermissionsExConverter
 		this.plugin = plugin;
 		this.uuidCache = Maps.newHashMap();
 		this.fc = YamlConfiguration.loadConfiguration(file);
-		this.worldName = plugin.getServer().getWorlds().get(0).getName();
+		this.worldName = plugin.getServer().getWorlds().get(0).getName().toLowerCase();
 	}
 
 	public final void convert()
