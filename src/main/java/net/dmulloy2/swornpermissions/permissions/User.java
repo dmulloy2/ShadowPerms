@@ -216,7 +216,10 @@ public class User extends Permissible
 	public final boolean isOnline()
 	{
 		Player player = getPlayer();
-		return player != null && player.isOnline() && player.getWorld().equals(world);
+		if (player != null && player.isOnline())
+			return plugin.getMirrorHandler().areUsersLinked(world, player.getWorld());
+
+		return false;
 	}
 
 	public final void onQuit()
