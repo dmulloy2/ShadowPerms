@@ -3,8 +3,11 @@
  */
 package net.dmulloy2.swornpermissions.listeners;
 
+import java.util.logging.Level;
+
 import lombok.AllArgsConstructor;
 import net.dmulloy2.swornpermissions.SwornPermissions;
+import net.dmulloy2.swornpermissions.util.Util;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -30,6 +33,13 @@ public class ChatListener implements Listener
 		Player player = event.getPlayer();
 		String msg = event.getMessage();
 
-		event.setFormat(plugin.getChatHandler().parseChatMessage(player, msg));
+		try
+		{
+			event.setFormat(plugin.getChatHandler().parseChatMessage(player, msg));
+		}
+		catch (Throwable ex)
+		{
+			plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(ex, "parsing " + player.getName() + "'s chat"));
+		}
 	}
 }

@@ -160,6 +160,7 @@ public class SwornPermissions extends JavaPlugin implements Reloadable
 
 		chatHandler.reload();
 		dataHandler.reload();
+		mirrorHandler.reload();
 		permissionHandler.reload();
 	}
 }

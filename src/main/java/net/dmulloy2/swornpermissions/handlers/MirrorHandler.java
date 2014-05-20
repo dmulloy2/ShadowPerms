@@ -32,7 +32,6 @@ public class MirrorHandler implements Reloadable
 	private String defaultGroupWorld;
 
 	private final SwornPermissions plugin;
-
 	public MirrorHandler(SwornPermissions plugin)
 	{
 		this.plugin = plugin;
@@ -191,7 +190,7 @@ public class MirrorHandler implements Reloadable
 					children.add(child.toLowerCase());
 
 				// Default world
-				if (children.contains("all_unnamed_worlds"))
+				if (children.contains("undefined_worlds"))
 				{
 					defaultUserWorld = parent;
 				}
@@ -225,7 +224,7 @@ public class MirrorHandler implements Reloadable
 				for (String child : (List<String>) entry.getValue())
 					children.add(child.toLowerCase());
 
-				if (children.contains("all_unnamed_worlds"))
+				if (children.contains("undefined_worlds"))
 				{
 					defaultGroupWorld = parent;
 				}

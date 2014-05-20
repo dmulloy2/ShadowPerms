@@ -21,12 +21,18 @@ allowCommandBlocks: false
 # default to that world.
 userMirrors:
   "world":
-    - "*"
+    - "world"
+    - "world_nether"
+    - "world_the_end"
+    - "undefined_worlds"
 
 # Group Mirrors - save as above, just with groups.
 groupMirrors:
   "world":
-    - "*"
+    - "world"
+    - "world_nether"
+    - "world_the_end"
+    - "undefined_worlds"
 
 # Format Chat
 # Whether or not to format chat with SwornChat
