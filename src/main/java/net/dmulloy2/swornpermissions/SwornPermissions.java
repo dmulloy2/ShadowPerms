@@ -105,10 +105,10 @@ public class SwornPermissions extends JavaPlugin implements Reloadable
 		reloadConfig();
 
 		/** Define Other Handlers **/
+		commandHandler = new CommandHandler(this);
+		mirrorHandler = new MirrorHandler(this);
 		dataHandler = new DataHandler(this);
 		chatHandler = new ChatHandler(this);
-		mirrorHandler = new MirrorHandler(this);
-		commandHandler = new CommandHandler(this);
 
 		permissionHandler = new PermissionHandler(this);
 		permissionHandler.reload(); // Load
