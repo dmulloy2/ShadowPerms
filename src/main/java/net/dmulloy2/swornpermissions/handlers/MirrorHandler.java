@@ -199,6 +199,7 @@ public class MirrorHandler implements Reloadable
 				if (children.contains("*"))
 				{
 					onlyUserWorld = parent;
+					defaultUserWorld = parent;
 					userMirrors.clear();
 					return;
 				}
@@ -232,6 +233,7 @@ public class MirrorHandler implements Reloadable
 				if (children.contains("*"))
 				{
 					onlyGroupWorld = parent;
+					defaultGroupWorld = parent;
 					groupMirrors.clear();
 					return;
 				}

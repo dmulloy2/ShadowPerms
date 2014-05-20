@@ -179,7 +179,6 @@ public class DataHandler implements Reloadable
 	public final FileConfiguration getUserConfig(String world)
 	{
 		world = plugin.getMirrorHandler().getUsersParent(world);
-		world = world.toLowerCase();
 
 		return userConfigs.get(world);
 	}
@@ -192,7 +191,6 @@ public class DataHandler implements Reloadable
 	public final FileConfiguration getGroupConfig(String world)
 	{
 		world = plugin.getMirrorHandler().getGroupsParent(world);
-		world = world.toLowerCase();
 
 		return groupConfigs.get(world);
 	}
@@ -210,7 +208,9 @@ public class DataHandler implements Reloadable
 			if (! dir.exists())
 				dir.mkdirs();
 
-			File worldFolder = new File(dir, world.getName());
+			String worldName = world.getName().toLowerCase();
+
+			File worldFolder = new File(dir, worldName);
 			if (! worldFolder.exists())
 				worldFolder.mkdir();
 
@@ -218,7 +218,7 @@ public class DataHandler implements Reloadable
 			if (! groupsFile.exists())
 			{
 				if (plugin.getMirrorHandler().areGroupsMirroredByDefault())
-					plugin.getMirrorHandler().addGroupMirror(plugin.getMirrorHandler().getDefaultGroupWorld(), world.getName());
+					plugin.getMirrorHandler().addGroupMirror(plugin.getMirrorHandler().getDefaultGroupWorld(), worldName);
 				else
 					copy(plugin.getResource("groups.yml"), groupsFile);
 			}
@@ -226,14 +226,14 @@ public class DataHandler implements Reloadable
 			if (groupsFile.exists())
 			{
 				FileConfiguration groups = YamlConfiguration.loadConfiguration(groupsFile);
-				groupConfigs.put(world.getName(), groups);
+				groupConfigs.put(worldName, groups);
 			}
 
 			File usersFile = new File(worldFolder, "users.yml");
 			if (! usersFile.exists())
 			{
 				if (plugin.getMirrorHandler().areUsersMirroredByDefault())
-					plugin.getMirrorHandler().addUserMirror(plugin.getMirrorHandler().getDefaultUserWorld(), world.getName());
+					plugin.getMirrorHandler().addUserMirror(plugin.getMirrorHandler().getDefaultUserWorld(), worldName);
 				else
 					usersFile.createNewFile();
 			}
@@ -241,10 +241,10 @@ public class DataHandler implements Reloadable
 			if (usersFile.exists())
 			{
 				FileConfiguration users = YamlConfiguration.loadConfiguration(usersFile);
-				userConfigs.put(world.getName(), users);
+				userConfigs.put(worldName, users);
 			}
 
-			loadedWorlds.add(world.getName());
+			loadedWorlds.add(worldName);
 		}
 		catch (Exception e)
 		{
@@ -259,8 +259,7 @@ public class DataHandler implements Reloadable
 
 	public final boolean isWorldLoaded(String world)
 	{
-		world = world.toLowerCase();
-		return loadedWorlds.contains(world);
+		return loadedWorlds.contains(world.toLowerCase());
 	}
 
 	public final User loadUser(String world, String name)
@@ -270,7 +269,6 @@ public class DataHandler implements Reloadable
 			return null;
 
 		world = plugin.getMirrorHandler().getUsersParent(world);
-		world = world.toLowerCase();
 
 		String key = op.getUniqueId().toString();
 		FileConfiguration config = getUserConfig(world);
@@ -293,7 +291,6 @@ public class DataHandler implements Reloadable
 		String world = player.getWorld().getName();
 
 		world = plugin.getMirrorHandler().getUsersParent(world);
-		world = world.toLowerCase();
 
 		String key = player.getUniqueId().toString();
 		FileConfiguration config = getUserConfig(world);
@@ -308,7 +305,6 @@ public class DataHandler implements Reloadable
 	public final List<User> loadAllUsers(String world)
 	{
 		world = plugin.getMirrorHandler().getUsersParent(world);
-		world = world.toLowerCase();
 
 		List<User> ret = new ArrayList<User>();
 

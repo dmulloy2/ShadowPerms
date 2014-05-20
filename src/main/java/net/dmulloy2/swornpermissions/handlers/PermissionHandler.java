@@ -453,11 +453,11 @@ public class PermissionHandler implements Reloadable
 
 	public final void registerWorld(World world)
 	{
-		// if (! plugin.getMirrorHandler().areUsersMirrored(world))
-		// {
+		if (! plugin.getMirrorHandler().areUsersMirrored(world))
+		{
 			if (! users.containsKey(world.getName().toLowerCase()))
 				users.put(world.getName().toLowerCase(), new ArrayList<User>());
-		// }
+		}
 	}
 
 	@Override
