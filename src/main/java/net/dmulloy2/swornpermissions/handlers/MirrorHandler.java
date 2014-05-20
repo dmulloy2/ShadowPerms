@@ -183,7 +183,7 @@ public class MirrorHandler implements Reloadable
 			Map<String, Object> values = config.getConfigurationSection("userMirrors").getValues(false);
 			for (Entry<String, Object> entry : values.entrySet())
 			{
-				String parent = entry.getKey();
+				String parent = entry.getKey().toLowerCase();
 
 				List<String> children = new ArrayList<String>();
 				for (String child : (List<String>) entry.getValue())
@@ -218,7 +218,7 @@ public class MirrorHandler implements Reloadable
 			Map<String, Object> values = config.getConfigurationSection("groupMirrors").getValues(false);
 			for (Entry<String, Object> entry : values.entrySet())
 			{
-				String parent = entry.getKey();
+				String parent = entry.getKey().toLowerCase();
 
 				List<String> children = new ArrayList<String>();
 				for (String child : (List<String>) entry.getValue())
