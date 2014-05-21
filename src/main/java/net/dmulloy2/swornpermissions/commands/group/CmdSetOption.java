@@ -3,8 +3,11 @@
  */
 package net.dmulloy2.swornpermissions.commands.group;
 
+import java.util.Arrays;
+
 import net.dmulloy2.swornpermissions.SwornPermissions;
 import net.dmulloy2.swornpermissions.types.Permission;
+import net.dmulloy2.swornpermissions.util.FormatUtil;
 import net.dmulloy2.swornpermissions.util.NumberUtil;
 import net.dmulloy2.swornpermissions.util.Util;
 
@@ -22,25 +25,26 @@ public class CmdSetOption extends GroupCommand
 		this.requiredArgs.add("option");
 		this.requiredArgs.add("value");
 		this.description = "Set an option for a group";
-		this.permission = Permission.GROUP_SET_OPTION;
+		this.permission = Permission.USER_SET_OPTION;
 	}
 
 	@Override
 	public void perform()
 	{
-		// Syntax for options: String: "[value]", Boolean: "b:[value]", Integer: "i:[value]", Double: "d:[value]"
-
-		String key = args[3];
+		String key = args[0];
 		Object val = null;
 
-		String valStr = args[4];
+		String valStr = FormatUtil.join(" ", Arrays.copyOfRange(args, 1, args.length));
+		valStr = valStr.replaceAll("\"", "");
+		valStr = valStr.trim();
+
 		if (valStr.contains("b:"))
 			val = Util.toBoolean(valStr);
 		else if (valStr.contains("i:"))
 			val = NumberUtil.toInt(valStr);
 		else if (valStr.contains("d:"))
 			val = NumberUtil.toDouble(valStr);
-		else if (valStr.equalsIgnoreCase("null"))
+		else if (valStr.equalsIgnoreCase("null") || valStr.isEmpty())
 			val = null;
 		else
 			val = valStr;

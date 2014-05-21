@@ -39,7 +39,7 @@ public class ChatListener implements Listener
 		}
 		catch (Throwable ex)
 		{
-			plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(ex, "parsing " + player.getName() + "'s chat"));
+			plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(ex, "parsing " + player.getName() + "''s chat"));
 		}
 	}
 }

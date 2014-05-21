@@ -3,8 +3,11 @@
  */
 package net.dmulloy2.swornpermissions.commands.user;
 
+import java.util.Arrays;
+
 import net.dmulloy2.swornpermissions.SwornPermissions;
 import net.dmulloy2.swornpermissions.types.Permission;
+import net.dmulloy2.swornpermissions.util.FormatUtil;
 import net.dmulloy2.swornpermissions.util.NumberUtil;
 import net.dmulloy2.swornpermissions.util.Util;
 
@@ -28,17 +31,20 @@ public class CmdSetOption extends UserCommand
 	@Override
 	public void perform()
 	{
-		String key = args[3];
+		String key = args[0];
 		Object val = null;
 
-		String valStr = args[4];
+		String valStr = FormatUtil.join(" ", Arrays.copyOfRange(args, 1, args.length));
+		valStr = valStr.replaceAll("\"", "");
+		valStr = valStr.trim();
+
 		if (valStr.contains("b:"))
 			val = Util.toBoolean(valStr);
 		else if (valStr.contains("i:"))
 			val = NumberUtil.toInt(valStr);
 		else if (valStr.contains("d:"))
 			val = NumberUtil.toDouble(valStr);
-		else if (valStr.equalsIgnoreCase("null"))
+		else if (valStr.equalsIgnoreCase("null") || valStr.isEmpty())
 			val = null;
 		else
 			val = valStr;

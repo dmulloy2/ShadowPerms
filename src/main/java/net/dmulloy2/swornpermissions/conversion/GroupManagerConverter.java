@@ -92,7 +92,7 @@ public class GroupManagerConverter
 					if (world.isDirectory())
 					{
 						String worldName = world.getName();
-						File dir = new File(worldsDir, worldName);
+						File dir = new File(worldsDir, worldName.toLowerCase());
 						if (! dir.exists())
 							dir.mkdirs();
 
