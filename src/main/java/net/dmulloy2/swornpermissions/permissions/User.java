@@ -206,6 +206,42 @@ public class User extends Permissible
 		}
 	}
 
+	@Override
+	protected final List<String> sortPermissions()
+	{
+		Map<String, Boolean> permissions = new HashMap<String, Boolean>();
+
+		// Add group perms first
+		List<String> groupPerms = sort(getGroupNodes());
+
+		for (String groupPerm : new ArrayList<String>(groupPerms))
+		{
+			boolean value = groupPerm.startsWith("-");
+			permissions.put(! value ? groupPerm.substring(1) : groupPerm, value);
+		}
+
+		// Add user perms last, since they take priority
+		List<String> userPerms = sort(permissionNodes);
+
+		for (String userPerm : new ArrayList<String>(userPerms))
+		{
+			boolean value = userPerm.startsWith("-");
+			permissions.put(! value ? userPerm.substring(1) : userPerm, value);
+		}
+
+		// Add them all to the main list
+		List<String> ret = new ArrayList<String>();
+
+		for (String node : permissions.keySet())
+		{
+			boolean value = permissions.get(node);
+			ret.add(! value ? "-" + node : node);
+		}
+
+		// Return
+		return ret;
+	}
+
 	// ---- Player Management
 
 	public final Player getPlayer()
@@ -370,6 +406,19 @@ public class User extends Permissible
 	@Override
 	public Set<String> getAllPermissionNodes()
 	{
+		Set<String> ret = new HashSet<String>();
+
+		// Add group nodes
+		ret.addAll(getGroupNodes());
+
+		// Add User-specific permissions last
+		ret.addAll(permissionNodes);
+
+		return ret;
+	}
+
+	public Set<String> getGroupNodes()
+	{
 		// Add the nodes in reverse order... Seems to work better
 		Set<String> ret = new HashSet<String>();
 
@@ -381,9 +430,6 @@ public class User extends Permissible
 
 		// Then add main group nodes
 		ret.addAll(group.getAllPermissionNodes());
-
-		// Add User-specific permissions last
-		ret.addAll(permissionNodes);
 
 		return ret;
 	}

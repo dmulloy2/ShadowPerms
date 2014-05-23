@@ -147,7 +147,7 @@ public abstract class Permissible implements ConfigurationSerializable
 	protected final void updatePermissionMap()
 	{
 		// Sort the nodes
-		List<String> permissionNodes = sort(getAllPermissionNodes());
+		List<String> permissionNodes = sortPermissions();
 
 		// Get matching permissions
 		permissionNodes = getMatchingNodes(permissionNodes);
@@ -166,6 +166,11 @@ public abstract class Permissible implements ConfigurationSerializable
 		}
 
 		this.permissions = permissions;
+	}
+
+	protected List<String> sortPermissions()
+	{
+		return sort(getAllPermissionNodes());
 	}
 
 	// Order in this method is extremely important. Negated nodes need to be
