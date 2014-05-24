@@ -62,7 +62,7 @@ public abstract class Permissible implements ConfigurationSerializable
 		{
 			Map<String, Object> values = section.getConfigurationSection("options").getValues(false);
 			for (String key : values.keySet())
-				options.put(key, values.get(key));
+				options.put(key.toLowerCase(), values.get(key));
 
 			this.prefix = options.containsKey("prefix") ? (String) options.get("prefix") : "";
 			this.suffix = options.containsKey("suffix") ? (String) options.get("suffix") : "";
@@ -339,11 +339,13 @@ public abstract class Permissible implements ConfigurationSerializable
 
 	public Object getOption(String key)
 	{
-		return options.get(key);
+		return options.get(key.toLowerCase());
 	}
 
 	public final void setOption(String key, Object value)
 	{
+		key = key.toLowerCase();
+
 		if (value == null)
 			options.remove(key);
 		else
@@ -355,12 +357,13 @@ public abstract class Permissible implements ConfigurationSerializable
 	 */
 	public final void setOptions(Map<String, Object> options)
 	{
-		this.options = options;
+		for (String key : options.keySet())
+			options.put(key.toLowerCase(), options.get(key));
 	}
 
 	public boolean hasOption(String key)
 	{
-		return options.containsKey(key);
+		return options.containsKey(key.toLowerCase());
 	}
 
 	public String getPrefix()
