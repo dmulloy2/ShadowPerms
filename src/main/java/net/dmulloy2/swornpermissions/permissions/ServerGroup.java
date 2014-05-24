@@ -4,7 +4,7 @@
 package net.dmulloy2.swornpermissions.permissions;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import net.dmulloy2.swornpermissions.SwornPermissions;
@@ -33,7 +33,7 @@ public class ServerGroup extends Group
 	@Override
 	public Map<String, Object> serialize()
 	{
-		Map<String, Object> ret = new HashMap<String, Object>();
+		Map<String, Object> ret = new LinkedHashMap<String, Object>();
 
 		ret.put("permissions", new ArrayList<String>(permissionNodes));
 		ret.put("options", options);

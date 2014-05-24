@@ -5,7 +5,6 @@ package net.dmulloy2.swornpermissions.permissions;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -18,9 +17,6 @@ import net.dmulloy2.swornpermissions.SwornPermissions;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.permissions.Permission;
-
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 
 /**
  * @author dmulloy2
@@ -43,9 +39,9 @@ public abstract class Permissible implements ConfigurationSerializable
 	{
 		this.name = name;
 		this.plugin = plugin;
-		this.permissionNodes = Sets.newHashSet();
-		this.permissions = Maps.newHashMap();
-		this.options = Maps.newHashMap();
+		this.permissionNodes = new HashSet<String>();
+		this.permissions = new LinkedHashMap<String, Boolean>();
+		this.options = new LinkedHashMap<String, Object>();
 		this.prefix = "";
 		this.suffix = "";
 	}
@@ -64,7 +60,10 @@ public abstract class Permissible implements ConfigurationSerializable
 
 		if (section.isSet("options"))
 		{
-			this.options = section.getConfigurationSection("options").getValues(false);
+			Map<String, Object> values = section.getConfigurationSection("options").getValues(false);
+			for (String key : values.keySet())
+				options.put(key, values.get(key));
+
 			this.prefix = options.containsKey("prefix") ? (String) options.get("prefix") : "";
 			this.suffix = options.containsKey("suffix") ? (String) options.get("suffix") : "";
 		}
@@ -335,7 +334,7 @@ public abstract class Permissible implements ConfigurationSerializable
 
 	public Map<String, Object> getOptions()
 	{
-		return new HashMap<String, Object>(options);
+		return new LinkedHashMap<String, Object>(options);
 	}
 
 	public Object getOption(String key)

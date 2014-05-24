@@ -4,7 +4,6 @@
 package net.dmulloy2.swornpermissions.permissions;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -68,7 +67,7 @@ public class WorldGroup extends Group
 	@Override
 	public Map<String, Object> serialize()
 	{
-		Map<String, Object> ret = new HashMap<String, Object>();
+		Map<String, Object> ret = new LinkedHashMap<String, Object>();
 
 		ret.put("default", defaultGroup);
 		ret.put("permissions", new ArrayList<String>(permissionNodes));

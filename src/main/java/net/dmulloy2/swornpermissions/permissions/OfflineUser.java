@@ -43,4 +43,10 @@ public class OfflineUser extends User
 	{
 		// Do nothing...
 	}
+
+	@Override
+	public void updatePermissions(boolean force)
+	{
+		// Do nothing...
+	}
 }

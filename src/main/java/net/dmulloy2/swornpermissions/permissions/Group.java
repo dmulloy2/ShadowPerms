@@ -3,14 +3,12 @@
  */
 package net.dmulloy2.swornpermissions.permissions;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import net.dmulloy2.swornpermissions.SwornPermissions;
 
 import org.bukkit.configuration.MemorySection;
-
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 
 /**
  * @author dmulloy2
@@ -24,13 +22,8 @@ public abstract class Group extends Permissible
 	public Group(SwornPermissions plugin, String name)
 	{
 		super(plugin, name);
-		this.parents = Sets.newHashSet();
-		this.parentGroups = Sets.newHashSet();
-		this.permissions = Maps.newHashMap();
-		this.permissionNodes = Sets.newHashSet();
-		this.options = Maps.newHashMap();
-		this.prefix = "";
-		this.suffix = "";
+		this.parents = new HashSet<String>();
+		this.parentGroups = new HashSet<Group>();
 	}
 
 	public Group(SwornPermissions plugin, String name, MemorySection section)

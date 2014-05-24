@@ -9,8 +9,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 
 import lombok.Getter;
@@ -29,8 +32,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import com.google.common.collect.Maps;
-
 /**
  * @author dmulloy2
  */
@@ -38,10 +39,7 @@ import com.google.common.collect.Maps;
 @Getter
 public class DataHandler implements Reloadable
 {
-	private List<String> loadedWorlds;
-
-	private Map<String, List<String>> groupMirrors;
-	private Map<String, List<String>> userMirrors;
+	private Set<String> loadedWorlds;
 
 	private Map<String, FileConfiguration> groupConfigs;
 	private Map<String, FileConfiguration> userConfigs;
@@ -123,9 +121,9 @@ public class DataHandler implements Reloadable
 					fc.save(file);
 					userConfigs.put(world, fc);
 				}
-				catch (Exception e)
+				catch (Throwable ex)
 				{
-					plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(e, "saving users for world " + world));
+					plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(ex, "saving users for world " + world));
 				}
 			}
 		}
@@ -162,9 +160,9 @@ public class DataHandler implements Reloadable
 					fc.save(file);
 					groupConfigs.put(world, fc);
 				}
-				catch (Exception e)
+				catch (Throwable ex)
 				{
-					plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(e, "saving groups for world " + world));
+					plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(ex, "saving groups for world " + world));
 				}
 			}
 		}
@@ -245,9 +243,9 @@ public class DataHandler implements Reloadable
 
 			loadedWorlds.add(worldName);
 		}
-		catch (Exception e)
+		catch (Throwable ex)
 		{
-			plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(e, "loading world " + world.getName()));
+			plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(ex, "loading world " + world.getName()));
 		}
 	}
 
@@ -332,9 +330,9 @@ public class DataHandler implements Reloadable
 
 			this.serverGroups = YamlConfiguration.loadConfiguration(file);
 		}
-		catch (Exception e)
+		catch (Throwable ex)
 		{
-			plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(e, "loading server groups"));
+			plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(ex, "loading server groups"));
 		}
 	}
 
@@ -348,9 +346,9 @@ public class DataHandler implements Reloadable
 
 			serverGroups.save(file);
 		}
-		catch (Exception e)
+		catch (Throwable ex)
 		{
-			plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(e, "saving server groups"));
+			plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(ex, "saving server groups"));
 		}
 	}
 
@@ -380,18 +378,13 @@ public class DataHandler implements Reloadable
 	public void reload()
 	{
 		// ---- Initialize Maps
-		this.groupMirrors = Maps.newHashMap();
-		this.userMirrors = Maps.newHashMap();
-
-		this.groupConfigs = Maps.newHashMap();
-		this.userConfigs = Maps.newHashMap();
+		this.groupConfigs = new LinkedHashMap<String, FileConfiguration>();
+		this.userConfigs = new LinkedHashMap<String, FileConfiguration>();
 
 		// ---- Load Worlds
-		this.loadedWorlds = new ArrayList<String>();
+		this.loadedWorlds = new HashSet<String>();
 		for (World world : plugin.getServer().getWorlds())
-		{
 			loadWorld(world);
-		}
 
 		// ---- Load Server Groups
 		this.loadServerGroups();

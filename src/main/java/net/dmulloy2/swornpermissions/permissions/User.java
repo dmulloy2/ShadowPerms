@@ -5,7 +5,6 @@ package net.dmulloy2.swornpermissions.permissions;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -21,8 +20,6 @@ import org.bukkit.World;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachment;
-
-import com.google.common.collect.Sets;
 
 /**
  * @author dmulloy2
@@ -48,8 +45,8 @@ public class User extends Permissible
 		super(plugin, name);
 		this.group = null;
 		this.groupName = null;
-		this.subGroups = Sets.newHashSet();
-		this.subGroupNames = Sets.newHashSet();
+		this.subGroups = new HashSet<Group>();
+		this.subGroupNames = new HashSet<String>();
 	}
 
 	public User(SwornPermissions plugin, Player player)
@@ -85,13 +82,13 @@ public class User extends Permissible
 	@Override
 	public Map<String, Object> serialize()
 	{
-		Map<String, Object> ret = new HashMap<String, Object>();
+		Map<String, Object> ret = new LinkedHashMap<String, Object>();
 
+		ret.put("lastKnownBy", lastKnownBy);
 		ret.put("group", groupName);
 		ret.put("subgroups", new ArrayList<String>(subGroupNames));
 		ret.put("permissions", new ArrayList<String>(permissionNodes));
 		ret.put("options", options);
-		ret.put("lastKnownBy", lastKnownBy);
 
 		return ret;
 	}
@@ -129,11 +126,16 @@ public class User extends Permissible
 
 	public void updatePermissions(boolean force)
 	{
+		// Online check
+		Player player = getPlayer();
+		if (player == null || ! player.isOnline())
+			return;
+
 		// Always keep UUID stuff up-to-date
-		updateUniqueID(getPlayer());
+		updateUniqueID(player);
 
 		World oldWorld = world;
-		World newWorld = getPlayer().getWorld();
+		World newWorld = player.getWorld();
 
 		boolean updatePermissions = false;
 
@@ -161,9 +163,17 @@ public class User extends Permissible
 			if (group == null)
 			{
 				this.group = plugin.getPermissionHandler().getDefaultGroup(newWorld);
+
+				if (group == null)
+				{
+					plugin.getLogHandler().log(Level.SEVERE, "Failed to find a default group! {0} will not have any perms!", name);
+					return;
+				}
+
 				this.groupName = group.getName();
 			}
 
+			// Update subgroups
 			for (String subGroupName : subGroupNames)
 			{
 				Group subGroup = plugin.getPermissionHandler().getGroup(newWorld, subGroupName);
@@ -174,7 +184,7 @@ public class User extends Permissible
 			updatePermissions = true;
 		}
 
-		// Update world variable
+		// Update world
 		this.world = newWorld;
 
 		// Do we need to continue?

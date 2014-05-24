@@ -3,9 +3,11 @@
  */
 package net.dmulloy2.swornpermissions.handlers;
 
-import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import net.dmulloy2.swornpermissions.SwornPermissions;
 import net.dmulloy2.swornpermissions.types.Reloadable;
@@ -13,16 +15,14 @@ import net.dmulloy2.swornpermissions.types.Reloadable;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 
-import com.google.common.collect.Maps;
-
 /**
  * @author dmulloy2
  */
 
 public class MirrorHandler implements Reloadable
 {
-	private Map<String, List<String>> userMirrors;
-	private Map<String, List<String>> groupMirrors;
+	private Map<String, Set<String>> userMirrors;
+	private Map<String, Set<String>> groupMirrors;
 
 	private String onlyUserWorld;
 	private String defaultUserWorld;
@@ -63,7 +63,7 @@ public class MirrorHandler implements Reloadable
 
 		for (String parent : userMirrors.keySet())
 		{
-			List<String> children = userMirrors.get(parent);
+			Set<String> children = userMirrors.get(parent);
 			if (children.contains("*") || children.contains(world))
 				return parent;
 		}
@@ -100,7 +100,7 @@ public class MirrorHandler implements Reloadable
 		mirrored = mirrored.toLowerCase();
 
 		if (! userMirrors.containsKey(parent))
-			userMirrors.put(parent, new ArrayList<String>());
+			userMirrors.put(parent, new HashSet<String>());
 
 		userMirrors.get(parent).add(mirrored);
 	}
@@ -131,7 +131,7 @@ public class MirrorHandler implements Reloadable
 
 		for (String parent : groupMirrors.keySet())
 		{
-			List<String> children = groupMirrors.get(parent);
+			Set<String> children = groupMirrors.get(parent);
 			if (children.contains("*") || children.contains(world))
 				return parent;
 		}
@@ -168,7 +168,7 @@ public class MirrorHandler implements Reloadable
 		mirrored = mirrored.toLowerCase();
 
 		if (! groupMirrors.containsKey(parent))
-			groupMirrors.put(parent, new ArrayList<String>());
+			groupMirrors.put(parent, new HashSet<String>());
 
 		groupMirrors.get(parent).add(mirrored);
 	}
@@ -186,7 +186,7 @@ public class MirrorHandler implements Reloadable
 			{
 				parent = parent.toLowerCase();
 
-				List<String> children = new ArrayList<String>();
+				Set<String> children = new HashSet<String>();
 				for (String child : (List<String>) values.get(parent))
 					children.add(child.toLowerCase());
 
@@ -222,7 +222,7 @@ public class MirrorHandler implements Reloadable
 			{
 				parent = parent.toLowerCase();
 
-				List<String> children = new ArrayList<String>();
+				Set<String> children = new HashSet<String>();
 				for (String child : (List<String>) values.get(parent))
 					children.add(child.toLowerCase());
 
@@ -247,9 +247,9 @@ public class MirrorHandler implements Reloadable
 	@Override
 	public void reload()
 	{
-		// (Re-) initialize maps
-		this.userMirrors = Maps.newHashMap();
-		this.groupMirrors = Maps.newHashMap();
+		// Initialize maps
+		this.userMirrors = new LinkedHashMap<String, Set<String>>();
+		this.groupMirrors = new LinkedHashMap<String, Set<String>>();
 
 		// Clear variables
 		this.onlyUserWorld = null;
