@@ -120,7 +120,7 @@ public class CmdUser extends SwornPermissionsCommand
 		}
 
 		sendMessage("&3====[ &e{0} &3]====", user.getName());
-		sendMessage("Group: &b{0}", user.getGroup().getName());
+		sendMessage("Group: &b{0}", user.getGroupName());
 
 		Set<String> subGroups = user.getSubGroupNames();
 		if (subGroups.size() > 0)
