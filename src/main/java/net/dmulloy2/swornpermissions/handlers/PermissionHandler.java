@@ -149,6 +149,19 @@ public class PermissionHandler implements Reloadable
 		}
 	}
 
+	public final boolean areUsersDifferent(World oldWorld, World newWorld)
+	{
+		return areUsersDifferent(oldWorld.getName(), newWorld.getName());
+	}
+
+	public final boolean areUsersDifferent(String oldWorld, String newWorld)
+	{
+		oldWorld = plugin.getMirrorHandler().getUsersParent(oldWorld);
+		newWorld = plugin.getMirrorHandler().getUsersParent(newWorld);
+
+		return ! oldWorld.equalsIgnoreCase(newWorld);
+	}
+
 	public final User moveWorld(Player player, World oldWorld, World newWorld)
 	{
 		return moveWorld(player, oldWorld.getName(), newWorld.getName());

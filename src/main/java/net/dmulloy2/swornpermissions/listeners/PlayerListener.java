@@ -39,9 +39,12 @@ public class PlayerListener implements Listener
 	public void onPlayerChangedWorld(PlayerChangedWorldEvent event)
 	{
 		Player player = event.getPlayer();
+		User user = plugin.getPermissionHandler().getUser(player);
 
-		User user = plugin.getPermissionHandler().moveWorld(player, event.getFrom(), player.getWorld());
-		user.updatePermissions(true);
+		if (plugin.getPermissionHandler().areUsersDifferent(event.getFrom(), player.getWorld()))
+			user = plugin.getPermissionHandler().moveWorld(player, event.getFrom(), player.getWorld());
+
+		user.updatePermissions(false);
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)
