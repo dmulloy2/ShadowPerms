@@ -216,7 +216,7 @@ public class User extends Permissible
 
 		for (String groupPerm : new ArrayList<String>(groupPerms))
 		{
-			boolean value = groupPerm.startsWith("-");
+			boolean value = ! groupPerm.startsWith("-");
 			permissions.put(! value ? groupPerm.substring(1) : groupPerm, value);
 		}
 
@@ -225,7 +225,7 @@ public class User extends Permissible
 
 		for (String userPerm : new ArrayList<String>(userPerms))
 		{
-			boolean value = userPerm.startsWith("-");
+			boolean value = ! userPerm.startsWith("-");
 			permissions.put(! value ? userPerm.substring(1) : userPerm, value);
 		}
 
