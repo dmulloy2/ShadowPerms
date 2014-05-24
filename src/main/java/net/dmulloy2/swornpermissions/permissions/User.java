@@ -212,7 +212,7 @@ public class User extends Permissible
 		Map<String, Boolean> permissions = new HashMap<String, Boolean>();
 
 		// Add group perms first
-		List<String> groupPerms = sort(getGroupNodes());
+		List<String> groupPerms = sort(new HashSet<String>(getGroupNodes()));
 
 		for (String groupPerm : new ArrayList<String>(groupPerms))
 		{
@@ -221,7 +221,7 @@ public class User extends Permissible
 		}
 
 		// Add user perms last, since they take priority
-		List<String> userPerms = sort(permissionNodes);
+		List<String> userPerms = sort(new HashSet<String>(permissionNodes));
 
 		for (String userPerm : new ArrayList<String>(userPerms))
 		{
