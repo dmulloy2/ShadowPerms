@@ -6,10 +6,9 @@ package net.dmulloy2.swornpermissions.handlers;
 import net.dmulloy2.swornpermissions.SwornPermissions;
 import net.dmulloy2.swornpermissions.permissions.User;
 import net.dmulloy2.swornpermissions.types.Permission;
-import net.dmulloy2.swornpermissions.types.RainbowColors;
 import net.dmulloy2.swornpermissions.types.Reloadable;
+import net.dmulloy2.swornpermissions.util.FormatUtil;
 
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 /**
@@ -70,7 +69,7 @@ public class ChatHandler implements Reloadable
 		format = format.replace("{message}", message);
 
 		// Format colors
-		format = replaceColors(format);
+		format = FormatUtil.replaceColors(format);
 		return format;
 	}
 
@@ -81,50 +80,6 @@ public class ChatHandler implements Reloadable
 			return (String) user.getOption("chatFormat");
 
 		return chatFormat;
-	}
-
-	/**
-	 * Replaces color codes in a given string. Includes rainbow.
-	 *
-	 * @param message
-	 *        - Message to replace color codes in
-	 * @return Formatted chat message
-	 */
-	public final String replaceColors(String message)
-	{
-		// Rainbow
-		message = message.replaceAll("(&([zZ]))", "&z");
-		if (message.contains("&z"))
-		{
-			StringBuilder ret = new StringBuilder();
-			String[] ss = message.split("&z");
-			ret.append(ss[0]);
-			ss[0] = null;
-
-			for (String s : ss)
-			{
-				if (s != null)
-				{
-					int index = 0;
-					while (index < s.length() && s.charAt(index) != '&')
-					{
-						ret.append("&" + RainbowColors.getColor(index % RainbowColors.values().length));
-						ret.append(s.charAt(index));
-						index++;
-					}
-
-					if (index < s.length())
-					{
-						ret.append(s.substring(index));
-					}
-				}
-			}
-
-			message = ret.toString();
-		}
-
-		// Format the colors
-		return ChatColor.translateAlternateColorCodes('&', message);
 	}
 
 	@Override

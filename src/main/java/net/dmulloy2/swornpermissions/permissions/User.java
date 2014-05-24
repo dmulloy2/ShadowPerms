@@ -209,24 +209,33 @@ public class User extends Permissible
 	@Override
 	protected final List<String> sortPermissions()
 	{
-		Map<String, Boolean> permissions = new HashMap<String, Boolean>();
+		Map<String, Boolean> permissions = new LinkedHashMap<String, Boolean>();
 
-		// Add group perms first
-		List<String> groupPerms = sort(new HashSet<String>(getGroupNodes()));
+		// Add subgroup nodes first
+		List<String> subgroupPerms = sort(getSubgroupNodes());
+
+		for (String subgroupPerm : subgroupPerms)
+		{
+			boolean value = ! subgroupPerm.startsWith("-");
+			permissions.put(value ? subgroupPerm : subgroupPerm.substring(1), value);
+		}
+
+		// Then add main group nodes
+		List<String> groupPerms = sort(getGroupNodes());
 
 		for (String groupPerm : new ArrayList<String>(groupPerms))
 		{
 			boolean value = ! groupPerm.startsWith("-");
-			permissions.put(! value ? groupPerm.substring(1) : groupPerm, value);
+			permissions.put(value ? groupPerm : groupPerm.substring(1), value);
 		}
 
-		// Add user perms last, since they take priority
-		List<String> userPerms = sort(new HashSet<String>(permissionNodes));
+		// Finally user-specific nodes
+		List<String> userPerms = sort(new HashSet<String>(getPermissionNodes()));
 
 		for (String userPerm : new ArrayList<String>(userPerms))
 		{
 			boolean value = ! userPerm.startsWith("-");
-			permissions.put(! value ? userPerm.substring(1) : userPerm, value);
+			permissions.put(value ? userPerm : userPerm.substring(1), value);
 		}
 
 		// Add them all to the main list
@@ -235,7 +244,7 @@ public class User extends Permissible
 		for (String node : permissions.keySet())
 		{
 			boolean value = permissions.get(node);
-			ret.add(! value ? "-" + node : node);
+			ret.add(value ? node : "-" + node);
 		}
 
 		// Return
@@ -408,28 +417,33 @@ public class User extends Permissible
 	{
 		Set<String> ret = new HashSet<String>();
 
-		// Add group nodes
-		ret.addAll(getGroupNodes());
+		// Add subgroup nodes
+		ret.addAll(getSubgroupNodes());
 
-		// Add User-specific permissions last
+		// Add group nodes
+		ret.addAll(getSubgroupNodes());
+
+		// Add user-specific nodes
 		ret.addAll(permissionNodes);
 
 		return ret;
 	}
 
-	public Set<String> getGroupNodes()
+	// Main group nodes
+	private final Set<String> getGroupNodes()
 	{
-		// Add the nodes in reverse order... Seems to work better
+		Set<String> ret = new HashSet<String>();
+		ret.addAll(group.getAllPermissionNodes());
+		return ret;
+	}
+
+	// Subgroup nodes
+	private final Set<String> getSubgroupNodes()
+	{
 		Set<String> ret = new HashSet<String>();
 
-		// Add subgroup nodes first
 		for (Group subGroup : subGroups)
-		{
 			ret.addAll(subGroup.getAllPermissionNodes());
-		}
-
-		// Then add main group nodes
-		ret.addAll(group.getAllPermissionNodes());
 
 		return ret;
 	}

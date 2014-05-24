@@ -5,6 +5,7 @@ package net.dmulloy2.swornpermissions.permissions;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -322,14 +323,9 @@ public abstract class Permissible implements ConfigurationSerializable
 		return name;
 	}
 
-	public Map<String, Boolean> getPermissionMap()
-	{
-		return permissions;
-	}
-
 	public Set<String> getPermissionNodes()
 	{
-		return permissionNodes;
+		return new HashSet<String>(permissionNodes);
 	}
 
 	public Set<String> getAllPermissionNodes()
@@ -339,7 +335,7 @@ public abstract class Permissible implements ConfigurationSerializable
 
 	public Map<String, Object> getOptions()
 	{
-		return options;
+		return new HashMap<String, Object>(options);
 	}
 
 	public Object getOption(String key)

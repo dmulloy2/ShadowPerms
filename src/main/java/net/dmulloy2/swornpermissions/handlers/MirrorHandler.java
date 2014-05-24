@@ -6,7 +6,6 @@ package net.dmulloy2.swornpermissions.handlers;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import net.dmulloy2.swornpermissions.SwornPermissions;
 import net.dmulloy2.swornpermissions.types.Reloadable;
@@ -62,10 +61,11 @@ public class MirrorHandler implements Reloadable
 
 		world = world.toLowerCase();
 
-		for (Entry<String, List<String>> entry : userMirrors.entrySet())
+		for (String parent : userMirrors.keySet())
 		{
-			if (entry.getValue().contains(world) || entry.getValue().contains("*"))
-				return entry.getKey();
+			List<String> children = userMirrors.get(parent);
+			if (children.contains("*") || children.contains(world))
+				return parent;
 		}
 
 		return world;
@@ -129,10 +129,11 @@ public class MirrorHandler implements Reloadable
 
 		world = world.toLowerCase();
 
-		for (Entry<String, List<String>> entry : groupMirrors.entrySet())
+		for (String parent : groupMirrors.keySet())
 		{
-			if (entry.getValue().contains(world) || entry.getValue().contains("*"))
-				return entry.getKey();
+			List<String> children = groupMirrors.get(parent);
+			if (children.contains("*") || children.contains(world))
+				return parent;
 		}
 
 		return world;
@@ -181,12 +182,12 @@ public class MirrorHandler implements Reloadable
 		if (config.isSet("userMirrors"))
 		{
 			Map<String, Object> values = config.getConfigurationSection("userMirrors").getValues(false);
-			for (Entry<String, Object> entry : values.entrySet())
+			for (String parent : values.keySet())
 			{
-				String parent = entry.getKey().toLowerCase();
+				parent = parent.toLowerCase();
 
 				List<String> children = new ArrayList<String>();
-				for (String child : (List<String>) entry.getValue())
+				for (String child : (List<String>) values.get(parent))
 					children.add(child.toLowerCase());
 
 				// Default world
@@ -217,12 +218,12 @@ public class MirrorHandler implements Reloadable
 		if (config.isSet("groupMirrors"))
 		{
 			Map<String, Object> values = config.getConfigurationSection("groupMirrors").getValues(false);
-			for (Entry<String, Object> entry : values.entrySet())
+			for (String parent : values.keySet())
 			{
-				String parent = entry.getKey().toLowerCase();
+				parent = parent.toLowerCase();
 
 				List<String> children = new ArrayList<String>();
-				for (String child : (List<String>) entry.getValue())
+				for (String child : (List<String>) values.get(parent))
 					children.add(child.toLowerCase());
 
 				if (children.contains("undefined_worlds"))

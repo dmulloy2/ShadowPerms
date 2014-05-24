@@ -1,5 +1,7 @@
 package net.dmulloy2.swornpermissions.commands;
 
+import org.bukkit.ChatColor;
+
 import net.dmulloy2.swornpermissions.SwornPermissions;
 import net.dmulloy2.swornpermissions.permissions.User;
 import net.dmulloy2.swornpermissions.types.Permission;
@@ -32,7 +34,8 @@ public class CmdPrefix extends SwornPermissionsCommand
 		String prefix = FormatUtil.join(" ", args);
 		prefix = prefix.replaceAll("\"", "");
 
-		String argsCheck = prefix.replaceAll("(?i)&([a-f0-9])", "").replaceAll("&", "").replaceAll("\\[", "").replaceAll("\\]", "");
+		String argsCheck = ChatColor.stripColor(FormatUtil.replaceColors(prefix));
+		argsCheck = argsCheck.replaceAll("\\[", "").replaceAll("\\]", "");
 
 		// Perform and enforce args check
 		int maxLength = plugin.getConfig().getInt("prefix.maxLength");
@@ -49,6 +52,6 @@ public class CmdPrefix extends SwornPermissionsCommand
 
 		user.setPrefix(prefix);
 
-		sendpMessage("&eYour prefix is now \"{0}&e\"", plugin.getChatHandler().replaceColors(prefix));
+		sendpMessage("&eYour prefix is now \"{0}&e\"", FormatUtil.replaceColors(prefix));
 	}
 }

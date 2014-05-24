@@ -11,7 +11,6 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.logging.Level;
 
 import lombok.Getter;
@@ -310,9 +309,8 @@ public class DataHandler implements Reloadable
 
 		FileConfiguration config = getUserConfig(world);
 		Map<String, Object> values = config.getConfigurationSection("users").getValues(false);
-		for (Entry<String, Object> entry : values.entrySet())
+		for (String id : values.keySet())
 		{
-			String id = entry.getKey();
 			if (plugin.getPermissionHandler().isRegistered(id, world))
 				continue;
 

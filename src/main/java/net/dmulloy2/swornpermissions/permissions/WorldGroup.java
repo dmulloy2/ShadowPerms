@@ -6,6 +6,8 @@ package net.dmulloy2.swornpermissions.permissions;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -83,18 +85,62 @@ public class WorldGroup extends Group
 	{
 		Set<String> ret = new HashSet<String>();
 
+		// Add parent nodes
+		ret.addAll(getParentNodes());
+
+		// Add group nodes
+		ret.addAll(permissionNodes);
+
+		return ret;
+	}
+
+	private final Set<String> getParentNodes()
+	{
+		Set<String> ret = new HashSet<String>();
+
 		// Add all nodes from parent groups
 		if (parents != null)
 		{
 			for (Group parent : parentGroups)
-			{
 				ret.addAll(parent.getAllPermissionNodes());
-			}
 		}
 
-		// Add all nodes for ths group
-		ret.addAll(permissionNodes);
+		return ret;
+	}
 
+	@Override
+	public List<String> sortPermissions()
+	{
+		Map<String, Boolean> permissions = new LinkedHashMap<String, Boolean>();
+
+		// Add parent nodes first
+		List<String> parentNodes = sort(getParentNodes());
+
+		for (String parentNode : parentNodes)
+		{
+			boolean value = ! parentNode.startsWith("-");
+			permissions.put(value ? parentNode : parentNode.substring(1), value);
+		}
+
+		// Add group-specific nodes last
+		List<String> groupNodes = sort(getPermissionNodes());
+
+		for (String groupNode : groupNodes)
+		{
+			boolean value = ! groupNode.startsWith("-");
+			permissions.put(value ? groupNode : groupNode.substring(1), value);
+		}
+
+		// Add them all to the main list
+		List<String> ret = new ArrayList<String>();
+
+		for (String node : permissions.keySet())
+		{
+			boolean value = permissions.get(node);
+			ret.add(value ? node : "-" + node);
+		}
+
+		// Return
 		return ret;
 	}
 

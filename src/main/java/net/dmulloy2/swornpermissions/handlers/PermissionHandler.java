@@ -55,12 +55,12 @@ public class PermissionHandler implements Reloadable
 
 	public final User getUser(String name)
 	{
-		return getUser(getDefaultWorld(), name);
-	}
+		// Attempt to match the player
+		Player player = Util.matchPlayer(name);
+		if (player != null)
+			return getUser(player);
 
-	public final User getUser(Player player)
-	{
-		return getUser(player.getWorld(), player);
+		return getUser(getDefaultWorld(), name);
 	}
 
 	public final User getUser(World world, String name)
@@ -71,6 +71,11 @@ public class PermissionHandler implements Reloadable
 		return getUser(world.getName(), name);
 	}
 
+	public final User getUser(Player player)
+	{
+		return getUser(player.getWorld(), player);
+	}
+
 	public final User getUser(World world, Player player)
 	{
 		if (! isValidPlayer(player))
@@ -79,7 +84,7 @@ public class PermissionHandler implements Reloadable
 		if (world == null)
 			world = getDefaultWorld();
 
-		return getUser(world.getName(), player.getName());
+		return getUser(world.getName(), player.getUniqueId().toString());
 	}
 
 	// Root get user method... All getUser calls should be directed here
@@ -89,15 +94,15 @@ public class PermissionHandler implements Reloadable
 			world = getDefaultWorld().getName();
 
 		world = plugin.getMirrorHandler().getUsersParent(world);
-		world = world.toLowerCase();
 
 		// Attempt to grab from online users
 		for (User user : users.get(world))
 		{
-			if (user.getName().equalsIgnoreCase(name) || user.getUniqueId().equals(name))
+			if (user.getUniqueId().equals(name) || user.getName().equalsIgnoreCase(name))
 				return user;
 		}
 
+		// Attempt to load the user
 		User user = plugin.getDataHandler().loadUser(world, name);
 		if (user == null)
 			return null;
@@ -243,7 +248,6 @@ public class PermissionHandler implements Reloadable
 			return serverGroups.get(name);
 
 		world = plugin.getMirrorHandler().getUsersParent(world);
-		world = world.toLowerCase();
 
 		return worldGroups.get(world).get(name);
 	}
@@ -281,8 +285,10 @@ public class PermissionHandler implements Reloadable
 
 	public WorldGroup createWorldGroup(String name, World world)
 	{
-		WorldGroup group = new WorldGroup(plugin, name, world.getName());
-		worldGroups.get(world.getName().toLowerCase()).put(name.toLowerCase(), group);
+		String worldName = plugin.getMirrorHandler().getGroupsParent(world);
+
+		WorldGroup group = new WorldGroup(plugin, name, worldName);
+		worldGroups.get(worldName).put(name.toLowerCase(), group);
 		return group;
 	}
 
@@ -393,34 +399,35 @@ public class PermissionHandler implements Reloadable
 		if (fc.isSet("groups"))
 		{
 			Map<String, Object> values = fc.getConfigurationSection("groups").getValues(false);
-			for (Entry<String, Object> entry : values.entrySet())
+			for (String groupName : values.keySet())
 			{
 				try
 				{
-					String groupName = entry.getKey();
+					MemorySection section = (MemorySection) values.get(groupName);
+
 					if (! groupName.startsWith("s:"))
 						groupName = "s:" + groupName;
 
-					MemorySection section = (MemorySection) entry.getValue();
 					ServerGroup group = new ServerGroup(plugin, groupName, section);
 					serverGroups.put(groupName.toLowerCase(), group);
 				}
-				catch (Exception e)
+				catch (Throwable ex)
 				{
-					plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(e, "loading server group " + entry.getKey()));
+					plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(ex, "loading server group " + groupName));
 				}
 			}
 		}
 
-		for (Entry<String, FileConfiguration> entry : data.getGroupConfigs().entrySet())
+		for (String world : data.getGroupConfigs().keySet())
 		{
-			String world = entry.getKey();
-			if (! worldGroups.containsKey(world.toLowerCase()))
+			world = world.toLowerCase();
+
+			if (! worldGroups.containsKey(world))
 			{
-				worldGroups.put(world.toLowerCase(), new HashMap<String, WorldGroup>());
+				worldGroups.put(world, new HashMap<String, WorldGroup>());
 			}
 
-			fc = entry.getValue();
+			fc = data.getGroupConfigs().get(world);
 			if (! fc.isSet("groups"))
 			{
 				plugin.getLogHandler().debug("Found 0 groups to load from world {0}!", world);
@@ -429,26 +436,25 @@ public class PermissionHandler implements Reloadable
 
 			// Load groups
 			Map<String, Object> values = fc.getConfigurationSection("groups").getValues(false);
-			for (Entry<String, Object> entry1 : values.entrySet())
+			for (String groupName : values.keySet())
 			{
 				try
 				{
-					String groupName = entry1.getKey();
-					MemorySection section = (MemorySection) entry1.getValue();
+					MemorySection section = (MemorySection) values.get(groupName);
 					WorldGroup group = new WorldGroup(plugin, groupName, world, section);
-					worldGroups.get(world.toLowerCase()).put(groupName.toLowerCase(), group);
+					worldGroups.get(world).put(groupName.toLowerCase(), group);
 
 					if (group.isDefaultGroup())
-						defaultGroups.put(world.toLowerCase(), group);
+						defaultGroups.put(world, group);
 				}
-				catch (Exception e)
+				catch (Throwable ex)
 				{
-					plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(e, "loading world group " + entry1.getKey()));
+					plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(ex, "loading world group " + groupName));
 				}
 			}
 
 			// Update groups
-			for (WorldGroup group : worldGroups.get(world.toLowerCase()).values())
+			for (WorldGroup group : worldGroups.get(world).values())
 			{
 				group.loadParentGroups();
 				group.update();
