@@ -3,18 +3,18 @@
  */
 package net.dmulloy2.swornpermissions.handlers;
 
-import java.util.List;
-import java.util.Map.Entry;
-
 import net.dmulloy2.swornpermissions.SwornPermissions;
+import net.dmulloy2.swornpermissions.permissions.User;
 import net.dmulloy2.swornpermissions.types.MyMaterial;
 import net.dmulloy2.swornpermissions.types.Reloadable;
 import net.dmulloy2.swornpermissions.util.FormatUtil;
 
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -28,14 +28,9 @@ import org.bukkit.inventory.PlayerInventory;
 
 public class AntiItemHandler implements Listener, Reloadable
 {
-	private List<MyMaterial> blacklistRightClickItems;
-	private List<MyMaterial> blacklistLeftClickItems;
-	private List<MyMaterial> blacklistItems;
-
 	private int maxEnchantmentLevel;
-	private boolean blockGodItems;
-	
-	@SuppressWarnings("unused")
+	private boolean regulateEnchantments;
+
 	private final SwornPermissions plugin;
 	public AntiItemHandler(SwornPermissions plugin)
 	{
@@ -43,158 +38,184 @@ public class AntiItemHandler implements Listener, Reloadable
 		this.reload();
 	}
 
-	@EventHandler
-	public void onPlayerClickEvent(PlayerInteractEvent e)
+	@EventHandler(priority = EventPriority.LOW)
+	public void onPlayerInteract(PlayerInteractEvent event)
 	{
-		switch (e.getAction())
+		Player player = event.getPlayer();
+		User user = plugin.getPermissionHandler().getUser(player);
+
+		switch (event.getAction())
 		{
 			case RIGHT_CLICK_BLOCK:
 			case RIGHT_CLICK_AIR:
-				if (e.getItem() != null)
+			{
+				ItemStack item = event.getItem();
+				if (item != null)
 				{
-					ItemStack item = e.getItem();
-
-					if (blacklistRightClickItems.contains(new MyMaterial(item.getType())))
+					MyMaterial mat = new MyMaterial(item.getType());
+					if (user.hasPermissionNode("antiitem.rightclick." + mat.toString()))
 					{
-						e.setCancelled(true);
+						event.setCancelled(true);
 					}
 
-					if (blockGodItems && ! item.getEnchantments().isEmpty())
+					if (regulateEnchantments && ! item.getEnchantments().isEmpty())
 					{
-						for (Entry<Enchantment, Integer> enchantment : item.getEnchantments().entrySet())
+						for (Enchantment ench : item.getEnchantments().keySet())
 						{
-							if (enchantment.getValue() > maxEnchantmentLevel)
+							int level = item.getEnchantmentLevel(ench);
+							if (level > maxEnchantmentLevel)
 							{
-								item.removeEnchantment(enchantment.getKey());
-								blockedGodItem(e.getPlayer(), enchantment.getKey(), enchantment.getValue(), item.getType(), true);
+								item.removeEnchantment(ench);
+								regulatedEnchantment(player, ench, level, item.getType(), "high");
 							}
-							else if (enchantment.getValue() < 0)
+							else if (level < 0)
 							{
-								item.removeEnchantment(enchantment.getKey());
-								blockedGodItem(e.getPlayer(), enchantment.getKey(), enchantment.getValue(), item.getType(), false);
+								item.removeEnchantment(ench);
+								regulatedEnchantment(player, ench, level, item.getType(), "low");
 							}
 						}
 					}
 				}
 
-				if (e.getClickedBlock() != null)
+				Block clicked = event.getClickedBlock();
+				if (clicked != null)
 				{
-					if (blacklistItems.contains(new MyMaterial(e.getClickedBlock().getType(), e.getClickedBlock().getState().getData())))
+					MyMaterial mat = new MyMaterial(clicked.getType(), clicked.getState().getData());
+					if (user.hasPermissionNode("antiitem.item." + mat.toString()))
 					{
-						e.getClickedBlock().setType(Material.AIR);
+						event.setCancelled(true);
 					}
 				}
 
 				break;
+			}
 			case LEFT_CLICK_AIR:
 			case LEFT_CLICK_BLOCK:
-				if (e.hasItem())
+			{
+				ItemStack item = event.getItem();
+				if (item != null)
 				{
-					if (blacklistLeftClickItems.contains(new MyMaterial(e.getItem().getType())))
+					MyMaterial mat = new MyMaterial(item.getType());
+					if (user.hasPermissionNode("antiitem.leftclick." + mat.toString()))
 					{
-						e.setCancelled(true);
+						event.setCancelled(true);
 					}
 				}
 
 				break;
+			}
 			default:
 				break;
 		}
 	}
 
-	@EventHandler
-	public void onPlayerPlaceBlock(BlockPlaceEvent e)
+	@EventHandler(priority = EventPriority.LOW)
+	public void onBlockPlace(BlockPlaceEvent event)
 	{
-		if (e.getBlockPlaced() != null)
+		Player player = event.getPlayer();
+		if (player == null)
+			return;
+
+		User user = plugin.getPermissionHandler().getUser(player);
+
+		Block placed = event.getBlockPlaced();
+		if (placed != null)
 		{
-			if (blacklistItems.contains(new MyMaterial(e.getBlockPlaced().getType(), e.getBlockPlaced().getState().getData())))
+			MyMaterial mat = new MyMaterial(placed.getType(), placed.getState().getData());
+			if (user.hasPermissionNode("antiitem.place." + mat.toString()))
 			{
-				e.setCancelled(true);
+				event.setCancelled(true);
 			}
 		}
 	}
 
-	@EventHandler
-	public void onInventoryCloseEvent(InventoryCloseEvent e)
+	@EventHandler(priority = EventPriority.LOW)
+	public void onInventoryClose(InventoryCloseEvent event)
 	{
-		if (e.getPlayer() instanceof Player)
+		if (event.getPlayer() instanceof Player)
 		{
-			Player player = (Player) e.getPlayer();
-			PlayerInventory i = player.getInventory();
+			Player player = (Player) event.getPlayer();
+			PlayerInventory inv = player.getInventory();
 
-			ItemStack helmet = i.getHelmet();
-			ItemStack chest = i.getChestplate();
-			ItemStack legs = i.getLeggings();
-			ItemStack boots = i.getBoots();
+			User user = plugin.getPermissionHandler().getUser(player);
 
-			if (helmet != null && blacklistItems.contains(new MyMaterial(helmet.getType())))
+			ItemStack helmet = inv.getHelmet();
+			if (helmet != null && user.hasPermissionNode("antiitem.item." + new MyMaterial(helmet.getType()).toString()))
 			{
-				blockedRegularItem(player, helmet.getType());
-				i.setHelmet(null);
-			}
-			if (chest != null && blacklistItems.contains(new MyMaterial(chest.getType())))
-			{
-				blockedRegularItem(player, chest.getType());
-				i.setChestplate(null);
-			}
-			if (legs != null && blacklistItems.contains(new MyMaterial(legs.getType())))
-			{
-				blockedRegularItem(player, legs.getType());
-				i.setLeggings(null);
-			}
-			if (boots != null && blacklistItems.contains(new MyMaterial(boots.getType())))
-			{
-				blockedRegularItem(player, boots.getType());
-				i.setBoots(null);
+				blockedItem(player, helmet.getType());
+				inv.setHelmet(null);
 			}
 
-			for (ItemStack item : i.getContents())
+			ItemStack chest = inv.getChestplate();
+			if (chest != null && user.hasPermissionNode("antiitem.item." + new MyMaterial(chest.getType())))
+			{
+				blockedItem(player, chest.getType());
+				inv.setChestplate(null);
+			}
+
+			ItemStack legs = inv.getLeggings();
+			if (legs != null && user.hasPermissionNode("antiitem.item." + new MyMaterial(legs.getType())))
+			{
+				blockedItem(player, legs.getType());
+				inv.setLeggings(null);
+			}
+
+			ItemStack boots = inv.getBoots();
+			if (boots != null && user.hasPermissionNode("antiitem.item." + new MyMaterial(boots.getType())))
+			{
+				blockedItem(player, boots.getType());
+				inv.setBoots(null);
+			}
+
+			for (ItemStack item : inv.getContents())
 			{
 				if (item != null && item.getType() != Material.AIR)
 				{
-					if (blacklistItems.contains(new MyMaterial(item.getType(), item.getData())))
+					if (user.hasPermissionNode("antiitem.item." + new MyMaterial(item.getType(), item.getData())))
 					{
-						blockedRegularItem(player, item.getType());
-						i.remove(item);
+						blockedItem(player, item.getType());
+						inv.remove(item);
 						continue;
 					}
 
-					if (blockGodItems && ! item.getEnchantments().isEmpty())
+					if (regulateEnchantments && ! item.getEnchantments().isEmpty())
 					{
-						for (Entry<Enchantment, Integer> enchantment : item.getEnchantments().entrySet())
+						for (Enchantment ench : item.getEnchantments().keySet())
 						{
-							if (enchantment.getValue() > maxEnchantmentLevel)
+							int level = item.getEnchantmentLevel(ench);
+							if (level > maxEnchantmentLevel)
 							{
-								item.removeEnchantment(enchantment.getKey());
-								blockedGodItem(player, enchantment.getKey(), enchantment.getValue(), item.getType(), true);
+								item.removeEnchantment(ench);
+								regulatedEnchantment(player, ench, level, item.getType(), "high");
 							}
-							else if (enchantment.getValue() < 0)
+							else if (level <= 0)
 							{
-								item.removeEnchantment(enchantment.getKey());
-								blockedGodItem(player, enchantment.getKey(), enchantment.getValue(), item.getType(), false);
+								item.removeEnchantment(ench);
+								regulatedEnchantment(player, ench, level, item.getType(), "low");
 							}
 						}
 					}
 				}
 			}
 
-			for (ItemStack armor : i.getArmorContents())
+			for (ItemStack armor : inv.getArmorContents())
 			{
 				if (armor != null && armor.getType() != Material.AIR)
 				{
-					if (blockGodItems && ! armor.getEnchantments().isEmpty())
+					if (regulateEnchantments && ! armor.getEnchantments().isEmpty())
 					{
-						for (Entry<Enchantment, Integer> enchantment : armor.getEnchantments().entrySet())
+						for (Enchantment ench : armor.getEnchantments().keySet())
 						{
-							if (enchantment.getValue() > maxEnchantmentLevel)
+							int level = armor.getEnchantmentLevel(ench);
+							if (level > maxEnchantmentLevel)
 							{
-								armor.removeEnchantment(enchantment.getKey());
-								blockedGodItem(player, enchantment.getKey(), enchantment.getValue(), armor.getType(), true);
+								armor.removeEnchantment(ench);
+								regulatedEnchantment(player, ench, level, armor.getType(), "high");
 							}
-							else if (enchantment.getValue() < 0)
+							else if (level <= 0)
 							{
-								armor.removeEnchantment(enchantment.getKey());
-								blockedGodItem(player, enchantment.getKey(), enchantment.getValue(), armor.getType(), false);
+								armor.removeEnchantment(ench);
+								regulatedEnchantment(player, ench, level, armor.getType(), "low");
 							}
 						}
 					}
@@ -203,23 +224,22 @@ public class AntiItemHandler implements Listener, Reloadable
 		}
 	}
 
-	public void blockedGodItem(Player p, Enchantment ench, int level, Material mat, boolean high)
+	private final void regulatedEnchantment(Player player, Enchantment ench, int level, Material mat, String why)
 	{
-		p.sendMessage(FormatUtil.format(
-				"&4Enchantment &f{0} &4with level &f{1} &4has been removed from item with type &f{2} &4because its level was too &f{3}&4.",
-				FormatUtil.getFriendlyName(ench.getName()), level, FormatUtil.getFriendlyName(mat), high ? "high" : "low"));
+		player.sendMessage(FormatUtil.format("&4Enchantment &f{0}&4:&f{1} &4has been removed from &f{2} &4because it was too &f{3}&4.",
+				FormatUtil.getFriendlyName(ench), level, FormatUtil.getFriendlyName(mat), why));
 	}
 
-	public void blockedRegularItem(Player player, Material mat)
+	private final void blockedItem(Player player, Material mat)
 	{
-		player.sendMessage(FormatUtil.format("&4Item with type: &f{0} &4is not allowed and has been removed from your inventory.",
+		player.sendMessage(FormatUtil.format("&4Item &f{0} &4is not allowed and has been removed from your inventory.",
 				FormatUtil.getFriendlyName(mat)));
 	}
 
 	@Override
 	public void reload()
 	{
-		// TODO Auto-generated method stub
-		
+		this.regulateEnchantments = plugin.getConfig().getBoolean("antiItem.regulateEnchantments", false);
+		this.maxEnchantmentLevel = plugin.getConfig().getInt("antiItem.maxEnchantmentLevel", 25);
 	}
 }

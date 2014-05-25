@@ -45,6 +45,10 @@ public class CmdSuffix extends SwornPermissionsCommand
 			return;
 		}
 
+		// Trim the string
+		suffix = suffix.trim();
+
+		// Apply configuration settings
 		if (plugin.getConfig().getBoolean("suffix.forceReset"))
 			suffix = suffix + "&r";
 		if (plugin.getConfig().getBoolean("suffix.forceSpace"))

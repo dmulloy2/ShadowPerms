@@ -5,6 +5,7 @@ package net.dmulloy2.swornpermissions.permissions;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import net.dmulloy2.swornpermissions.SwornPermissions;
@@ -45,6 +46,14 @@ public class ServerGroup extends Group
 	public boolean shouldBeSaved()
 	{
 		return true;
+	}
+
+	// ---- Permissions
+
+	@Override
+	public List<String> sortPermissions()
+	{
+		return sort(getAllPermissionNodes());
 	}
 
 	// ---- Parent Groups (Server Groups cannot have parents)

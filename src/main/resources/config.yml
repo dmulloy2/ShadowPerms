@@ -1,5 +1,23 @@
-# SwornPermissions Configuration
-# By dmulloy2
+########################################################################################
+#+------------------------------------------------------------------------------------+#
+#|                                                                                    |#
+#|                           SwornPermissions Configuration                           |#
+#|                                    By: dmulloy2                                    |#
+#|                                                                                    |#
+#+------------------------------------------------------------------------------------+#
+########################################################################################
+
+# This is the main configuration file for SwornPermissions
+# It follows standard YAML procedure
+# If there is an error on startup, make sure the config matches up with this:
+# https://github.com/dmulloy2/SwornPermissions/blob/master/src/main/resources/config.yml
+# Input: boolean - true/false, String - "text", integer - number
+
+##############################################
+#+------------------------------------------+#
+#|           Global Configuration           |#
+#+------------------------------------------+#
+##############################################
 
 # Auto Save - how often data files are saved (in minutes)
 # enabled - boolean
@@ -13,6 +31,16 @@ autoSave:
 # input - boolean
 allowCommandBlocks: false
 
+# Debug
+# input - boolean
+debug: false
+
+##############################################
+#+------------------------------------------+#
+#|                 Mirrors                  |#
+#+------------------------------------------+#
+##############################################
+
 # User Mirrors
 # Worlds in this list will have their user files mirrored.
 # If '*' is an element, per-world user files will be disabled,
@@ -24,7 +52,6 @@ userMirrors:
     - "world"
     - "world_nether"
     - "world_the_end"
-    - "undefined_worlds"
 
 # Group Mirrors - save as above, just with groups.
 groupMirrors:
@@ -32,7 +59,12 @@ groupMirrors:
     - "world"
     - "world_nether"
     - "world_the_end"
-    - "undefined_worlds"
+
+##############################################
+#+------------------------------------------+#
+#|                  Chat                    |#
+#+------------------------------------------+#
+##############################################
 
 # Format Chat
 # Whether or not to format chat with SwornChat
@@ -48,10 +80,6 @@ formatChat: true
 # input - string
 chatFormat: '{prefix}{name}{suffix}: {message}'
 
-# Debug
-# input - boolean
-debug: false
-
 # Settings for /prefix and /suffix
 # maxLength (int) - Maximum length
 # forceReset (boolean) - Whether or not to force an '&r' after the prefix or suffix
@@ -66,3 +94,16 @@ suffix:
   maxLength: 10
   forceReset: true
   forceSpace: false
+
+##############################################
+#+------------------------------------------+#
+#|                AntiItem                  |#
+#+------------------------------------------+#
+##############################################
+
+# Anti Item
+# regulateEnchantments (boolean) - Disallow items with enchantments too high or low
+# maxEnchantmentLevel (int) - Max enchantment level for enchantment regulation
+antiItem:
+  regulateEnchantments: false
+  maxEnchantmentLevel: 25

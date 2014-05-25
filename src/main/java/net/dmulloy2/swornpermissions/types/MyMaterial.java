@@ -97,9 +97,10 @@ public class MyMaterial
 	}
 
 	@Override
+	@SuppressWarnings("deprecation")
 	public String toString()
 	{
-		return mat.toString() + ":" + dat;
+		return mat.toString().toLowerCase() + (dat.getData() != 0 ? ":" + dat.getData() : "");
 	}
 
 	@SuppressWarnings("deprecation") // Material Data

@@ -25,6 +25,7 @@ import org.bukkit.permissions.Permission;
 public abstract class Permissible implements ConfigurationSerializable
 {
 	protected Set<String> permissionNodes;
+	protected List<String> sortedPermissions;
 	protected Map<String, Boolean> permissions;
 
 	protected Map<String, Object> options;
@@ -40,6 +41,7 @@ public abstract class Permissible implements ConfigurationSerializable
 		this.name = name;
 		this.plugin = plugin;
 		this.permissionNodes = new HashSet<String>();
+		this.sortedPermissions = new ArrayList<String>();
 		this.permissions = new LinkedHashMap<String, Boolean>();
 		this.options = new LinkedHashMap<String, Object>();
 		this.prefix = "";
@@ -121,6 +123,20 @@ public abstract class Permissible implements ConfigurationSerializable
 		return false;
 	}
 
+	/**
+	 * This method returns whether or not a player has a specific node.
+	 * <p>
+	 * Note: This does not take into account wildcards or children
+	 * 
+	 * @param node
+	 *        - Node to check for
+	 * @see {@link Permissible#hasPermission(String)}
+	 */
+	public final boolean hasPermissionNode(String node)
+	{
+		return sortedPermissions.contains(node);
+	}
+
 	public final String getMatchingPermission(String node)
 	{
 		node = node.toLowerCase();
@@ -149,6 +165,9 @@ public abstract class Permissible implements ConfigurationSerializable
 		// Sort the nodes
 		List<String> permissionNodes = sortPermissions();
 
+		// Update sorted permissions list
+		this.sortedPermissions = permissionNodes;
+
 		// Get matching permissions
 		permissionNodes = getMatchingNodes(permissionNodes);
 
@@ -168,10 +187,7 @@ public abstract class Permissible implements ConfigurationSerializable
 		this.permissions = permissions;
 	}
 
-	protected List<String> sortPermissions()
-	{
-		return sort(getAllPermissionNodes());
-	}
+	protected abstract List<String> sortPermissions();
 
 	// Order in this method is extremely important. Negated nodes need to be
 	// last in the list, so they can replace any conflicting positive nodes.
