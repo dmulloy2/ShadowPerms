@@ -29,7 +29,7 @@ public class CmdAddPermission extends UserCommand
 		String permission = args[0];
 		if (user.hasPermission(permission))
 		{
-			sendpMessage("User &b{0} &ealready has this permission.", user.getName());
+			sendpMessage("User &b{0} &ealready has access to this permission.", user.getName());
 			sendpMessage("Node: &b{0}", user.getMatchingPermission(permission));
 			return;
 		}
@@ -37,6 +37,6 @@ public class CmdAddPermission extends UserCommand
 		user.addPermission(permission);
 		user.updatePermissions(true);
 
-		sendpMessage("Permission ''{0}'' added to user {1}''s permissions.", permission, user.getName());
+		sendpMessage("Permission ''&b{0}&e'' added to user &b{1}&e''s permissions.", permission, user.getName());
 	}
 }

@@ -188,14 +188,9 @@ public abstract class Permissible implements ConfigurationSerializable
 
 	protected abstract Set<String> sortPermissions();
 
-	protected final Set<String> sort(Set<String> permissions)
-	{
-		return sort(permissions, true);
-	}
-
 	// Order: *, positive, negative
 	// If there is a positive node and a negative node, the positive node is chosen
-	protected final Set<String> sort(Set<String> permissions, boolean positiveOverride)
+	protected final Set<String> sort(Set<String> permissions)
 	{
 		Set<String> ret = new UniformSet<String>();
 
@@ -220,7 +215,7 @@ public abstract class Permissible implements ConfigurationSerializable
 		for (String permission : new UniformSet<String>(permissions))
 		{
 			permissions.remove(permission);
-			if (! positiveOverride || ! ret.contains(permission.substring(1)))
+			if (! ret.contains(permission.substring(1)))
 			{
 				ret.add(permission);
 			}

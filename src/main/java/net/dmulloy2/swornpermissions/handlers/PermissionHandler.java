@@ -3,8 +3,10 @@
  */
 package net.dmulloy2.swornpermissions.handlers;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -35,7 +37,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 @Getter
 public class PermissionHandler implements Reloadable
 {
-	private Map<String, Set<User>> users;
+	private Map<String, List<User>> users;
 	private Map<String, Map<String, WorldGroup>> worldGroups;
 	private Map<String, ServerGroup> serverGroups;
 	private Map<String, Group> defaultGroups;
@@ -44,7 +46,7 @@ public class PermissionHandler implements Reloadable
 	public PermissionHandler(SwornPermissions plugin)
 	{
 		this.plugin = plugin;
-		this.users = new LinkedHashMap<String, Set<User>>();
+		this.users = new LinkedHashMap<String, List<User>>();
 	}
 
 	// ---- User Getters
@@ -110,26 +112,26 @@ public class PermissionHandler implements Reloadable
 		return user;
 	}
 
-	public final Set<User> getUsers(World world)
+	public final List<User> getUsers(World world)
 	{
 		return getUsers(world.getName());
 	}
 
-	public final Set<User> getUsers(String world)
+	public final List<User> getUsers(String world)
 	{
 		return users.get(world.toLowerCase());
 	}
 
-	public final Set<User> getAllUsers(World world)
+	public final List<User> getAllUsers(World world)
 	{
 		return getAllUsers(world.getName());
 	}
 
-	public final Set<User> getAllUsers(String world)
+	public final List<User> getAllUsers(String world)
 	{
 		world = world.toLowerCase();
 
-		Set<User> ret = new UniformSet<User>();
+		List<User> ret = new ArrayList<User>();
 
 		ret.addAll(getUsers(world));
 		ret.addAll(plugin.getDataHandler().loadAllUsers(world));
@@ -141,7 +143,7 @@ public class PermissionHandler implements Reloadable
 
 	public final void updateUsers()
 	{
-		for (Set<User> list : users.values())
+		for (List<User> list : users.values())
 		{
 			for (User user : list)
 			{
@@ -375,9 +377,9 @@ public class PermissionHandler implements Reloadable
 	// TODO: Some optimization in this method
 	private final void cleanupUsers0()
 	{
-		for (Entry<String, Set<User>> entry : new LinkedHashMap<String, Set<User>>(users).entrySet())
+		for (Entry<String, List<User>> entry : new LinkedHashMap<String, List<User>>(users).entrySet())
 		{
-			for (User user : new UniformSet<User>(entry.getValue()))
+			for (User user : new ArrayList<User>(entry.getValue()))
 			{
 				if (! user.isOnline())
 					users.get(entry.getKey()).remove(user);
@@ -468,7 +470,7 @@ public class PermissionHandler implements Reloadable
 	public final void registerWorld(World world)
 	{
 		if (! users.containsKey(world.getName().toLowerCase()))
-			users.put(world.getName().toLowerCase(), new UniformSet<User>());
+			users.put(world.getName().toLowerCase(), new ArrayList<User>());
 	}
 
 	@Override

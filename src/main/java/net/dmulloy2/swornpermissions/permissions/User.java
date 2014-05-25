@@ -546,7 +546,7 @@ public class User extends Permissible
 	public int hashCode()
 	{
 		int hash = 87;
-		hash *= getName().hashCode();
+		hash *= lastKnownBy.hashCode();
 		hash *= world.hashCode();
 		return hash;
 	}
