@@ -100,17 +100,8 @@ public abstract class Permissible implements ConfigurationSerializable
 		permissionNodes.remove(node);
 	}
 
-	/**
-	 * @deprecated For conversion use ONLY
-	 */
-	public final void setPermissionNodes(Set<String> permissionNodes)
-	{
-		this.permissionNodes = permissionNodes;
-	}
-
 	public final boolean hasPermission(String permission)
 	{
-		permission = permission.toLowerCase();
 		boolean negative = permission.startsWith("-");
 		permission = negative ? permission.substring(1) : permission;
 
@@ -123,15 +114,8 @@ public abstract class Permissible implements ConfigurationSerializable
 		return false;
 	}
 
-	/**
-	 * This method returns whether or not a player has a specific node.
-	 * <p>
-	 * Note: This does not take into account wildcards or children
-	 * 
-	 * @param node
-	 *        - Node to check for
-	 * @see {@link Permissible#hasPermission(String)}
-	 */
+	// Whether or not this permissible has a node
+	// Does not take into account wildcards or children
 	public final boolean hasPermissionNode(String node)
 	{
 		return sortedPermissions.contains(node);
@@ -139,17 +123,14 @@ public abstract class Permissible implements ConfigurationSerializable
 
 	public final String getMatchingPermission(String node)
 	{
-		node = node.toLowerCase();
-		boolean negative = node.startsWith("-");
-
-		List<String> permissions = sort(getAllPermissionNodes());
-		if (! negative && permissions.contains("*"))
+		List<String> permissions = new ArrayList<String>(sortedPermissions);
+		if (permissions.contains("*") && ! node.startsWith("-"))
 			return "*";
 
 		// Remove *
 		permissions.remove("*");
 
-		// Iterate to try and find a match
+		// Iterate and try to find a match
 		for (String permission : permissions)
 		{
 			if (node.matches(permission))
@@ -184,6 +165,7 @@ public abstract class Permissible implements ConfigurationSerializable
 			permissions.put(value ? permissionNode : permissionNode.substring(1), value);
 		}
 
+		// Update permission map
 		this.permissions = permissions;
 	}
 
@@ -368,15 +350,6 @@ public abstract class Permissible implements ConfigurationSerializable
 			options.put(key, value);
 	}
 
-	/**
-	 * @deprecated For conversion use ONLY
-	 */
-	public final void setOptions(Map<String, Object> options)
-	{
-		for (String key : options.keySet())
-			options.put(key.toLowerCase(), options.get(key));
-	}
-
 	public boolean hasOption(String key)
 	{
 		return options.containsKey(key.toLowerCase());
@@ -412,6 +385,25 @@ public abstract class Permissible implements ConfigurationSerializable
 	public boolean hasSuffix()
 	{
 		return suffix != "";
+	}
+
+	// ---- Conversion Methods
+
+	/**
+	 * @deprecated For conversion use ONLY
+	 */
+	public final void setPermissionNodes(Set<String> permissionNodes)
+	{
+		this.permissionNodes = permissionNodes;
+	}
+
+	/**
+	 * @deprecated For conversion use ONLY
+	 */
+	public final void setOptions(Map<String, Object> options)
+	{
+		for (String key : options.keySet())
+			this.options.put(key.toLowerCase(), options.get(key));
 	}
 
 	// ---- Required Abstract Methods
