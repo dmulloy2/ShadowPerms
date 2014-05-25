@@ -8,10 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -22,6 +19,7 @@ import net.dmulloy2.swornpermissions.permissions.Group;
 import net.dmulloy2.swornpermissions.permissions.OfflineUser;
 import net.dmulloy2.swornpermissions.permissions.User;
 import net.dmulloy2.swornpermissions.types.Reloadable;
+import net.dmulloy2.swornpermissions.types.UniformSet;
 import net.dmulloy2.swornpermissions.util.Util;
 
 import org.bukkit.OfflinePlayer;
@@ -299,11 +297,11 @@ public class DataHandler implements Reloadable
 		return new User(plugin, player, (MemorySection) config.get("users." + key));
 	}
 
-	public final List<User> loadAllUsers(String world)
+	public final Set<User> loadAllUsers(String world)
 	{
 		world = plugin.getMirrorHandler().getUsersParent(world);
 
-		List<User> ret = new ArrayList<User>();
+		Set<User> ret = new UniformSet<User>();
 
 		FileConfiguration config = getUserConfig(world);
 		Map<String, Object> values = config.getConfigurationSection("users").getValues(false);
@@ -382,7 +380,7 @@ public class DataHandler implements Reloadable
 		this.userConfigs = new LinkedHashMap<String, FileConfiguration>();
 
 		// ---- Load Worlds
-		this.loadedWorlds = new HashSet<String>();
+		this.loadedWorlds = new UniformSet<String>();
 		for (World world : plugin.getServer().getWorlds())
 			loadWorld(world);
 

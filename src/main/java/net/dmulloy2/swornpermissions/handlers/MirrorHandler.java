@@ -3,7 +3,6 @@
  */
 package net.dmulloy2.swornpermissions.handlers;
 
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +10,7 @@ import java.util.Set;
 
 import net.dmulloy2.swornpermissions.SwornPermissions;
 import net.dmulloy2.swornpermissions.types.Reloadable;
+import net.dmulloy2.swornpermissions.types.UniformSet;
 
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -100,7 +100,7 @@ public class MirrorHandler implements Reloadable
 		mirrored = mirrored.toLowerCase();
 
 		if (! userMirrors.containsKey(parent))
-			userMirrors.put(parent, new HashSet<String>());
+			userMirrors.put(parent, new UniformSet<String>());
 
 		userMirrors.get(parent).add(mirrored);
 	}
@@ -168,7 +168,7 @@ public class MirrorHandler implements Reloadable
 		mirrored = mirrored.toLowerCase();
 
 		if (! groupMirrors.containsKey(parent))
-			groupMirrors.put(parent, new HashSet<String>());
+			groupMirrors.put(parent, new UniformSet<String>());
 
 		groupMirrors.get(parent).add(mirrored);
 	}
@@ -186,7 +186,7 @@ public class MirrorHandler implements Reloadable
 			{
 				parent = parent.toLowerCase();
 
-				Set<String> children = new HashSet<String>();
+				Set<String> children = new UniformSet<String>();
 				for (String child : (List<String>) values.get(parent))
 					children.add(child.toLowerCase());
 
@@ -222,7 +222,7 @@ public class MirrorHandler implements Reloadable
 			{
 				parent = parent.toLowerCase();
 
-				Set<String> children = new HashSet<String>();
+				Set<String> children = new UniformSet<String>();
 				for (String child : (List<String>) values.get(parent))
 					children.add(child.toLowerCase());
 
@@ -258,7 +258,7 @@ public class MirrorHandler implements Reloadable
 		this.defaultUserWorld = null;
 		this.defaultGroupWorld = null;
 
-		// (Re-) load
+		// Load mirrors
 		this.loadUserMirrors();
 		this.loadGroupMirrors();
 	}

@@ -3,16 +3,13 @@
  */
 package net.dmulloy2.swornpermissions.permissions;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
 import net.dmulloy2.swornpermissions.SwornPermissions;
+import net.dmulloy2.swornpermissions.types.UniformSet;
 
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
@@ -25,7 +22,7 @@ import org.bukkit.permissions.Permission;
 public abstract class Permissible implements ConfigurationSerializable
 {
 	protected Set<String> permissionNodes;
-	protected List<String> sortedPermissions;
+	protected Set<String> sortedPermissions;
 	protected Map<String, Boolean> permissions;
 
 	protected Map<String, Object> options;
@@ -40,8 +37,8 @@ public abstract class Permissible implements ConfigurationSerializable
 	{
 		this.name = name;
 		this.plugin = plugin;
-		this.permissionNodes = new HashSet<String>();
-		this.sortedPermissions = new ArrayList<String>();
+		this.permissionNodes = new UniformSet<String>();
+		this.sortedPermissions = new UniformSet<String>();
 		this.permissions = new LinkedHashMap<String, Boolean>();
 		this.options = new LinkedHashMap<String, Object>();
 		this.prefix = "";
@@ -58,7 +55,7 @@ public abstract class Permissible implements ConfigurationSerializable
 
 	public void loadFromDisk(MemorySection section)
 	{
-		this.permissionNodes = new HashSet<String>(section.getStringList("permissions"));
+		this.permissionNodes = new UniformSet<String>(section.getStringList("permissions"));
 
 		if (section.isSet("options"))
 		{
@@ -123,7 +120,7 @@ public abstract class Permissible implements ConfigurationSerializable
 
 	public final String getMatchingPermission(String node)
 	{
-		List<String> permissions = new ArrayList<String>(sortedPermissions);
+		Set<String> permissions = new UniformSet<String>(sortedPermissions);
 		if (permissions.contains("*") && ! node.startsWith("-"))
 			return "*";
 
@@ -144,7 +141,7 @@ public abstract class Permissible implements ConfigurationSerializable
 	protected final void updatePermissionMap()
 	{
 		// Sort the nodes
-		List<String> permissionNodes = sortPermissions();
+		Set<String> permissionNodes = sortPermissions();
 
 		// Update sorted permissions list
 		this.sortedPermissions = permissionNodes;
@@ -157,69 +154,87 @@ public abstract class Permissible implements ConfigurationSerializable
 
 		Map<String, Boolean> permissions = new LinkedHashMap<String, Boolean>();
 
-		// Values
-		for (String permissionNode : permissionNodes)
+		// Add * first
+		if (permissionNodes.contains("*"))
 		{
-			permissionNode = permissionNode.toLowerCase();
-			boolean value = ! permissionNode.startsWith("-");
-			permissions.put(value ? permissionNode : permissionNode.substring(1), value);
+			permissionNodes.remove("*");
+			permissions.put("*", true);
+		}
+
+		// Add positive nodes next
+		for (String permission : new UniformSet<String>(permissionNodes))
+		{
+			if (! permission.startsWith("-"))
+			{
+				permissionNodes.remove(permission);
+				permissions.put(permission, true);
+			}
+		}
+
+		// Add nedative nodes last
+		for (String permission : new UniformSet<String>(permissionNodes))
+		{
+			permission = permission.substring(1);
+
+			permissionNodes.remove(permission);
+			permissions.remove(permission);
+
+			permissions.put(permission, false);
 		}
 
 		// Update permission map
 		this.permissions = permissions;
 	}
 
-	protected abstract List<String> sortPermissions();
+	protected abstract Set<String> sortPermissions();
 
-	// Order in this method is extremely important. Negated nodes need to be
-	// last in the list, so they can replace any conflicting positive nodes.
-	// Also, if a player has a raw positive and a raw negative node, the
-	// positive node will be chosen.
-	protected final List<String> sort(Set<String> permissions)
+	protected final Set<String> sort(Set<String> permissions)
 	{
-		Set<String> ret = new HashSet<String>();
+		return sort(permissions, true);
+	}
+
+	// Order: *, positive, negative
+	// If there is a positive node and a negative node, the positive node is chosen
+	protected final Set<String> sort(Set<String> permissions, boolean positiveOverride)
+	{
+		Set<String> ret = new UniformSet<String>();
 
 		// Add * permission first
 		if (permissions.contains("*"))
 		{
-			ret.add("*");
 			permissions.remove("*");
+			ret.add("*");
 		}
 
-		// Add positive nodes first
-		for (String permission : new HashSet<String>(permissions))
+		// Add positive nodes next
+		for (String permission : new UniformSet<String>(permissions))
 		{
 			if (! permission.startsWith("-"))
 			{
-				ret.add(permission);
 				permissions.remove(permission);
+				ret.add(permission);
 			}
 		}
 
 		// Add negative nodes last
-		for (String permission : new HashSet<String>(permissions))
+		for (String permission : new UniformSet<String>(permissions))
 		{
-			if (permission.startsWith("-"))
+			permissions.remove(permission);
+			if (! positiveOverride || ! ret.contains(permission.substring(1)))
 			{
-				// Do we have a positive permission node?
-				if (! permissions.contains(permission.substring(1)))
-				{
-					ret.add(permission);
-				}
+				ret.add(permission);
 			}
 		}
 
-		List<String> sorted = new ArrayList<String>(ret);
-		Collections.reverse(sorted);
-		return sorted;
+		return ret;
 	}
 
 	// Wildcard support
-	protected final List<String> getMatchingNodes(List<String> permissions)
+	protected final Set<String> getMatchingNodes(Set<String> permissionNodes)
 	{
-		List<String> ret = new ArrayList<String>();
+		Set<String> ret = new UniformSet<String>();
 
-		for (String node : permissions)
+		for (String node : permissionNodes)
 		{
 			// '*' is handled later
 			if (node.equals("*"))
@@ -246,9 +261,9 @@ public abstract class Permissible implements ConfigurationSerializable
 		return ret;
 	}
 
-	protected final List<String> getAllChildren(List<String> permissions)
+	protected final Set<String> getAllChildren(Set<String> permissions)
 	{
-		List<String> ret = new ArrayList<String>();
+		Set<String> ret = new UniformSet<String>();
 
 		for (String permission : permissions)
 		{
@@ -256,7 +271,7 @@ public abstract class Permissible implements ConfigurationSerializable
 			ret.add(permission);
 
 			String node = negative ? permission.substring(1) : permission;
-			List<String> children = getChildren(node);
+			Set<String> children = getChildren(node);
 			if (children != null)
 			{
 				for (String child : children)
@@ -270,15 +285,15 @@ public abstract class Permissible implements ConfigurationSerializable
 		return ret;
 	}
 
-	protected final List<String> getChildren(String node)
+	protected final Set<String> getChildren(String node)
 	{
 		if (node.equals("*"))
 		{
-			List<String> ret = new ArrayList<String>();
+			Set<String> ret = new UniformSet<String>();
 			for (Permission permission : plugin.getPermissionHandler().getRegisteredPermissions())
 			{
 				ret.add(permission.getName());
-				List<String> children = getChildren(permission);
+				Set<String> children = getChildren(permission);
 				if (children != null)
 					ret.addAll(children);
 			}
@@ -289,7 +304,7 @@ public abstract class Permissible implements ConfigurationSerializable
 		return getChildren(plugin.getPermissionHandler().getPermission(node));
 	}
 
-	protected final List<String> getChildren(Permission permission)
+	protected final Set<String> getChildren(Permission permission)
 	{
 		if (permission == null)
 			return null;
@@ -298,13 +313,13 @@ public abstract class Permissible implements ConfigurationSerializable
 		if (children == null || children.isEmpty())
 			return null;
 
-		List<String> ret = new ArrayList<String>();
+		Set<String> ret = new UniformSet<String>();
 		for (Entry<String, Boolean> child : children.entrySet())
 		{
 			if (child.getValue())
 			{
 				ret.add(child.getKey());
-				List<String> childNodes = getChildren(child.getKey());
+				Set<String> childNodes = getChildren(child.getKey());
 				if (childNodes != null)
 					ret.addAll(childNodes);
 			}
@@ -322,7 +337,7 @@ public abstract class Permissible implements ConfigurationSerializable
 
 	public Set<String> getPermissionNodes()
 	{
-		return new HashSet<String>(permissionNodes);
+		return new UniformSet<String>(permissionNodes);
 	}
 
 	public Set<String> getAllPermissionNodes()

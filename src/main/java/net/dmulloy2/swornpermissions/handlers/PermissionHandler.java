@@ -4,8 +4,6 @@
 package net.dmulloy2.swornpermissions.handlers;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -19,6 +17,7 @@ import net.dmulloy2.swornpermissions.permissions.ServerGroup;
 import net.dmulloy2.swornpermissions.permissions.User;
 import net.dmulloy2.swornpermissions.permissions.WorldGroup;
 import net.dmulloy2.swornpermissions.types.Reloadable;
+import net.dmulloy2.swornpermissions.types.UniformSet;
 import net.dmulloy2.swornpermissions.util.Util;
 
 import org.bukkit.World;
@@ -130,7 +129,7 @@ public class PermissionHandler implements Reloadable
 	{
 		world = world.toLowerCase();
 
-		Set<User> ret = new HashSet<User>();
+		Set<User> ret = new UniformSet<User>();
 
 		ret.addAll(getUsers(world));
 		ret.addAll(plugin.getDataHandler().loadAllUsers(world));
@@ -261,7 +260,7 @@ public class PermissionHandler implements Reloadable
 
 	public Set<Group> getAllGroups()
 	{
-		Set<Group> ret = new HashSet<Group>();
+		Set<Group> ret = new UniformSet<Group>();
 		ret.addAll(serverGroups.values());
 		for (Map<String, WorldGroup> groups : worldGroups.values())
 		{
@@ -378,7 +377,7 @@ public class PermissionHandler implements Reloadable
 	{
 		for (Entry<String, Set<User>> entry : new LinkedHashMap<String, Set<User>>(users).entrySet())
 		{
-			for (User user : new HashSet<User>(entry.getValue()))
+			for (User user : new UniformSet<User>(entry.getValue()))
 			{
 				if (! user.isOnline())
 					users.get(entry.getKey()).remove(user);
@@ -422,7 +421,7 @@ public class PermissionHandler implements Reloadable
 
 			if (! worldGroups.containsKey(world))
 			{
-				worldGroups.put(world, new HashMap<String, WorldGroup>());
+				worldGroups.put(world, new LinkedHashMap<String, WorldGroup>());
 			}
 
 			fc = data.getGroupConfigs().get(world);
@@ -463,18 +462,13 @@ public class PermissionHandler implements Reloadable
 	public final void registerWorlds()
 	{
 		for (World world : plugin.getServer().getWorlds())
-		{
 			registerWorld(world);
-		}
 	}
 
 	public final void registerWorld(World world)
 	{
-		if (! plugin.getMirrorHandler().areUsersMirrored(world))
-		{
-			if (! users.containsKey(world.getName().toLowerCase()))
-				users.put(world.getName().toLowerCase(), new HashSet<User>());
-		}
+		if (! users.containsKey(world.getName().toLowerCase()))
+			users.put(world.getName().toLowerCase(), new UniformSet<User>());
 	}
 
 	@Override

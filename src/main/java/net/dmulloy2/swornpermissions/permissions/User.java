@@ -5,7 +5,6 @@ package net.dmulloy2.swornpermissions.permissions;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +13,7 @@ import java.util.UUID;
 import java.util.logging.Level;
 
 import net.dmulloy2.swornpermissions.SwornPermissions;
+import net.dmulloy2.swornpermissions.types.UniformSet;
 import net.dmulloy2.swornpermissions.util.Util;
 
 import org.bukkit.World;
@@ -45,8 +45,8 @@ public class User extends Permissible
 		super(plugin, name);
 		this.group = null;
 		this.groupName = null;
-		this.subGroups = new HashSet<Group>();
-		this.subGroupNames = new HashSet<String>();
+		this.subGroups = new UniformSet<Group>();
+		this.subGroupNames = new UniformSet<String>();
 	}
 
 	public User(SwornPermissions plugin, Player player)
@@ -74,7 +74,7 @@ public class User extends Permissible
 	{
 		super.loadFromDisk(section);
 		this.groupName = section.getString("group");
-		this.subGroupNames = new HashSet<String>(section.getStringList("subgroups"));
+		this.subGroupNames = new UniformSet<String>(section.getStringList("subgroups"));
 		this.lastKnownBy = section.getString("lastKnownBy");
 		this.uniqueId = section.getName();
 	}
@@ -142,7 +142,7 @@ public class User extends Permissible
 		if (oldWorld == null || force || ! plugin.getMirrorHandler().areGroupsLinked(oldWorld, newWorld))
 		{
 			this.group = null;
-			this.subGroups = new HashSet<Group>();
+			this.subGroups = new UniformSet<Group>();
 
 			// Default group
 			if (groupName == null || groupName.isEmpty())
@@ -217,39 +217,38 @@ public class User extends Permissible
 	}
 
 	@Override
-	protected final List<String> sortPermissions()
+	protected final Set<String> sortPermissions()
 	{
 		Map<String, Boolean> permissions = new LinkedHashMap<String, Boolean>();
 
 		// Add subgroup nodes first
-		List<String> subgroupPerms = sort(getSubgroupNodes());
+		Set<String> subgroupPerms = sort(getSubgroupNodes());
 
-		for (String subgroupPerm : subgroupPerms)
+		for (String subgroupPerm : new UniformSet<String>(subgroupPerms))
 		{
 			boolean value = ! subgroupPerm.startsWith("-");
 			permissions.put(value ? subgroupPerm : subgroupPerm.substring(1), value);
 		}
 
 		// Then add main group nodes
-		List<String> groupPerms = sort(getGroupNodes());
+		Set<String> groupPerms = sort(getGroupNodes());
 
-		for (String groupPerm : new ArrayList<String>(groupPerms))
+		for (String groupPerm : new UniformSet<String>(groupPerms))
 		{
 			boolean value = ! groupPerm.startsWith("-");
 			permissions.put(value ? groupPerm : groupPerm.substring(1), value);
 		}
 
 		// Finally user-specific nodes
-		List<String> userPerms = sort(new HashSet<String>(getPermissionNodes()));
+		Set<String> userPerms = sort(getPermissionNodes());
 
-		for (String userPerm : new ArrayList<String>(userPerms))
+		for (String userPerm : new UniformSet<String>(userPerms))
 		{
 			boolean value = ! userPerm.startsWith("-");
 			permissions.put(value ? userPerm : userPerm.substring(1), value);
 		}
 
-		// Add them all to the main list
-		List<String> ret = new ArrayList<String>();
+		Set<String> ret = new UniformSet<String>();
 
 		for (String node : permissions.keySet())
 		{
@@ -257,8 +256,8 @@ public class User extends Permissible
 			ret.add(value ? node : "-" + node);
 		}
 
-		// Return
-		return ret;
+		// Sort and return
+		return sort(ret);
 	}
 
 	// ---- Player Management
@@ -339,14 +338,14 @@ public class User extends Permissible
 
 	public final List<String> getGroups()
 	{
-		List<String> ret = new ArrayList<String>();
+		Set<String> ret = new UniformSet<String>();
 		ret.add(groupName);
 		ret.addAll(subGroupNames);
 
 		if (ret.isEmpty())
 			ret.add(plugin.getPermissionHandler().getDefaultGroup(world).getName());
 
-		return ret;
+		return new ArrayList<String>(ret);
 	}
 
 	public final boolean isInGroup(String groupName)
@@ -425,7 +424,7 @@ public class User extends Permissible
 	@Override
 	public Set<String> getAllPermissionNodes()
 	{
-		Set<String> ret = new HashSet<String>();
+		Set<String> ret = new UniformSet<String>();
 
 		// Add subgroup nodes
 		ret.addAll(getSubgroupNodes());
@@ -442,7 +441,7 @@ public class User extends Permissible
 	// Main group nodes
 	private final Set<String> getGroupNodes()
 	{
-		Set<String> ret = new HashSet<String>();
+		Set<String> ret = new UniformSet<String>();
 		ret.addAll(group.getAllPermissionNodes());
 		return ret;
 	}
@@ -450,7 +449,7 @@ public class User extends Permissible
 	// Subgroup nodes
 	private final Set<String> getSubgroupNodes()
 	{
-		Set<String> ret = new HashSet<String>();
+		Set<String> ret = new UniformSet<String>();
 
 		for (Group subGroup : subGroups)
 			ret.addAll(subGroup.getAllPermissionNodes());
