@@ -290,6 +290,15 @@ public class PermissionHandler implements Reloadable
 		return group;
 	}
 
+	public void addWorldGroup(String world, WorldGroup group)
+	{
+		world = plugin.getMirrorHandler().getGroupsParent(world);
+		worldGroups.get(world).put(group.getName().toLowerCase(), group);
+
+		if (group.isDefaultGroup())
+			defaultGroups.put(world, group);
+	}
+
 	// ---- Defaults
 
 	public final Group getDefaultGroup()
@@ -305,7 +314,6 @@ public class PermissionHandler implements Reloadable
 	public final Group getDefaultGroup(String world)
 	{
 		world = plugin.getMirrorHandler().getUsersParent(world);
-		world = world.toLowerCase();
 
 		return defaultGroups.get(world);
 	}

@@ -29,6 +29,7 @@ import net.dmulloy2.swornpermissions.commands.group.CmdCreateGroup;
 import net.dmulloy2.swornpermissions.commands.group.CmdGroup;
 import net.dmulloy2.swornpermissions.commands.group.CmdListGroups;
 import net.dmulloy2.swornpermissions.commands.user.CmdUser;
+import net.dmulloy2.swornpermissions.commands.wizard.CmdWizard;
 import net.dmulloy2.swornpermissions.conversion.ConversionHandler;
 import net.dmulloy2.swornpermissions.handlers.ChatHandler;
 import net.dmulloy2.swornpermissions.handlers.CommandHandler;
@@ -36,6 +37,7 @@ import net.dmulloy2.swornpermissions.handlers.DataHandler;
 import net.dmulloy2.swornpermissions.handlers.LogHandler;
 import net.dmulloy2.swornpermissions.handlers.MirrorHandler;
 import net.dmulloy2.swornpermissions.handlers.PermissionHandler;
+import net.dmulloy2.swornpermissions.handlers.WizardHandler;
 import net.dmulloy2.swornpermissions.listeners.ChatListener;
 import net.dmulloy2.swornpermissions.listeners.PlayerListener;
 import net.dmulloy2.swornpermissions.listeners.WorldListener;
@@ -59,6 +61,7 @@ public class SwornPermissions extends JavaPlugin implements Reloadable
 	private @Getter PermissionHandler permissionHandler;
 	private @Getter CommandHandler commandHandler;
 	private @Getter MirrorHandler mirrorHandler;
+	private @Getter WizardHandler wizardHandler;
 	private @Getter ChatHandler chatHandler;
 	private @Getter DataHandler dataHandler;
 	private @Getter LogHandler logHandler;
@@ -107,6 +110,7 @@ public class SwornPermissions extends JavaPlugin implements Reloadable
 		/** Define Other Handlers **/
 		commandHandler = new CommandHandler(this);
 		mirrorHandler = new MirrorHandler(this);
+		wizardHandler = new WizardHandler(this);
 		dataHandler = new DataHandler(this);
 		chatHandler = new ChatHandler(this);
 
@@ -122,6 +126,7 @@ public class SwornPermissions extends JavaPlugin implements Reloadable
 		commandHandler.registerPrefixedCommand(new CmdReload(this));
 		commandHandler.registerPrefixedCommand(new CmdUser(this));
 		commandHandler.registerPrefixedCommand(new CmdVersion(this));
+		commandHandler.registerPrefixedCommand(new CmdWizard(this));
 
 		/** Register Non-Prefixed Commands **/
 		commandHandler.registerCommand(new CmdPrefix(this));

@@ -19,8 +19,6 @@ import net.dmulloy2.swornpermissions.util.FormatUtil;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 
-import com.google.common.collect.Lists;
-
 /**
  * @author dmulloy2
  */
@@ -38,6 +36,7 @@ public class CmdUser extends SwornPermissionsCommand
 		this.optionalArgs.add("args");
 		this.optionalArgs.add("world");
 		this.description = "Modify a user's permissions";
+		this.hasSubCommands = true;
 		this.usesPrefix = true;
 
 		this.registerSubCommands();
@@ -45,8 +44,7 @@ public class CmdUser extends SwornPermissionsCommand
 
 	private final void registerSubCommands()
 	{
-		this.subCommands = Lists.newArrayList();
-		this.hasSubCommands = true;
+		this.subCommands = new ArrayList<UserCommand>();
 
 		subCommands.add(new CmdAddPermission(plugin));
 		subCommands.add(new CmdAddSubgroup(plugin));

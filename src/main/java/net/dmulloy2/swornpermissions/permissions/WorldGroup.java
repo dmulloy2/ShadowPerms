@@ -186,6 +186,11 @@ public class WorldGroup extends Group
 		return defaultGroup;
 	}
 
+	public void setIsDefaultGroup(boolean def)
+	{
+		this.defaultGroup = def;
+	}
+
 	// ---- Utility
 
 	@Override
