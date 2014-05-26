@@ -48,6 +48,13 @@ public class CmdSuffix extends SwornPermissionsCommand
 		// Trim the string
 		suffix = suffix.trim();
 
+		if (suffix.isEmpty())
+		{
+			sendpMessage("&eYour suffix has been reset!");
+			user.resetSuffix();
+			return;
+		}
+
 		// Apply configuration settings
 		if (plugin.getConfig().getBoolean("suffix.forceReset"))
 			suffix = suffix + "&r";

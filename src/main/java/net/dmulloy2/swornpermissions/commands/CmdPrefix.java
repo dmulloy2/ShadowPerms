@@ -48,6 +48,13 @@ public class CmdPrefix extends SwornPermissionsCommand
 		// Trim the string
 		prefix = prefix.trim();
 
+		if (prefix.isEmpty())
+		{
+			sendpMessage("&eYour prefix has been reset!");
+			user.resetPrefix();
+			return;
+		}
+
 		// Apply configuration settings
 		if (plugin.getConfig().getBoolean("prefix.forceReset"))
 			prefix = prefix + "&r";
