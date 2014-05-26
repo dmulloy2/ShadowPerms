@@ -4,10 +4,9 @@
 package net.dmulloy2.swornpermissions.handlers;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
+import lombok.AllArgsConstructor;
 import net.dmulloy2.swornpermissions.SwornPermissions;
 import net.dmulloy2.swornpermissions.permissions.Group;
 import net.dmulloy2.swornpermissions.permissions.WorldGroup;
@@ -28,29 +27,17 @@ import org.bukkit.entity.Player;
  * @author dmulloy2
  */
 
+@AllArgsConstructor
 public class WizardHandler
 {
-	private final Map<String, Conversation> wizards;
 	private final SwornPermissions plugin;
-
-	public WizardHandler(SwornPermissions plugin)
-	{
-		this.plugin = plugin;
-		this.wizards = new LinkedHashMap<String, Conversation>();
-	}
 
 	public final void createGroup(Player player, String world)
 	{
 		GroupCreationWizard wizard = new GroupCreationWizard(player, world);
-		Conversation conversation = new ConversationFactory(plugin)
-			.withFirstPrompt(wizard)
-			.withPrefix(new Prefix())
-			.withEscapeSequence("exit")
-			.addConversationAbandonedListener(wizard)
-			.buildConversation(player);
+		Conversation conversation = new ConversationFactory(plugin).withFirstPrompt(wizard).withPrefix(new Prefix())
+				.withEscapeSequence("exit").addConversationAbandonedListener(wizard).buildConversation(player);
 		conversation.begin();
-
-		wizards.put(player.getName(), conversation);
 	}
 
 	public class Prefix implements ConversationPrefix
@@ -107,7 +94,7 @@ public class WizardHandler
 					plugin.getPermissionHandler().addWorldGroup(world, group);
 				default:
 					return FormatUtil.format("&4Invalid step! Type \"&cexit&4\"!");
-					
+
 			}
 		}
 
@@ -122,7 +109,7 @@ public class WizardHandler
 						player.sendMessage(FormatUtil.format("&cError: &4Name contains invalid characters!"));
 						return this;
 					}
-					
+
 					group = new WorldGroup(plugin, input, world);
 					break;
 				case 2:
