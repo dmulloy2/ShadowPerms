@@ -137,10 +137,10 @@ public class CmdUser extends SwornPermissionsCommand
 		Map<String, Object> options = user.getOptions();
 		if (options.size() > 0)
 		{
-			sendMessage("Options:");
+			sendMessage("&bOptions&e:");
 			for (Entry<String, Object> entry : options.entrySet())
 			{
-				sendMessage("  &e{0}: &b{1}", entry.getKey(), entry.getValue());
+				sendMessage("  &e{0}: &r{1}", entry.getKey(), entry.getValue());
 			}
 		}
 	}

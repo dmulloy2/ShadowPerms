@@ -8,7 +8,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -297,11 +299,11 @@ public class DataHandler implements Reloadable
 		return new User(plugin, player, (MemorySection) config.get("users." + key));
 	}
 
-	public final Set<User> loadAllUsers(String world)
+	public final List<User> loadAllUsers(String world)
 	{
 		world = plugin.getMirrorHandler().getUsersParent(world);
 
-		Set<User> ret = new UniformSet<User>();
+		List<User> ret = new ArrayList<User>();
 
 		FileConfiguration config = getUserConfig(world);
 		Map<String, Object> values = config.getConfigurationSection("users").getValues(false);

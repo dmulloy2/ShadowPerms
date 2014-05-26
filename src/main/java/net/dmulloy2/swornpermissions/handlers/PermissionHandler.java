@@ -398,15 +398,16 @@ public class PermissionHandler implements Reloadable
 		if (fc.isSet("groups"))
 		{
 			Map<String, Object> values = fc.getConfigurationSection("groups").getValues(false);
-			for (String groupName : values.keySet())
+			for (Entry<String, Object> entry : values.entrySet())
 			{
+				String groupName = entry.getKey();
+
 				try
 				{
-					MemorySection section = (MemorySection) values.get(groupName);
-
 					if (! groupName.startsWith("s:"))
 						groupName = "s:" + groupName;
 
+					MemorySection section = (MemorySection) entry.getValue();
 					ServerGroup group = new ServerGroup(plugin, groupName, section);
 					serverGroups.put(groupName.toLowerCase(), group);
 				}
@@ -417,16 +418,16 @@ public class PermissionHandler implements Reloadable
 			}
 		}
 
-		for (String world : data.getGroupConfigs().keySet())
+		for (Entry<String, FileConfiguration> entry : data.getGroupConfigs().entrySet())
 		{
-			world = world.toLowerCase();
+			String world = entry.getKey().toLowerCase();
 
 			if (! worldGroups.containsKey(world))
 			{
 				worldGroups.put(world, new LinkedHashMap<String, WorldGroup>());
 			}
 
-			fc = data.getGroupConfigs().get(world);
+			fc = entry.getValue();
 			if (! fc.isSet("groups"))
 			{
 				plugin.getLogHandler().debug("Found 0 groups to load from world {0}!", world);
@@ -435,11 +436,13 @@ public class PermissionHandler implements Reloadable
 
 			// Load groups
 			Map<String, Object> values = fc.getConfigurationSection("groups").getValues(false);
-			for (String groupName : values.keySet())
+			for (Entry<String, Object> entry1 : values.entrySet())
 			{
+				String groupName = entry1.getKey();
+
 				try
 				{
-					MemorySection section = (MemorySection) values.get(groupName);
+					MemorySection section = (MemorySection) entry1.getValue();
 					WorldGroup group = new WorldGroup(plugin, groupName, world, section);
 					worldGroups.get(world).put(groupName.toLowerCase(), group);
 

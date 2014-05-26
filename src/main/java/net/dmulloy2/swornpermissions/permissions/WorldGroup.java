@@ -6,6 +6,7 @@ package net.dmulloy2.swornpermissions.permissions;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Level;
 
@@ -131,9 +132,10 @@ public class WorldGroup extends Group
 
 		Set<String> ret = new UniformSet<String>();
 
-		for (String node : permissions.keySet())
+		for (Entry<String, Boolean> entry : permissions.entrySet())
 		{
-			boolean value = permissions.get(node);
+			String node = entry.getKey();
+			boolean value = entry.getValue();
 			ret.add(value ? node : "-" + node);
 		}
 

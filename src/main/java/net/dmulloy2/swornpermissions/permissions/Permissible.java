@@ -60,8 +60,8 @@ public abstract class Permissible implements ConfigurationSerializable
 		if (section.isSet("options"))
 		{
 			Map<String, Object> values = section.getConfigurationSection("options").getValues(false);
-			for (String key : values.keySet())
-				options.put(key.toLowerCase(), values.get(key));
+			for (Entry<String, Object> entry : values.entrySet())
+				options.put(entry.getKey().toLowerCase(), entry.getValue());
 
 			this.prefix = options.containsKey("prefix") ? (String) options.get("prefix") : "";
 			this.suffix = options.containsKey("suffix") ? (String) options.get("suffix") : "";
@@ -412,8 +412,8 @@ public abstract class Permissible implements ConfigurationSerializable
 	 */
 	public final void setOptions(Map<String, Object> options)
 	{
-		for (String key : options.keySet())
-			this.options.put(key.toLowerCase(), options.get(key));
+		for (Entry<String, Object> entry : options.entrySet())
+			this.options.put(entry.getKey().toLowerCase(), entry.getValue());
 	}
 
 	// ---- Required Abstract Methods

@@ -6,6 +6,7 @@ package net.dmulloy2.swornpermissions.handlers;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import net.dmulloy2.swornpermissions.SwornPermissions;
@@ -61,11 +62,11 @@ public class MirrorHandler implements Reloadable
 
 		world = world.toLowerCase();
 
-		for (String parent : userMirrors.keySet())
+		for (Entry<String, Set<String>> entry : userMirrors.entrySet())
 		{
-			Set<String> children = userMirrors.get(parent);
+			Set<String> children = entry.getValue();
 			if (children.contains("*") || children.contains(world))
-				return parent;
+				return entry.getKey();
 		}
 
 		return world;
@@ -129,11 +130,11 @@ public class MirrorHandler implements Reloadable
 
 		world = world.toLowerCase();
 
-		for (String parent : groupMirrors.keySet())
+		for (Entry<String, Set<String>> entry : groupMirrors.entrySet())
 		{
-			Set<String> children = groupMirrors.get(parent);
+			Set<String> children = entry.getValue();
 			if (children.contains("*") || children.contains(world))
-				return parent;
+				return entry.getKey();
 		}
 
 		return world;
@@ -182,12 +183,12 @@ public class MirrorHandler implements Reloadable
 		if (config.isSet("userMirrors"))
 		{
 			Map<String, Object> values = config.getConfigurationSection("userMirrors").getValues(false);
-			for (String parent : values.keySet())
+			for (Entry<String, Object> entry : values.entrySet())
 			{
-				parent = parent.toLowerCase();
+				String parent = entry.getKey().toLowerCase();
 
 				Set<String> children = new UniformSet<String>();
-				for (String child : (List<String>) values.get(parent))
+				for (String child : (List<String>) entry.getValue())
 					children.add(child.toLowerCase());
 
 				// Default world
@@ -218,12 +219,12 @@ public class MirrorHandler implements Reloadable
 		if (config.isSet("groupMirrors"))
 		{
 			Map<String, Object> values = config.getConfigurationSection("groupMirrors").getValues(false);
-			for (String parent : values.keySet())
+			for (Entry<String, Object> entry : values.entrySet())
 			{
-				parent = parent.toLowerCase();
+				String parent = entry.getKey().toLowerCase();
 
 				Set<String> children = new UniformSet<String>();
-				for (String child : (List<String>) values.get(parent))
+				for (String child : (List<String>) entry.getValue())
 					children.add(child.toLowerCase());
 
 				if (children.contains("undefined_worlds"))

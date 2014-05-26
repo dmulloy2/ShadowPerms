@@ -3,6 +3,8 @@
  */
 package net.dmulloy2.swornpermissions.handlers;
 
+import java.util.Map.Entry;
+
 import net.dmulloy2.swornpermissions.SwornPermissions;
 import net.dmulloy2.swornpermissions.permissions.User;
 import net.dmulloy2.swornpermissions.types.MyMaterial;
@@ -60,9 +62,10 @@ public class AntiItemHandler implements Listener, Reloadable
 
 					if (regulateEnchantments && ! item.getEnchantments().isEmpty())
 					{
-						for (Enchantment ench : item.getEnchantments().keySet())
+						for (Entry<Enchantment, Integer> entry : item.getEnchantments().entrySet())
 						{
-							int level = item.getEnchantmentLevel(ench);
+							Enchantment ench = entry.getKey();
+							int level = entry.getValue();
 							if (level > maxEnchantmentLevel)
 							{
 								item.removeEnchantment(ench);
@@ -180,9 +183,10 @@ public class AntiItemHandler implements Listener, Reloadable
 
 					if (regulateEnchantments && ! item.getEnchantments().isEmpty())
 					{
-						for (Enchantment ench : item.getEnchantments().keySet())
+						for (Entry<Enchantment, Integer> entry : item.getEnchantments().entrySet())
 						{
-							int level = item.getEnchantmentLevel(ench);
+							Enchantment ench = entry.getKey();
+							int level = entry.getValue();
 							if (level > maxEnchantmentLevel)
 							{
 								item.removeEnchantment(ench);
@@ -204,9 +208,10 @@ public class AntiItemHandler implements Listener, Reloadable
 				{
 					if (regulateEnchantments && ! armor.getEnchantments().isEmpty())
 					{
-						for (Enchantment ench : armor.getEnchantments().keySet())
+						for (Entry<Enchantment, Integer> entry : armor.getEnchantments().entrySet())
 						{
-							int level = armor.getEnchantmentLevel(ench);
+							Enchantment ench = entry.getKey();
+							int level = entry.getValue();
 							if (level > maxEnchantmentLevel)
 							{
 								armor.removeEnchantment(ench);

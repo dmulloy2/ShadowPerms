@@ -138,7 +138,7 @@ public class CmdGroup extends SwornPermissionsCommand
 			sendMessage("&bOptions&e:");
 			for (Entry<String, Object> entry : options.entrySet())
 			{
-				sendMessage("  &e{0}: &b{1}", entry.getKey(), entry.getValue());
+				sendMessage("  &e{0}: &r{1}", entry.getKey(), entry.getValue());
 			}
 		}
 	}
