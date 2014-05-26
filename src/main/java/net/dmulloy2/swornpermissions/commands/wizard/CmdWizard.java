@@ -22,7 +22,7 @@ public class CmdWizard extends SwornPermissionsCommand
 	public CmdWizard(SwornPermissions plugin)
 	{
 		super(plugin);
-		this.name = "user";
+		this.name = "wizard";
 		this.requiredArgs.add("action");
 		this.requiredArgs.add("args");
 		this.optionalArgs.add("world");
