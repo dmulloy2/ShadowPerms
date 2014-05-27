@@ -107,19 +107,29 @@ public class WorldGroup extends Group
 		return ret;
 	}
 
+	private final Map<String, Boolean> getParentPermissions()
+	{
+		Map<String, Boolean> ret = new LinkedHashMap<String, Boolean>();
+
+		if (parents != null)
+		{
+			for (Group parent : parentGroups)
+			{
+				parent.update(false);
+				ret.putAll(parent.getPermissions());
+			}
+		}
+
+		return ret;
+	}
+
 	@Override
 	public Set<String> sortPermissions()
 	{
 		Map<String, Boolean> permissions = new LinkedHashMap<String, Boolean>();
 
-		// Add parent nodes first
-		Set<String> parentNodes = sort(getParentNodes());
-
-		for (String parentNode : new UniformSet<String>(parentNodes))
-		{
-			boolean value = ! parentNode.startsWith("-");
-			permissions.put(value ? parentNode : parentNode.substring(1), value);
-		}
+		// Add parent permissions first
+		permissions.putAll(getParentPermissions());
 
 		// Add group-specific nodes last
 		Set<String> groupNodes = sort(getPermissionNodes());
@@ -141,6 +151,13 @@ public class WorldGroup extends Group
 
 		// Sort and return
 		return sort(ret);
+	}
+
+	@Override
+	public void updatePermissions(boolean force)
+	{
+		if (permissions.isEmpty() || force)
+			updatePermissionMap();
 	}
 
 	// ---- Parent Groups
@@ -194,23 +211,23 @@ public class WorldGroup extends Group
 	// ---- Utility
 
 	@Override
-	public void update()
+	public void update(boolean force)
 	{
-		// Update perms map
-		updatePermissionMap();
+		// Update permissions
+		updatePermissions(force);
 
 		// Update child groups
 		for (Group group : plugin.getPermissionHandler().getGroups(worldName))
 		{
 			if (group.getParentGroups() != null && group.getParentGroups().contains(this))
-				group.update();
+				group.update(force);
 		}
 
 		// Update users with this group
 		for (User user : plugin.getPermissionHandler().getUsers(worldName))
 		{
 			if (user.getGroup().equals(this) || user.getSubGroups().contains(this))
-				user.updatePermissions(true);
+				user.updatePermissions(force);
 		}
 	}
 

@@ -74,7 +74,7 @@ public class SwornPermissionsVault extends Permission
 			return false;
 
 		group.addPermission(permission);
-		group.update();
+		group.update(true);
 		return true;
 	}
 
@@ -96,7 +96,7 @@ public class SwornPermissionsVault extends Permission
 			return false;
 
 		group.removePermission(permission);
-		group.update();
+		group.update(true);
 		return true;
 	}
 

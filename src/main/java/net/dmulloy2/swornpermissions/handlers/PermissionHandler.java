@@ -462,13 +462,6 @@ public class PermissionHandler implements Reloadable
 					plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(ex, "loading world group " + groupName));
 				}
 			}
-
-			// Update groups
-			for (WorldGroup group : worldGroups.get(world).values())
-			{
-				group.loadParentGroups();
-				group.update();
-			}
 		}
 	}
 

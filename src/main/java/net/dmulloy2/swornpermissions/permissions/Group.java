@@ -49,5 +49,5 @@ public abstract class Group extends Permissible
 
 	// ---- Utility
 
-	public abstract void update();
+	public abstract void update(boolean force);
 }

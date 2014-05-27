@@ -186,6 +186,8 @@ public abstract class Permissible implements ConfigurationSerializable
 		this.permissions = permissions;
 	}
 
+	public abstract void updatePermissions(boolean force);
+
 	protected abstract Set<String> sortPermissions();
 
 	// Order: *, positive, negative
@@ -328,6 +330,11 @@ public abstract class Permissible implements ConfigurationSerializable
 	public final String getName()
 	{
 		return name;
+	}
+
+	public Map<String, Boolean> getPermissions()
+	{
+		return new LinkedHashMap<String, Boolean>(permissions);
 	}
 
 	public Set<String> getPermissionNodes()

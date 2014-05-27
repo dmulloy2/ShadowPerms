@@ -120,11 +120,7 @@ public class User extends Permissible
 
 	// ---- Permission Handling
 
-	public void updatePermissions()
-	{
-		updatePermissions(false);
-	}
-
+	@Override
 	public void updatePermissions(boolean force)
 	{
 		// Online check
@@ -135,12 +131,11 @@ public class User extends Permissible
 		// Always keep UUID stuff up-to-date
 		updateUniqueID(player);
 
-		World oldWorld = world;
 		World newWorld = player.getWorld();
 
-		boolean updatePermissions = false;
+		boolean updatePermissions = force || world == null;
 
-		if (oldWorld == null || force || ! plugin.getMirrorHandler().areGroupsLinked(oldWorld, newWorld))
+		if (updatePermissions || ! plugin.getMirrorHandler().areGroupsLinked(world, newWorld))
 		{
 			this.group = null;
 			this.subGroups = new UniformSet<Group>();
@@ -222,23 +217,11 @@ public class User extends Permissible
 	{
 		Map<String, Boolean> permissions = new LinkedHashMap<String, Boolean>();
 
-		// Add subgroup nodes first
-		Set<String> subgroupPerms = sort(getSubgroupNodes());
+		// Add subgroup permissions first
+		permissions.putAll(getSubgroupPermissions());
 
-		for (String subgroupPerm : new UniformSet<String>(subgroupPerms))
-		{
-			boolean value = ! subgroupPerm.startsWith("-");
-			permissions.put(value ? subgroupPerm : subgroupPerm.substring(1), value);
-		}
-
-		// Then add main group nodes
-		Set<String> groupPerms = sort(getGroupNodes());
-
-		for (String groupPerm : new UniformSet<String>(groupPerms))
-		{
-			boolean value = ! groupPerm.startsWith("-");
-			permissions.put(value ? groupPerm : groupPerm.substring(1), value);
-		}
+		// Then add main group permissions
+		permissions.putAll(getGroupPermissions());
 
 		// Finally user-specific nodes
 		Set<String> userPerms = sort(getPermissionNodes());
@@ -432,7 +415,7 @@ public class User extends Permissible
 		ret.addAll(getSubgroupNodes());
 
 		// Add group nodes
-		ret.addAll(getSubgroupNodes());
+		ret.addAll(getGroupNodes());
 
 		// Add user-specific nodes
 		ret.addAll(permissionNodes);
@@ -455,6 +438,27 @@ public class User extends Permissible
 
 		for (Group subGroup : subGroups)
 			ret.addAll(subGroup.getAllPermissionNodes());
+
+		return ret;
+	}
+
+	// Main group permissions
+	private final Map<String, Boolean> getGroupPermissions()
+	{
+		group.update(false);
+		return group.getPermissions();
+	}
+
+	// Subgroup permissions
+	private final Map<String, Boolean> getSubgroupPermissions()
+	{
+		Map<String, Boolean> ret = new LinkedHashMap<String, Boolean>();
+
+		for (Group subGroup : subGroups)
+		{
+			subGroup.update(false);
+			ret.putAll(group.getPermissions());
+		}
 
 		return ret;
 	}
