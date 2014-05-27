@@ -70,7 +70,7 @@ public class DataHandler implements Reloadable
 			{
 				save();
 			}
-		}.runTaskTimer(plugin, interval, interval);
+		}.runTaskTimerAsynchronously(plugin, interval, interval);
 	}
 
 	public final void save()
