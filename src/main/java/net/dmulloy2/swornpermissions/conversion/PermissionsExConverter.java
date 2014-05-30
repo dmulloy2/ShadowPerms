@@ -124,7 +124,7 @@ public class PermissionsExConverter
 	{
 		Map<String, WorldGroup> ret = new HashMap<String, WorldGroup>();
 
-		if (! fc.isList("groups"))
+		if (! fc.isSet("groups"))
 			return ret;
 
 		Map<String, Object> values = fc.getConfigurationSection("groups").getValues(false);
@@ -153,7 +153,7 @@ public class PermissionsExConverter
 		Map<UUID, User> uuidMap = new HashMap<UUID, User>();
 		Map<String, User> nameMap = new HashMap<String, User>();
 
-		if (! fc.isList("users"))
+		if (! fc.isSet("users"))
 			return uuidMap;
 
 		Map<String, Object> values = fc.getConfigurationSection("users").getValues(false);
@@ -178,7 +178,7 @@ public class PermissionsExConverter
 				}
 
 				Map<String, Object> options = new HashMap<String, Object>();
-				if (section.isList("options"))
+				if (section.isSet("options"))
 					options.putAll(section.getConfigurationSection("options").getValues(false));
 
 				String prefix = section.getString("prefix", "");

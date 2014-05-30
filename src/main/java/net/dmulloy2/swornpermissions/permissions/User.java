@@ -347,7 +347,7 @@ public class User extends Permissible
 		return false;
 	}
 
-	// ---- Getters and Listters
+	// ---- Getters and Setters
 
 	public String getDisplayName()
 	{

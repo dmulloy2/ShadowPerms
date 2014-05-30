@@ -325,7 +325,7 @@ public abstract class Permissible implements ConfigurationSerializable
 		return ! ret.isEmpty() ? ret : null;
 	}
 
-	// ---- Getters and Listters
+	// ---- Getters and Setters
 
 	public final String getName()
 	{

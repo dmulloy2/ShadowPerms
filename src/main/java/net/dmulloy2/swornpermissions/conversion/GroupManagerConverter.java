@@ -167,7 +167,7 @@ public class GroupManagerConverter
 		Map<String, User> nameMap = new HashMap<String, User>();
 
 		YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
-		if (! fc.isList("users"))
+		if (! fc.isSet("users"))
 			return uuidMap;
 
 		Map<String, Object> values = fc.getConfigurationSection("users").getValues(false);
@@ -185,7 +185,7 @@ public class GroupManagerConverter
 
 				user.loadFromDisk(section); // Our system is similar to GM's
 
-				if (section.isList("info"))
+				if (section.isSet("info"))
 					user.setOptions(section.getConfigurationSection("info").getValues(false));
 
 				if (uuidCache.containsKey(name))
@@ -276,7 +276,7 @@ public class GroupManagerConverter
 		Map<String, WorldGroup> ret = new HashMap<String, WorldGroup>();
 
 		YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
-		if (! fc.isList("groups"))
+		if (! fc.isSet("groups"))
 			return ret;
 
 		Map<String, Object> values = fc.getConfigurationSection("groups").getValues(false);
@@ -289,10 +289,10 @@ public class GroupManagerConverter
 
 			group.loadFromDisk(section);
 
-			if (section.isList("info"))
+			if (section.isSet("info"))
 				group.setOptions(section.getConfigurationSection("info").getValues(false));
 
-			if (section.isList("inheritance"))
+			if (section.isSet("inheritance"))
 			{
 				List<String> parents = new ArrayList<String>();
 				for (String parent : section.getStringList("inheritance"))
