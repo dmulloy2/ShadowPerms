@@ -9,10 +9,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Level;
 
 import lombok.Getter;
@@ -21,7 +20,6 @@ import net.dmulloy2.swornpermissions.permissions.Group;
 import net.dmulloy2.swornpermissions.permissions.OfflineUser;
 import net.dmulloy2.swornpermissions.permissions.User;
 import net.dmulloy2.swornpermissions.types.Reloadable;
-import net.dmulloy2.swornpermissions.types.UniformSet;
 import net.dmulloy2.swornpermissions.util.Util;
 
 import org.bukkit.OfflinePlayer;
@@ -39,7 +37,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 @Getter
 public class DataHandler implements Reloadable
 {
-	private Set<String> loadedWorlds;
+	private List<String> loadedWorlds;
 
 	private Map<String, FileConfiguration> groupConfigs;
 	private Map<String, FileConfiguration> userConfigs;
@@ -378,11 +376,11 @@ public class DataHandler implements Reloadable
 	public void reload()
 	{
 		// ---- Initialize Maps
-		this.groupConfigs = new LinkedHashMap<String, FileConfiguration>();
-		this.userConfigs = new LinkedHashMap<String, FileConfiguration>();
+		this.groupConfigs = new HashMap<String, FileConfiguration>();
+		this.userConfigs = new HashMap<String, FileConfiguration>();
 
 		// ---- Load Worlds
-		this.loadedWorlds = new UniformSet<String>();
+		this.loadedWorlds = new ArrayList<String>();
 		for (World world : plugin.getServer().getWorlds())
 			loadWorld(world);
 

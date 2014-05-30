@@ -6,11 +6,9 @@ package net.dmulloy2.swornpermissions.conversion;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -169,7 +167,7 @@ public class GroupManagerConverter
 		Map<String, User> nameMap = new HashMap<String, User>();
 
 		YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
-		if (! fc.isSet("users"))
+		if (! fc.isList("users"))
 			return uuidMap;
 
 		Map<String, Object> values = fc.getConfigurationSection("users").getValues(false);
@@ -187,7 +185,7 @@ public class GroupManagerConverter
 
 				user.loadFromDisk(section); // Our system is similar to GM's
 
-				if (section.isSet("info"))
+				if (section.isList("info"))
 					user.setOptions(section.getConfigurationSection("info").getValues(false));
 
 				if (uuidCache.containsKey(name))
@@ -278,7 +276,7 @@ public class GroupManagerConverter
 		Map<String, WorldGroup> ret = new HashMap<String, WorldGroup>();
 
 		YamlConfiguration fc = YamlConfiguration.loadConfiguration(file);
-		if (! fc.isSet("groups"))
+		if (! fc.isList("groups"))
 			return ret;
 
 		Map<String, Object> values = fc.getConfigurationSection("groups").getValues(false);
@@ -291,16 +289,14 @@ public class GroupManagerConverter
 
 			group.loadFromDisk(section);
 
-			if (section.isSet("info"))
+			if (section.isList("info"))
 				group.setOptions(section.getConfigurationSection("info").getValues(false));
 
-			if (section.isSet("inheritance"))
+			if (section.isList("inheritance"))
 			{
-				Set<String> parents = new HashSet<String>();
+				List<String> parents = new ArrayList<String>();
 				for (String parent : section.getStringList("inheritance"))
-				{
 					parents.add(parent.replaceAll("g:", "s:"));
-				}
 
 				group.setParentGroups(parents);
 			}

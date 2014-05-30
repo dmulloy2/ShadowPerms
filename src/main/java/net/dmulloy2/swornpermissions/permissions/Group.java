@@ -3,8 +3,8 @@
  */
 package net.dmulloy2.swornpermissions.permissions;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import net.dmulloy2.swornpermissions.SwornPermissions;
 
@@ -16,14 +16,14 @@ import org.bukkit.configuration.MemorySection;
 
 public abstract class Group extends Permissible
 {
-	protected Set<String> parents;
-	protected Set<Group> parentGroups;
+	protected List<String> parents;
+	protected List<Group> parentGroups;
 
 	public Group(SwornPermissions plugin, String name)
 	{
 		super(plugin, name);
-		this.parents = new HashSet<String>();
-		this.parentGroups = new HashSet<Group>();
+		this.parents = new ArrayList<String>();
+		this.parentGroups = new ArrayList<Group>();
 	}
 
 	public Group(SwornPermissions plugin, String name, MemorySection section)
@@ -42,7 +42,7 @@ public abstract class Group extends Permissible
 
 	public abstract void removeParentGroup(Group parent);
 
-	public Set<Group> getParentGroups()
+	public List<Group> getParentGroups()
 	{
 		return parentGroups;
 	}

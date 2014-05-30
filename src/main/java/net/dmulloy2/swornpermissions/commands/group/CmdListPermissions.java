@@ -3,7 +3,7 @@
  */
 package net.dmulloy2.swornpermissions.commands.group;
 
-import java.util.Set;
+import java.util.List;
 
 import net.dmulloy2.swornpermissions.SwornPermissions;
 import net.dmulloy2.swornpermissions.permissions.Group;
@@ -30,7 +30,7 @@ public class CmdListPermissions extends GroupCommand
 	{
 		sendMessage("&3====[ &e{0} &3]====", group.getName());
 
-		Set<String> permissions = group.getPermissionNodes();
+		List<String> permissions = group.getPermissionNodes();
 		if (! permissions.isEmpty())
 		{
 			sendMessage("&bPermissions&e: {0}", new StringJoiner("&b, &e").appendAll(permissions.toArray(new String[0])));
@@ -40,7 +40,7 @@ public class CmdListPermissions extends GroupCommand
 			sendMessage("No group-specific permissions.");
 		}
 
-		Set<Group> parents = group.getParentGroups();
+		List<Group> parents = group.getParentGroups();
 		if (! parents.isEmpty())
 		{
 			StringJoiner joiner = new StringJoiner("&b, &e");

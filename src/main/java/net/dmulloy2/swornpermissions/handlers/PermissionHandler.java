@@ -5,6 +5,7 @@ package net.dmulloy2.swornpermissions.handlers;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +20,6 @@ import net.dmulloy2.swornpermissions.permissions.ServerGroup;
 import net.dmulloy2.swornpermissions.permissions.User;
 import net.dmulloy2.swornpermissions.permissions.WorldGroup;
 import net.dmulloy2.swornpermissions.types.Reloadable;
-import net.dmulloy2.swornpermissions.types.UniformSet;
 import net.dmulloy2.swornpermissions.util.Util;
 
 import org.bukkit.World;
@@ -46,7 +46,7 @@ public class PermissionHandler implements Reloadable
 	public PermissionHandler(SwornPermissions plugin)
 	{
 		this.plugin = plugin;
-		this.users = new LinkedHashMap<String, List<User>>();
+		this.users = new HashMap<String, List<User>>();
 	}
 
 	// ---- User Getters
@@ -260,9 +260,9 @@ public class PermissionHandler implements Reloadable
 		return worldGroups.get(world.toLowerCase()).values();
 	}
 
-	public Set<Group> getAllGroups()
+	public List<Group> getAllGroups()
 	{
-		Set<Group> ret = new UniformSet<Group>();
+		List<Group> ret = new ArrayList<Group>();
 		ret.addAll(serverGroups.values());
 		for (Map<String, WorldGroup> groups : worldGroups.values())
 		{
@@ -385,7 +385,7 @@ public class PermissionHandler implements Reloadable
 	// TODO: Some optimization in this method
 	private final void cleanupUsers0()
 	{
-		for (Entry<String, List<User>> entry : new LinkedHashMap<String, List<User>>(users).entrySet())
+		for (Entry<String, List<User>> entry : new HashMap<String, List<User>>(users).entrySet())
 		{
 			for (User user : new ArrayList<User>(entry.getValue()))
 			{
@@ -481,9 +481,9 @@ public class PermissionHandler implements Reloadable
 	public void reload()
 	{
 		// ---- Initialize maps
-		this.worldGroups = new LinkedHashMap<String, Map<String, WorldGroup>>();
-		this.serverGroups = new LinkedHashMap<String, ServerGroup>();
-		this.defaultGroups = new LinkedHashMap<String, Group>();
+		this.worldGroups = new HashMap<String, Map<String, WorldGroup>>();
+		this.serverGroups = new HashMap<String, ServerGroup>();
+		this.defaultGroups = new HashMap<String, Group>();
 
 		// ---- Register Worlds
 		this.registerWorlds();

@@ -9,12 +9,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
 
 import net.dmulloy2.swornpermissions.SwornPermissions;
-import net.dmulloy2.swornpermissions.types.UniformSet;
 import net.dmulloy2.swornpermissions.util.Util;
 
 import org.bukkit.World;
@@ -29,10 +27,10 @@ import org.bukkit.permissions.PermissionAttachment;
 public class User extends Permissible
 {
 	protected String groupName;
-	protected Set<String> subGroupNames;
+	protected List<String> subGroupNames;
 
 	protected Group group;
-	protected Set<Group> subGroups;
+	protected List<Group> subGroups;
 
 	protected World world;
 	protected PermissionAttachment attachment;
@@ -46,8 +44,8 @@ public class User extends Permissible
 		super(plugin, name);
 		this.group = null;
 		this.groupName = null;
-		this.subGroups = new UniformSet<Group>();
-		this.subGroupNames = new UniformSet<String>();
+		this.subGroups = new ArrayList<Group>();
+		this.subGroupNames = new ArrayList<String>();
 	}
 
 	public User(SwornPermissions plugin, Player player)
@@ -75,7 +73,7 @@ public class User extends Permissible
 	{
 		super.loadFromDisk(section);
 		this.groupName = section.getString("group");
-		this.subGroupNames = new UniformSet<String>(section.getStringList("subgroups"));
+		this.subGroupNames = section.getStringList("subgroups");
 		this.lastKnownBy = section.getString("lastKnownBy");
 		this.uniqueId = section.getName();
 	}
@@ -87,8 +85,8 @@ public class User extends Permissible
 
 		ret.put("lastKnownBy", lastKnownBy);
 		ret.put("group", groupName);
-		ret.put("subgroups", new ArrayList<String>(subGroupNames));
-		ret.put("permissions", new ArrayList<String>(permissionNodes));
+		ret.put("subgroups", subGroupNames);
+		ret.put("permissions", permissionNodes);
 		ret.put("options", options);
 
 		return ret;
@@ -138,7 +136,7 @@ public class User extends Permissible
 		if (updatePermissions || ! plugin.getMirrorHandler().areGroupsLinked(world, newWorld))
 		{
 			this.group = null;
-			this.subGroups = new UniformSet<Group>();
+			this.subGroups = new ArrayList<Group>();
 
 			// Default group
 			if (groupName == null || groupName.isEmpty())
@@ -213,7 +211,7 @@ public class User extends Permissible
 	}
 
 	@Override
-	protected final Set<String> sortPermissions()
+	protected final List<String> sortPermissions()
 	{
 		Map<String, Boolean> permissions = new LinkedHashMap<String, Boolean>();
 
@@ -224,15 +222,15 @@ public class User extends Permissible
 		permissions.putAll(getGroupPermissions());
 
 		// Finally user-specific nodes
-		Set<String> userPerms = sort(getPermissionNodes());
+		List<String> userPerms = sort(getPermissionNodes());
 
-		for (String userPerm : new UniformSet<String>(userPerms))
+		for (String userPerm : new ArrayList<String>(userPerms))
 		{
 			boolean value = ! userPerm.startsWith("-");
 			permissions.put(value ? userPerm : userPerm.substring(1), value);
 		}
 
-		Set<String> ret = new UniformSet<String>();
+		List<String> ret = new ArrayList<String>();
 
 		for (Entry<String, Boolean> entry : permissions.entrySet())
 		{
@@ -323,14 +321,14 @@ public class User extends Permissible
 
 	public final List<String> getGroups()
 	{
-		Set<String> ret = new UniformSet<String>();
+		List<String> ret = new ArrayList<String>();
 		ret.add(groupName);
 		ret.addAll(subGroupNames);
 
 		if (ret.isEmpty())
 			ret.add(plugin.getPermissionHandler().getDefaultGroup(world).getName());
 
-		return new ArrayList<String>(ret);
+		return ret;
 	}
 
 	public final boolean isInGroup(String groupName)
@@ -349,7 +347,7 @@ public class User extends Permissible
 		return false;
 	}
 
-	// ---- Getters and Setters
+	// ---- Getters and Listters
 
 	public String getDisplayName()
 	{
@@ -388,12 +386,12 @@ public class User extends Permissible
 		this.groupName = groupName;
 	}
 
-	public Set<Group> getSubGroups()
+	public List<Group> getSubGroups()
 	{
 		return subGroups;
 	}
 
-	public Set<String> getSubGroupNames()
+	public List<String> getSubGroupNames()
 	{
 		return subGroupNames;
 	}
@@ -401,15 +399,15 @@ public class User extends Permissible
 	/**
 	 * @deprecated For conversion use ONLY
 	 */
-	public void setSubGroupNames(Set<String> subGroupNames)
+	public void setSubGroupNames(List<String> subGroupNames)
 	{
 		this.subGroupNames = subGroupNames;
 	}
 
 	@Override
-	public Set<String> getAllPermissionNodes()
+	public List<String> getAllPermissionNodes()
 	{
-		Set<String> ret = new UniformSet<String>();
+		List<String> ret = new ArrayList<String>();
 
 		// Add subgroup nodes
 		ret.addAll(getSubgroupNodes());
@@ -424,17 +422,17 @@ public class User extends Permissible
 	}
 
 	// Main group nodes
-	private final Set<String> getGroupNodes()
+	private final List<String> getGroupNodes()
 	{
-		Set<String> ret = new UniformSet<String>();
+		List<String> ret = new ArrayList<String>();
 		ret.addAll(group.getAllPermissionNodes());
 		return ret;
 	}
 
 	// Subgroup nodes
-	private final Set<String> getSubgroupNodes()
+	private final List<String> getSubgroupNodes()
 	{
-		Set<String> ret = new UniformSet<String>();
+		List<String> ret = new ArrayList<String>();
 
 		for (Group subGroup : subGroups)
 			ret.addAll(subGroup.getAllPermissionNodes());

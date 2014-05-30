@@ -3,10 +3,9 @@
  */
 package net.dmulloy2.swornpermissions.permissions;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import net.dmulloy2.swornpermissions.SwornPermissions;
 
@@ -36,7 +35,7 @@ public class ServerGroup extends Group
 	{
 		Map<String, Object> ret = new LinkedHashMap<String, Object>();
 
-		ret.put("permissions", new ArrayList<String>(permissionNodes));
+		ret.put("permissions", permissionNodes);
 		ret.put("options", options);
 
 		return ret;
@@ -51,7 +50,7 @@ public class ServerGroup extends Group
 	// ---- Permissions
 
 	@Override
-	public Set<String> sortPermissions()
+	public List<String> sortPermissions()
 	{
 		return sort(getAllPermissionNodes());
 	}

@@ -5,13 +5,12 @@ package net.dmulloy2.swornpermissions.permissions;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.logging.Level;
 
 import net.dmulloy2.swornpermissions.SwornPermissions;
-import net.dmulloy2.swornpermissions.types.UniformSet;
 
 import org.bukkit.configuration.MemorySection;
 
@@ -43,7 +42,7 @@ public class WorldGroup extends Group
 	{
 		super.loadFromDisk(section);
 		this.defaultGroup = section.getBoolean("default", false);
-		this.parents = new UniformSet<String>(section.getStringList("parents"));
+		this.parents = section.getStringList("parents");
 	}
 
 	public void loadParentGroups()
@@ -80,9 +79,9 @@ public class WorldGroup extends Group
 	// ---- Getters
 
 	@Override
-	public Set<String> getAllPermissionNodes()
+	public List<String> getAllPermissionNodes()
 	{
-		Set<String> ret = new UniformSet<String>();
+		List<String> ret = new ArrayList<String>();
 
 		// Add parent nodes
 		ret.addAll(getParentNodes());
@@ -93,9 +92,9 @@ public class WorldGroup extends Group
 		return ret;
 	}
 
-	private final Set<String> getParentNodes()
+	private final List<String> getParentNodes()
 	{
-		Set<String> ret = new UniformSet<String>();
+		List<String> ret = new ArrayList<String>();
 
 		// Add all nodes from parent groups
 		if (parents != null)
@@ -124,7 +123,7 @@ public class WorldGroup extends Group
 	}
 
 	@Override
-	public Set<String> sortPermissions()
+	public List<String> sortPermissions()
 	{
 		Map<String, Boolean> permissions = new LinkedHashMap<String, Boolean>();
 
@@ -132,15 +131,15 @@ public class WorldGroup extends Group
 		permissions.putAll(getParentPermissions());
 
 		// Add group-specific nodes last
-		Set<String> groupNodes = sort(getPermissionNodes());
+		List<String> groupNodes = sort(getPermissionNodes());
 
-		for (String groupNode : new UniformSet<String>(groupNodes))
+		for (String groupNode : new ArrayList<String>(groupNodes))
 		{
 			boolean value = ! groupNode.startsWith("-");
 			permissions.put(value ? groupNode : groupNode.substring(1), value);
 		}
 
-		Set<String> ret = new UniformSet<String>();
+		List<String> ret = new ArrayList<String>();
 
 		for (Entry<String, Boolean> entry : permissions.entrySet())
 		{
@@ -191,7 +190,7 @@ public class WorldGroup extends Group
 	/**
 	 * @deprecated For conversion use ONLY
 	 */
-	public void setParentGroups(Set<String> parents)
+	public void setParentGroups(List<String> parents)
 	{
 		this.parents = parents;
 	}

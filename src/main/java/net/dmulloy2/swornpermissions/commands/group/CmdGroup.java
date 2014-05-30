@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import net.dmulloy2.swornpermissions.SwornPermissions;
 import net.dmulloy2.swornpermissions.commands.SwornPermissionsCommand;
@@ -114,13 +113,13 @@ public class CmdGroup extends SwornPermissionsCommand
 
 		sendMessage("&3====[ &e{0} &3]====", group.getName());
 
-		Set<String> permissions = group.getPermissionNodes();
+		List<String> permissions = group.getPermissionNodes();
 		if (permissions.size() > 0)
 		{
 			sendMessage("&bPermissions&e: {0}", new StringJoiner("&b, &e").appendAll(permissions.toArray(new String[0])));
 		}
 
-		Set<Group> parents = group.getParentGroups();
+		List<Group> parents = group.getParentGroups();
 		if (parents.size() > 0)
 		{
 			sendMessage("&bParents&e:");

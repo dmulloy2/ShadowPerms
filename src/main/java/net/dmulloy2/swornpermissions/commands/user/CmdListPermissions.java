@@ -3,7 +3,7 @@
  */
 package net.dmulloy2.swornpermissions.commands.user;
 
-import java.util.Set;
+import java.util.List;
 
 import net.dmulloy2.swornpermissions.SwornPermissions;
 import net.dmulloy2.swornpermissions.types.Permission;
@@ -29,7 +29,7 @@ public class CmdListPermissions extends UserCommand
 	{
 		sendMessage("&3====[ &e{0} &3]====", user.getName());
 
-		Set<String> permissions = user.getPermissionNodes();
+		List<String> permissions = user.getPermissionNodes();
 		if (! permissions.isEmpty())
 		{
 			sendMessage("&bPermissions&e: {0}", new StringJoiner("&b, &e").appendAll(permissions));

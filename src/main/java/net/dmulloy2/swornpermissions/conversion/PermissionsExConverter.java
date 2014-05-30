@@ -6,7 +6,6 @@ package net.dmulloy2.swornpermissions.conversion;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -125,7 +124,7 @@ public class PermissionsExConverter
 	{
 		Map<String, WorldGroup> ret = new HashMap<String, WorldGroup>();
 
-		if (! fc.isSet("groups"))
+		if (! fc.isList("groups"))
 			return ret;
 
 		Map<String, Object> values = fc.getConfigurationSection("groups").getValues(false);
@@ -137,7 +136,7 @@ public class PermissionsExConverter
 			MemorySection section = (MemorySection) entry.getValue();
 			group.loadFromDisk(section);
 
-			group.setParentGroups(new HashSet<String>(section.getStringList("inheritance")));
+			group.setParentGroups(section.getStringList("inheritance"));
 
 			String prefix = section.getString("prefix", "");
 			if (! prefix.isEmpty())
@@ -154,7 +153,7 @@ public class PermissionsExConverter
 		Map<UUID, User> uuidMap = new HashMap<UUID, User>();
 		Map<String, User> nameMap = new HashMap<String, User>();
 
-		if (! fc.isSet("users"))
+		if (! fc.isList("users"))
 			return uuidMap;
 
 		Map<String, Object> values = fc.getConfigurationSection("users").getValues(false);
@@ -175,11 +174,11 @@ public class PermissionsExConverter
 
 					List<String> subGroups = groups.subList(1, groups.size());
 					if (! subGroups.isEmpty())
-						user.setSubGroupNames(new HashSet<String>(subGroups));
+						user.setSubGroupNames(subGroups);
 				}
 
 				Map<String, Object> options = new HashMap<String, Object>();
-				if (section.isSet("options"))
+				if (section.isList("options"))
 					options.putAll(section.getConfigurationSection("options").getValues(false));
 
 				String prefix = section.getString("prefix", "");
@@ -192,8 +191,7 @@ public class PermissionsExConverter
 
 				user.setOptions(options);
 
-				List<String> permissions = section.getStringList("permissions");
-				user.setPermissionNodes(new HashSet<String>(permissions));
+				user.setPermissionNodes(section.getStringList("permissions"));
 
 				if (uuidCache.containsKey(name))
 				{
