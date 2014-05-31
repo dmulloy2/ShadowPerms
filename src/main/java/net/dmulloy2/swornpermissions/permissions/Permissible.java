@@ -61,7 +61,8 @@ public abstract class Permissible implements ConfigurationSerializable
 		{
 			Map<String, Object> values = section.getConfigurationSection("options").getValues(false);
 			for (Entry<String, Object> entry : values.entrySet())
-				options.put(entry.getKey().toLowerCase(), entry.getValue());
+				if (! entry.getValue().toString().isEmpty())
+					options.put(entry.getKey().toLowerCase(), entry.getValue());
 
 			this.prefix = options.containsKey("prefix") ? (String) options.get("prefix") : "";
 			this.suffix = options.containsKey("suffix") ? (String) options.get("suffix") : "";
