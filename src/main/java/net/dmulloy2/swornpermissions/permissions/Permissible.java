@@ -4,6 +4,7 @@
 package net.dmulloy2.swornpermissions.permissions;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,7 +41,7 @@ public abstract class Permissible implements ConfigurationSerializable
 		this.permissionNodes = new ArrayList<String>();
 		this.sortedPermissions = new ArrayList<String>();
 		this.permissions = new LinkedHashMap<String, Boolean>();
-		this.options = new LinkedHashMap<String, Object>();
+		this.options = new HashMap<String, Object>();
 		this.prefix = "";
 		this.suffix = "";
 	}
@@ -57,7 +58,7 @@ public abstract class Permissible implements ConfigurationSerializable
 	{
 		this.permissionNodes = new ArrayList<String>(section.getStringList("permissions"));
 
-		if (section.isList("options"))
+		if (section.isSet("options"))
 		{
 			Map<String, Object> values = section.getConfigurationSection("options").getValues(false);
 			for (Entry<String, Object> entry : values.entrySet())
