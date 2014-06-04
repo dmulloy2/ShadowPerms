@@ -58,6 +58,7 @@ public enum Permission
 
 	// Other Commands
 	CMD_RELOAD("cmd.reload"),
+	CMD_SAVE("cmd.save"),
 	CMD_VERSION("cmd.version");
 
 	private final String node;

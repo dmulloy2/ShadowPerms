@@ -37,6 +37,7 @@ permissions:
       swornpermissions.chat.rainbow: true
       swornpermissions.cmd.prefix: true
       swornpermissions.cmd.reload: true
+      swornpermissions.cmd.save: true
       swornpermissions.cmd.suffix: true
       swornpermissions.moderator: true
   swornpermissions.moderator:
@@ -151,4 +152,6 @@ permissions:
   swornpermissions.cmd.suffix.reset:
     default: false
   swornpermissions.cmd.suffix.reset.others:
+    default: false
+  swornpermissions.cmd.save:
     default: false
