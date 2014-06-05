@@ -139,7 +139,7 @@ public class CmdUser extends SwornPermissionsCommand
 			sendMessage("&bOptions&e:");
 			for (Entry<String, Object> entry : options.entrySet())
 			{
-				sendMessage("  &e{0}: &e\"&f{1}&e\"", entry.getKey(), entry.getValue());
+				sendMessage("  &b{0}&e: \"&f{1}&e\"", entry.getKey(), entry.getValue());
 			}
 		}
 	}

@@ -46,8 +46,4 @@ public abstract class Group extends Permissible
 	{
 		return parentGroups;
 	}
-
-	// ---- Utility
-
-	public abstract void update(boolean force);
 }

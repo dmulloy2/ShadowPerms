@@ -33,7 +33,7 @@ public class CmdRemoveTemp extends GroupCommand
 		}
 
 		group.removeTempPermission(permission);
-		group.update(true);
+		group.updatePermissions(true);
 
 		sendpMessage("Temp permission ''&b{0}&e'' removed from group &b{1}&e''s permissions.", permission, group.getName());
 	}

@@ -117,10 +117,7 @@ public class WorldGroup extends Group
 		if (parents != null)
 		{
 			for (Group parent : parentGroups)
-			{
-				parent.update(false);
 				ret.putAll(parent.getPermissions());
-			}
 		}
 
 		return ret;
@@ -157,10 +154,12 @@ public class WorldGroup extends Group
 	}
 
 	@Override
-	public void updatePermissions(boolean force)
+	public Map<String, Boolean> getPermissions()
 	{
-		if (permissions.isEmpty() || force)
+		if (permissions.isEmpty())
 			updatePermissionMap();
+
+		return new LinkedHashMap<String, Boolean>(permissions);
 	}
 
 	// ---- Parent Groups
@@ -214,16 +213,19 @@ public class WorldGroup extends Group
 	// ---- Utility
 
 	@Override
-	public void update(boolean force)
+	public void updatePermissions(boolean force)
 	{
-		// Update permissions
-		updatePermissions(force);
+		if (! permissions.isEmpty() || force)
+			return;
+		
+		// Update permission map
+		updatePermissionMap();
 
 		// Update child groups
 		for (Group group : plugin.getPermissionHandler().getGroups(worldName))
 		{
 			if (group.getParentGroups() != null && group.getParentGroups().contains(this))
-				group.update(force);
+				group.updatePermissions(force);
 		}
 
 		// Update users with this group

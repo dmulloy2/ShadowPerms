@@ -336,16 +336,16 @@ public class User extends Permissible
 		return ret;
 	}
 
-	public final boolean isInGroup(String groupName)
+	public final boolean isInGroup(String group)
 	{
-		return groupName.equalsIgnoreCase(groupName);
+		return groupName.equalsIgnoreCase(group);
 	}
 
-	public final boolean isInSubGroup(String groupName)
+	public final boolean isInSubGroup(String group)
 	{
 		for (String subGroup : subGroupNames)
 		{
-			if (subGroup.equalsIgnoreCase(groupName))
+			if (subGroup.equalsIgnoreCase(group))
 				return true;
 		}
 
@@ -448,7 +448,6 @@ public class User extends Permissible
 	// Main group permissions
 	private final Map<String, Boolean> getGroupPermissions()
 	{
-		group.update(false);
 		return group.getPermissions();
 	}
 
@@ -458,10 +457,7 @@ public class User extends Permissible
 		Map<String, Boolean> ret = new LinkedHashMap<String, Boolean>();
 
 		for (Group subGroup : subGroups)
-		{
-			subGroup.update(false);
-			ret.putAll(group.getPermissions());
-		}
+			ret.putAll(subGroup.getPermissions());
 
 		return ret;
 	}

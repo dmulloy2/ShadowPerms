@@ -6,7 +6,6 @@ package net.dmulloy2.swornpermissions.handlers;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -432,7 +431,7 @@ public class PermissionHandler implements Reloadable
 
 			if (! worldGroups.containsKey(world))
 			{
-				worldGroups.put(world, new LinkedHashMap<String, WorldGroup>());
+				worldGroups.put(world, new HashMap<String, WorldGroup>());
 			}
 
 			fc = entry.getValue();
@@ -462,6 +461,10 @@ public class PermissionHandler implements Reloadable
 					plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(ex, "loading world group " + groupName));
 				}
 			}
+
+			// Load parent groups
+			for (WorldGroup group : worldGroups.get(world).values())
+				group.loadParentGroups();
 		}
 	}
 

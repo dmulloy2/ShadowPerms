@@ -55,13 +55,6 @@ public class ServerGroup extends Group
 		return sort(getAllPermissionNodes());
 	}
 
-	@Override
-	public void updatePermissions(boolean force)
-	{
-		if (permissions.isEmpty() || force)
-			updatePermissionMap();
-	}
-
 	// ---- Parent Groups (Server Groups cannot have parents)
 
 	@Override
@@ -91,16 +84,19 @@ public class ServerGroup extends Group
 	// ---- Utility
 
 	@Override
-	public void update(boolean force)
+	public void updatePermissions(boolean force)
 	{
-		// Update permissions
-		updatePermissions(force);
+		if (! permissions.isEmpty() || ! force)
+			return;
+
+		// Update permission map
+		updatePermissionMap();
 
 		// Update any world groups that inherit this group
 		for (Group group : plugin.getPermissionHandler().getAllGroups())
 		{
 			if (group.getParentGroups() != null && group.getParentGroups().contains(this))
-				group.update(force);
+				group.updatePermissions(force);
 		}
 	}
 

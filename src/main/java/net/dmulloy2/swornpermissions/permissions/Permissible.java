@@ -203,7 +203,7 @@ public abstract class Permissible implements ConfigurationSerializable
 			}
 		}
 
-		// Add nedative nodes last
+		// Add negative nodes last
 		for (String permission : new ArrayList<String>(permissionNodes))
 		{
 			permission = permission.substring(1);

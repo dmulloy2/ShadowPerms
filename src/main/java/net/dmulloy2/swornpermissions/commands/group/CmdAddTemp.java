@@ -50,7 +50,7 @@ public class CmdAddTemp extends GroupCommand
 		}
 
 		group.addTempPermission(permission, System.currentTimeMillis() + time);
-		group.update(true);
+		group.updatePermissions(true);
 
 		sendpMessage("Permission ''&b{0}&e'' added to group &b{1}&e''s permissions for &b{2}&e.", permission, group.getName(),
 				TimeUtil.formatTime(time));

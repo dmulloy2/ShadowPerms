@@ -31,7 +31,7 @@ public class CmdAddSubgroup extends UserCommand
 		if (group == null)
 			return;
 
-		if (user.isInGroup(group.getName()))
+		if (user.isInGroup(group.getName()) || user.isInSubGroup(group.getName()))
 		{
 			sendpMessage("Group &b{0} &eis already available to user {1}.", group.getName(), user.getName());
 			return;
