@@ -197,9 +197,6 @@ public abstract class Permissible implements ConfigurationSerializable
 	// If there is a positive node and a negative node, the positive node is chosen
 	protected final List<String> sort(List<String> permissions)
 	{
-		// Remove duplicates
-		permissions = Util.removeDuplicates(permissions);
-
 		List<String> ret = new ArrayList<String>();
 
 		// Add * permission first
@@ -228,7 +225,7 @@ public abstract class Permissible implements ConfigurationSerializable
 				ret.add(permission);
 		}
 
-		return ret;
+		return Util.removeDuplicates(ret);
 	}
 
 	// Wildcard support

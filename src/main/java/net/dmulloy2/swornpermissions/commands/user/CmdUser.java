@@ -117,18 +117,18 @@ public class CmdUser extends SwornPermissionsCommand
 		}
 
 		sendMessage("&3====[ &e{0} &3]====", user.getName());
-		sendMessage("Group: &b{0}", user.getGroupName());
+		sendMessage("&bGroup&e: {0}", user.getGroupName());
 
 		List<String> subGroups = user.getSubGroupNames();
 		if (subGroups.size() > 0)
 		{
-			sendMessage("Sub Groups: &b{0}", FormatUtil.join("&e, &b", subGroups.toArray(new String[0])));
+			sendMessage("&bSub Groups&e: {0}", FormatUtil.join("&b, &e", subGroups.toArray(new String[0])));
 		}
 
 		List<String> permissions = user.getPermissionNodes();
 		if (permissions.size() > 0)
 		{
-			sendMessage("Permissions: {0}", new StringJoiner("&b, &e").appendAll(permissions.toArray(new String[0])));
+			sendMessage("&bPermissions&e: {0}", new StringJoiner("&b, &e").appendAll(permissions.toArray(new String[0])));
 		}
 
 		Map<String, Object> options = user.getOptions();
@@ -137,7 +137,7 @@ public class CmdUser extends SwornPermissionsCommand
 			sendMessage("&bOptions&e:");
 			for (Entry<String, Object> entry : options.entrySet())
 			{
-				sendMessage("  &e{0}: &r{1}", entry.getKey(), entry.getValue());
+				sendMessage("  &e{0}: &e\"&f{1}&e\"", entry.getKey(), entry.getValue());
 			}
 		}
 	}
