@@ -212,10 +212,11 @@ public abstract class Permissible implements ConfigurationSerializable
 		// Add positive nodes next
 		for (String permission : new ArrayList<String>(permissions))
 		{
-			if (! permission.startsWith("-") && ! ret.contains(permission))
+			if (! permission.startsWith("-"))
 			{
 				permissions.remove(permission);
-				ret.add(permission);
+				if (! ret.contains(permission))
+					ret.add(permission);
 			}
 		}
 
@@ -224,9 +225,7 @@ public abstract class Permissible implements ConfigurationSerializable
 		{
 			permissions.remove(permission);
 			if (! ret.contains(permission.substring(1)) && ! ret.contains(permission))
-			{
 				ret.add(permission);
-			}
 		}
 
 		return ret;
