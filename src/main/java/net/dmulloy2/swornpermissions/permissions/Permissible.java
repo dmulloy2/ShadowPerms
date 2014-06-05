@@ -363,8 +363,11 @@ public abstract class Permissible implements ConfigurationSerializable
 		return name;
 	}
 
-	public Map<String, Boolean> getPermissions()
+	public final Map<String, Boolean> getPermissions()
 	{
+		if (permissions.isEmpty())
+			updatePermissionMap();
+
 		return new LinkedHashMap<String, Boolean>(permissions);
 	}
 

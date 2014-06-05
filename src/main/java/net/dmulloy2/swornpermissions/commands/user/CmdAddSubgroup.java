@@ -40,6 +40,6 @@ public class CmdAddSubgroup extends UserCommand
 		user.addSubGroup(group);
 		user.updatePermissions(true);
 
-		sendpMessage("Group &b{0} &eadded to user &b{1}&e''s permissions.", group.getName());
+		sendpMessage("Group &b{0} &eadded to user &b{1}&e''s permissions.", group.getName(), user.getName());
 	}
 }

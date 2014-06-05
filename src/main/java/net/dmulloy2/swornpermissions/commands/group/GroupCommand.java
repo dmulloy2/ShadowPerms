@@ -80,7 +80,7 @@ public abstract class GroupCommand extends SwornPermissionsCommand
 		catch (Throwable e)
 		{
 			err("Error executing command: &c{0}&4: &c{1}", e.getClass().getName(), e.getLocalizedMessage());
-			plugin.getLogHandler().debug(Util.getUsefulStack(e, "executing command " + name));
+			plugin.getLogHandler().log(Level.WARNING, Util.getUsefulStack(e, "executing command " + name));
 		}
 
 		// ---- Clear Variables

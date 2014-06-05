@@ -153,15 +153,6 @@ public class WorldGroup extends Group
 		return sort(ret);
 	}
 
-	@Override
-	public Map<String, Boolean> getPermissions()
-	{
-		if (permissions.isEmpty())
-			updatePermissionMap();
-
-		return new LinkedHashMap<String, Boolean>(permissions);
-	}
-
 	// ---- Parent Groups
 
 	@Override

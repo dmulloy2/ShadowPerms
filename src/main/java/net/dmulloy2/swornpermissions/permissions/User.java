@@ -472,7 +472,7 @@ public class User extends Permissible
 	{
 		subGroupNames.remove(groupName);
 
-		for (Group subGroup : subGroups)
+		for (Group subGroup : new ArrayList<Group>(subGroups))
 		{
 			if (subGroup.getName().equalsIgnoreCase(groupName))
 				subGroups.remove(subGroup);
