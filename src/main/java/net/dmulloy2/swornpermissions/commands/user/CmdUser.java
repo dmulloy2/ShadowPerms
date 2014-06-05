@@ -47,12 +47,14 @@ public class CmdUser extends SwornPermissionsCommand
 
 		subCommands.add(new CmdAddPermission(plugin));
 		subCommands.add(new CmdAddSubgroup(plugin));
+		subCommands.add(new CmdAddTemp(plugin));
 		subCommands.add(new CmdHasGroup(plugin));
 		subCommands.add(new CmdHasOption(plugin));
 		subCommands.add(new CmdHasPermission(plugin));
 		subCommands.add(new CmdListPermissions(plugin));
 		subCommands.add(new CmdRemovePermission(plugin));
 		subCommands.add(new CmdRemoveSubgroup(plugin));
+		subCommands.add(new CmdRemoveTemp(plugin));
 		subCommands.add(new CmdSetGroup(plugin));
 		subCommands.add(new CmdSetOption(plugin));
 		subCommands.add(new CmdSetPrefix(plugin));

@@ -45,11 +45,13 @@ public class CmdGroup extends SwornPermissionsCommand
 		this.subCommands = new ArrayList<GroupCommand>();
 
 		subCommands.add(new CmdAddPermission(plugin));
+		subCommands.add(new CmdAddTemp(plugin));
 		subCommands.add(new CmdHasOption(plugin));
 		subCommands.add(new CmdHasPermission(plugin));
 		subCommands.add(new CmdListUsers(plugin));
 		subCommands.add(new CmdListPermissions(plugin));
 		subCommands.add(new CmdRemovePermission(plugin));
+		subCommands.add(new CmdRemoveTemp(plugin));
 		subCommands.add(new CmdSetOption(plugin));
 		subCommands.add(new CmdSetPrefix(plugin));
 	}

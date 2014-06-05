@@ -87,6 +87,11 @@ public class User extends Permissible
 		ret.put("group", groupName);
 		ret.put("subgroups", subGroupNames);
 		ret.put("permissions", permissionNodes);
+
+		if (! timestamps.isEmpty())
+			ret.put("timestamps", timestamps);
+
+		if (! options.isEmpty())
 		ret.put("options", options);
 
 		return ret;
@@ -96,7 +101,7 @@ public class User extends Permissible
 	public boolean shouldBeSaved()
 	{
 		return ! group.equals(plugin.getPermissionHandler().getDefaultGroup(world)) || ! permissionNodes.isEmpty()
-				|| ! subGroupNames.isEmpty() || ! options.isEmpty();
+				|| ! subGroupNames.isEmpty() || ! timestamps.isEmpty() || ! options.isEmpty();
 	}
 
 	@Override
@@ -416,7 +421,7 @@ public class User extends Permissible
 		ret.addAll(getGroupNodes());
 
 		// Add user-specific nodes
-		ret.addAll(permissionNodes);
+		ret.addAll(getPermissionNodes());
 
 		return ret;
 	}
@@ -550,8 +555,8 @@ public class User extends Permissible
 	public int hashCode()
 	{
 		int hash = 87;
-		hash *= lastKnownBy.hashCode();
-		hash *= world.hashCode();
+		hash *= 1 + lastKnownBy.hashCode();
+		hash *= 1 + world.hashCode();
 		return hash;
 	}
 }

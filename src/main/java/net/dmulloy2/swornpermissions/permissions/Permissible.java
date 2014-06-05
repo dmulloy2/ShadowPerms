@@ -23,6 +23,7 @@ import org.bukkit.permissions.Permission;
 
 public abstract class Permissible implements ConfigurationSerializable
 {
+	protected Map<String, Long> timestamps;
 	protected List<String> permissionNodes;
 	protected List<String> sortedPermissions;
 	protected Map<String, Boolean> permissions;
@@ -39,6 +40,7 @@ public abstract class Permissible implements ConfigurationSerializable
 	{
 		this.name = name;
 		this.plugin = plugin;
+		this.timestamps = new HashMap<String, Long>();
 		this.permissionNodes = new ArrayList<String>();
 		this.sortedPermissions = new ArrayList<String>();
 		this.permissions = new LinkedHashMap<String, Boolean>();
@@ -69,6 +71,17 @@ public abstract class Permissible implements ConfigurationSerializable
 			this.prefix = options.containsKey("prefix") ? (String) options.get("prefix") : "";
 			this.suffix = options.containsKey("suffix") ? (String) options.get("suffix") : "";
 		}
+
+		if (section.isSet("timestamps"))
+		{
+			Map<String, Object> values = section.getConfigurationSection("timestamps").getValues(false);
+			for (Entry<String, Object> entry : values.entrySet())
+			{
+				long expires = (long) entry.getValue();
+				if (expires < System.currentTimeMillis())
+					options.put(entry.getKey(), expires);
+			}
+		}
 	}
 
 	public abstract boolean shouldBeSaved();
@@ -90,6 +103,11 @@ public abstract class Permissible implements ConfigurationSerializable
 		permissionNodes.add(node);
 	}
 
+	public final void addTempPermission(String node, long expires)
+	{
+		timestamps.put(node, expires);
+	}
+
 	public final void removePermission(Permission permission)
 	{
 		removePermission(permission.getName());
@@ -98,6 +116,11 @@ public abstract class Permissible implements ConfigurationSerializable
 	public final void removePermission(String node)
 	{
 		permissionNodes.remove(node);
+	}
+
+	public final void removeTempPermission(String node)
+	{
+		timestamps.remove(node);
 	}
 
 	public final boolean hasPermission(String permission)
@@ -119,6 +142,12 @@ public abstract class Permissible implements ConfigurationSerializable
 	public final boolean hasPermissionNode(String node)
 	{
 		return sortedPermissions.contains(node);
+	}
+
+	public final boolean hasTempPermission(String node)
+	{
+		cleanTempPermissions();
+		return timestamps.containsKey(node);
 	}
 
 	public final String getMatchingPermission(String node)
@@ -341,7 +370,25 @@ public abstract class Permissible implements ConfigurationSerializable
 
 	public List<String> getPermissionNodes()
 	{
-		return new ArrayList<String>(permissionNodes);
+		List<String> ret = new ArrayList<String>();
+
+		// Permission nodes
+		ret.addAll(permissionNodes);
+
+		// Temp Permissions
+		cleanTempPermissions();
+		ret.addAll(timestamps.keySet());
+
+		return ret;
+	}
+
+	protected final void cleanTempPermissions()
+	{
+		for (Entry<String, Long> entry : timestamps.entrySet())
+		{
+			if (entry.getValue() > System.currentTimeMillis())
+				timestamps.remove(entry.getKey());
+		}
 	}
 
 	public List<String> getAllPermissionNodes()

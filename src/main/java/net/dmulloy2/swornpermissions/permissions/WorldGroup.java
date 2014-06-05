@@ -69,9 +69,13 @@ public class WorldGroup extends Group
 		Map<String, Object> ret = new LinkedHashMap<String, Object>();
 
 		ret.put("default", defaultGroup);
-		ret.put("permissions", new ArrayList<String>(permissionNodes));
-		ret.put("parents", new ArrayList<String>(parents));
-		ret.put("options", options);
+		ret.put("permissions", permissionNodes);
+		ret.put("parents", parents);
+
+		if (! timestamps.isEmpty())
+			ret.put("timestamps", timestamps);
+		if (! options.isEmpty())
+			ret.put("options", options);
 
 		return ret;
 	}
@@ -87,7 +91,7 @@ public class WorldGroup extends Group
 		ret.addAll(getParentNodes());
 
 		// Add group nodes
-		ret.addAll(permissionNodes);
+		ret.addAll(getPermissionNodes());
 
 		return ret;
 	}
@@ -257,8 +261,8 @@ public class WorldGroup extends Group
 	public int hashCode()
 	{
 		int hash = 89;
-		hash *= name.hashCode();
-		hash *= worldName.hashCode();
+		hash *= 1 + name.hashCode();
+		hash *= 1 + worldName.hashCode();
 		return hash;
 	}
 }

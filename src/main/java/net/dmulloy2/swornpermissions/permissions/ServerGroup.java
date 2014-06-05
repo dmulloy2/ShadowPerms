@@ -126,7 +126,7 @@ public class ServerGroup extends Group
 	public int hashCode()
 	{
 		int hash = 88;
-		hash *= name.hashCode();
+		hash *= 1 + name.hashCode();
 		return hash;
 	}
 }
