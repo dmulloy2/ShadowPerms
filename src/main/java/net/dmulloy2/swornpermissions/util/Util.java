@@ -2,6 +2,7 @@ package net.dmulloy2.swornpermissions.util;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -264,6 +265,16 @@ public class Util
 		}
 
 		return map;
+	}
+
+	public static <T> List<T> removeDuplicates(List<T> list)
+	{
+		Map<T, Object> map = new LinkedHashMap<T, Object>();
+
+		for (T element : list)
+			map.put(element, new Object());
+
+		return new ArrayList<T>(map.keySet());
 	}
 
 	/**

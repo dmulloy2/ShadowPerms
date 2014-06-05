@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import net.dmulloy2.swornpermissions.SwornPermissions;
+import net.dmulloy2.swornpermissions.util.Util;
 
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
@@ -196,6 +197,9 @@ public abstract class Permissible implements ConfigurationSerializable
 	// If there is a positive node and a negative node, the positive node is chosen
 	protected final List<String> sort(List<String> permissions)
 	{
+		// Remove duplicates
+		permissions = Util.removeDuplicates(permissions);
+
 		List<String> ret = new ArrayList<String>();
 
 		// Add * permission first
@@ -208,7 +212,7 @@ public abstract class Permissible implements ConfigurationSerializable
 		// Add positive nodes next
 		for (String permission : new ArrayList<String>(permissions))
 		{
-			if (! permission.startsWith("-"))
+			if (! permission.startsWith("-") && ! ret.contains(permission))
 			{
 				permissions.remove(permission);
 				ret.add(permission);
@@ -219,7 +223,7 @@ public abstract class Permissible implements ConfigurationSerializable
 		for (String permission : new ArrayList<String>(permissions))
 		{
 			permissions.remove(permission);
-			if (! ret.contains(permission.substring(1)))
+			if (! ret.contains(permission.substring(1)) && ! ret.contains(permission))
 			{
 				ret.add(permission);
 			}
