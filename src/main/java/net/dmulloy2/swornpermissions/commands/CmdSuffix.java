@@ -1,11 +1,11 @@
 package net.dmulloy2.swornpermissions.commands;
 
-import org.bukkit.ChatColor;
-
 import net.dmulloy2.swornpermissions.SwornPermissions;
 import net.dmulloy2.swornpermissions.permissions.User;
 import net.dmulloy2.swornpermissions.types.Permission;
 import net.dmulloy2.swornpermissions.util.FormatUtil;
+
+import org.bukkit.ChatColor;
 
 /**
  * @author dmulloy2
