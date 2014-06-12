@@ -185,13 +185,18 @@ public class MirrorHandler implements Reloadable
 			for (Entry<String, Object> entry : values.entrySet())
 			{
 				String parent = entry.getKey().toLowerCase();
+				if (parent.equals("%main_world"))
+				{
+					World main = plugin.getServer().getWorlds().get(0);
+					parent = main.getName().toLowerCase();
+				}
 
 				List<String> children = new ArrayList<String>();
 				for (String child : (List<String>) entry.getValue())
 					children.add(child.toLowerCase());
 
 				// Default world
-				if (children.contains("undefined_worlds"))
+				if (children.contains("%undefined_worlds"))
 				{
 					defaultUserWorld = parent;
 				}
@@ -221,12 +226,17 @@ public class MirrorHandler implements Reloadable
 			for (Entry<String, Object> entry : values.entrySet())
 			{
 				String parent = entry.getKey().toLowerCase();
+				if (parent.equals("%main_world"))
+				{
+					World main = plugin.getServer().getWorlds().get(0);
+					parent = main.getName().toLowerCase();
+				}
 
 				List<String> children = new ArrayList<String>();
 				for (String child : (List<String>) entry.getValue())
 					children.add(child.toLowerCase());
 
-				if (children.contains("undefined_worlds"))
+				if (children.contains("%undefined_worlds"))
 				{
 					defaultGroupWorld = parent;
 				}

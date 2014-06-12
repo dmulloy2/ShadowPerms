@@ -41,24 +41,23 @@ debug: false
 #+------------------------------------------+#
 ##############################################
 
-# User Mirrors
-# Worlds in this list will have their user files mirrored.
-# If '*' is an element, per-world user files will be disabled,
-# defaulting to that world's user files.
-# If 'undefined_worlds' is an element, all unlisted worlds will
-# default to that world.
-userMirrors:
-  "world":
-    - "world"
-    - "world_nether"
-    - "world_the_end"
+# Mirrors
+# If '%main_world' is an element, it will automatically be
+# parsed as the server's main world
+# If '*' is an element, per-world files are disabled,
+# defaulting to the parent world's files.
+# If '%undefined_worlds' is an element, all unlisted worlds
+# will be default to the parent world.
 
-# Group Mirrors - save as above, just with groups.
+# User Mirrors
+userMirrors:
+  "%main_world":
+    - "*"
+
+# Group Mirrors
 groupMirrors:
-  "world":
-    - "world"
-    - "world_nether"
-    - "world_the_end"
+  "%main_world":
+    - "*"
 
 ##############################################
 #+------------------------------------------+#
