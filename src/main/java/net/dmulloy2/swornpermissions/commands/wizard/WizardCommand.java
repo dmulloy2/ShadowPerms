@@ -14,8 +14,7 @@ import net.dmulloy2.util.FormatUtil;
 
 public abstract class WizardCommand extends SwornPermissionsCommand
 {
-	protected @Getter String action;
-
+	protected @Getter String action = "";
 	public WizardCommand(SwornPermissions plugin)
 	{
 		super(plugin);
@@ -25,14 +24,18 @@ public abstract class WizardCommand extends SwornPermissionsCommand
 	public String getUsageTemplate(boolean displayHelp)
 	{
 		StringBuilder ret = new StringBuilder();
-		ret.append(String.format("&b/%s &buser &3<user> &b%s %s", plugin.getCommandHandler().getCommandPrefix(), action, name));
+		ret.append(String.format("&b/%s &bwizard", plugin.getCommandHandler().getCommandPrefix()));
 
-		ret.append("&3 ");
+		if (! action.isEmpty())
+			ret.append(String.format("%s ", action));
+
+		ret.append(name);
+
 		for (String s : requiredArgs.subList(1, requiredArgs.size()))
-			ret.append(String.format("<%s> ", s));
+			ret.append(String.format(" &3<%s>", s));
 
 		for (String s : optionalArgs)
-			ret.append(String.format("[%s] ", s));
+			ret.append(String.format(" &3[%s]", s));
 
 		if (displayHelp)
 			ret.append("&e" + description);
