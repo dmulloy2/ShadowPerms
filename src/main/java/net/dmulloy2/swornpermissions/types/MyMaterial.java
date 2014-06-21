@@ -3,7 +3,7 @@
  */
 package net.dmulloy2.swornpermissions.types;
 
-import net.dmulloy2.swornpermissions.util.MaterialUtil;
+import net.dmulloy2.util.MaterialUtil;
 
 import org.bukkit.Material;
 import org.bukkit.material.MaterialData;

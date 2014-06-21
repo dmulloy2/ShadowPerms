@@ -19,8 +19,8 @@ import net.dmulloy2.swornpermissions.SwornPermissions;
 import net.dmulloy2.swornpermissions.permissions.Group;
 import net.dmulloy2.swornpermissions.permissions.OfflineUser;
 import net.dmulloy2.swornpermissions.permissions.User;
-import net.dmulloy2.swornpermissions.types.Reloadable;
-import net.dmulloy2.swornpermissions.util.Util;
+import net.dmulloy2.types.Reloadable;
+import net.dmulloy2.util.Util;
 
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;

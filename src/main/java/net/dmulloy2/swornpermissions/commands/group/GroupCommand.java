@@ -9,8 +9,8 @@ import lombok.Getter;
 import net.dmulloy2.swornpermissions.SwornPermissions;
 import net.dmulloy2.swornpermissions.commands.SwornPermissionsCommand;
 import net.dmulloy2.swornpermissions.permissions.Group;
-import net.dmulloy2.swornpermissions.util.FormatUtil;
-import net.dmulloy2.swornpermissions.util.Util;
+import net.dmulloy2.util.FormatUtil;
+import net.dmulloy2.util.Util;
 
 import org.bukkit.World;
 import org.bukkit.block.Block;

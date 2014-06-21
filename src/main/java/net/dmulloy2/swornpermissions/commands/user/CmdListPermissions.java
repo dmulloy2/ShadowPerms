@@ -7,7 +7,7 @@ import java.util.List;
 
 import net.dmulloy2.swornpermissions.SwornPermissions;
 import net.dmulloy2.swornpermissions.types.Permission;
-import net.dmulloy2.swornpermissions.types.StringJoiner;
+import net.dmulloy2.types.StringJoiner;
 
 /**
  * @author dmulloy2

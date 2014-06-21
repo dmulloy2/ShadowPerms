@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import net.dmulloy2.swornpermissions.SwornPermissions;
-import net.dmulloy2.swornpermissions.util.Util;
+import net.dmulloy2.util.Util;
 
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;

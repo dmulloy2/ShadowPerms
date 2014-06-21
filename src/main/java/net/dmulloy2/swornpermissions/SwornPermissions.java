@@ -42,10 +42,10 @@ import net.dmulloy2.swornpermissions.handlers.WizardHandler;
 import net.dmulloy2.swornpermissions.listeners.ChatListener;
 import net.dmulloy2.swornpermissions.listeners.PlayerListener;
 import net.dmulloy2.swornpermissions.listeners.WorldListener;
-import net.dmulloy2.swornpermissions.types.Reloadable;
-import net.dmulloy2.swornpermissions.util.FormatUtil;
 import net.dmulloy2.swornpermissions.vault.SwornChatVault;
 import net.dmulloy2.swornpermissions.vault.SwornPermissionsVault;
+import net.dmulloy2.types.Reloadable;
+import net.dmulloy2.util.FormatUtil;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.permission.Permission;
 

@@ -28,6 +28,7 @@ public enum Permission
 	USER_SET_OPTION("user.set.option"),
 	USER_SET_PREFIX("user.set.prefix"),
 	USER_SET_SUFFIX("user.set.suffix"),
+	USER_RESET("user.reset"),
 
 	GROUP_ADD_PERMISSION("group.add.permission"),
 	GROUP_VIEW_INFO("group.view.info"),

@@ -12,7 +12,7 @@ import net.dmulloy2.swornpermissions.SwornPermissions;
 import net.dmulloy2.swornpermissions.commands.SwornPermissionsCommand;
 import net.dmulloy2.swornpermissions.permissions.Group;
 import net.dmulloy2.swornpermissions.types.Permission;
-import net.dmulloy2.swornpermissions.types.StringJoiner;
+import net.dmulloy2.types.StringJoiner;
 
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;

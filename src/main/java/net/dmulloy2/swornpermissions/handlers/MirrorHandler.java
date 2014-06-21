@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import net.dmulloy2.swornpermissions.SwornPermissions;
-import net.dmulloy2.swornpermissions.types.Reloadable;
+import net.dmulloy2.types.Reloadable;
 
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;

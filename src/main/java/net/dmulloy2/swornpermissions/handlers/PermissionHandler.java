@@ -18,8 +18,8 @@ import net.dmulloy2.swornpermissions.permissions.Group;
 import net.dmulloy2.swornpermissions.permissions.ServerGroup;
 import net.dmulloy2.swornpermissions.permissions.User;
 import net.dmulloy2.swornpermissions.permissions.WorldGroup;
-import net.dmulloy2.swornpermissions.types.Reloadable;
-import net.dmulloy2.swornpermissions.util.Util;
+import net.dmulloy2.types.Reloadable;
+import net.dmulloy2.util.Util;
 
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
@@ -104,10 +104,7 @@ public class PermissionHandler implements Reloadable
 		if (user == null)
 			return null;
 
-		// Only track online users
-		if (user.isOnline())
-			users.get(world.toLowerCase()).add(user);
-
+		users.get(world.toLowerCase()).add(user);
 		return user;
 	}
 

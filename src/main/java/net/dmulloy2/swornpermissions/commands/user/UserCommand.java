@@ -9,8 +9,8 @@ import lombok.Getter;
 import net.dmulloy2.swornpermissions.SwornPermissions;
 import net.dmulloy2.swornpermissions.commands.SwornPermissionsCommand;
 import net.dmulloy2.swornpermissions.permissions.User;
-import net.dmulloy2.swornpermissions.util.FormatUtil;
-import net.dmulloy2.swornpermissions.util.Util;
+import net.dmulloy2.util.FormatUtil;
+import net.dmulloy2.util.Util;
 
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -26,7 +26,7 @@ public abstract class UserCommand extends SwornPermissionsCommand
 {
 	protected User user;
 	protected World world;
-	protected @Getter String action;
+	protected @Getter String action = "";
 
 	public UserCommand(SwornPermissions plugin)
 	{

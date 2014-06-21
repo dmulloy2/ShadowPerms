@@ -15,11 +15,11 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
 
+import net.dmulloy2.io.UUIDFetcher;
 import net.dmulloy2.swornpermissions.SwornPermissions;
 import net.dmulloy2.swornpermissions.permissions.User;
 import net.dmulloy2.swornpermissions.permissions.WorldGroup;
-import net.dmulloy2.swornpermissions.types.UUIDFetcher;
-import net.dmulloy2.swornpermissions.util.Util;
+import net.dmulloy2.util.Util;
 
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.configuration.file.YamlConfiguration;

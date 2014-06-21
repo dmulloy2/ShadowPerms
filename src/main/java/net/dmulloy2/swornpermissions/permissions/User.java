@@ -13,7 +13,7 @@ import java.util.UUID;
 import java.util.logging.Level;
 
 import net.dmulloy2.swornpermissions.SwornPermissions;
-import net.dmulloy2.swornpermissions.util.Util;
+import net.dmulloy2.util.Util;
 
 import org.bukkit.World;
 import org.bukkit.configuration.MemorySection;
@@ -246,6 +246,27 @@ public class User extends Permissible
 
 		// Sort and return
 		return sort(ret);
+	}
+
+	public final void reset()
+	{
+		// Clear Groups
+		this.group = null;
+		this.groupName = null;
+		this.subGroups.clear();
+		this.subGroupNames.clear();
+
+		// Permissions
+		this.permissions.clear();
+		this.permissionNodes.clear();
+		this.sortedPermissions.clear();
+
+		// Etc
+		this.options.clear();
+		this.timestamps.clear();
+
+		// Update
+		updatePermissions(true);
 	}
 
 	// ---- Player Management

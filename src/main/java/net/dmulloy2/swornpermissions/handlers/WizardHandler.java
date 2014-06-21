@@ -10,8 +10,8 @@ import lombok.AllArgsConstructor;
 import net.dmulloy2.swornpermissions.SwornPermissions;
 import net.dmulloy2.swornpermissions.permissions.Group;
 import net.dmulloy2.swornpermissions.permissions.WorldGroup;
-import net.dmulloy2.swornpermissions.util.FormatUtil;
-import net.dmulloy2.swornpermissions.util.Util;
+import net.dmulloy2.util.FormatUtil;
+import net.dmulloy2.util.Util;
 
 import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationAbandonedEvent;

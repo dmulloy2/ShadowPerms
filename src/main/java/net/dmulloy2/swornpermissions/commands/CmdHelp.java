@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.dmulloy2.swornpermissions.SwornPermissions;
-import net.dmulloy2.swornpermissions.util.FormatUtil;
+import net.dmulloy2.util.FormatUtil;
 
 /**
  * @author dmulloy2

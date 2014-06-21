@@ -6,8 +6,8 @@ package net.dmulloy2.swornpermissions.handlers;
 import net.dmulloy2.swornpermissions.SwornPermissions;
 import net.dmulloy2.swornpermissions.permissions.User;
 import net.dmulloy2.swornpermissions.types.Permission;
-import net.dmulloy2.swornpermissions.types.Reloadable;
-import net.dmulloy2.swornpermissions.util.FormatUtil;
+import net.dmulloy2.types.Reloadable;
+import net.dmulloy2.util.FormatUtil;
 
 import org.bukkit.entity.Player;
 

@@ -6,7 +6,7 @@ package net.dmulloy2.swornpermissions.commands.wizard;
 import lombok.Getter;
 import net.dmulloy2.swornpermissions.SwornPermissions;
 import net.dmulloy2.swornpermissions.commands.SwornPermissionsCommand;
-import net.dmulloy2.swornpermissions.util.FormatUtil;
+import net.dmulloy2.util.FormatUtil;
 
 /**
  * @author dmulloy2

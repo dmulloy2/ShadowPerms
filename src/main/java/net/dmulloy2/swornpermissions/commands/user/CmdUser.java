@@ -12,8 +12,8 @@ import net.dmulloy2.swornpermissions.SwornPermissions;
 import net.dmulloy2.swornpermissions.commands.SwornPermissionsCommand;
 import net.dmulloy2.swornpermissions.permissions.User;
 import net.dmulloy2.swornpermissions.types.Permission;
-import net.dmulloy2.swornpermissions.types.StringJoiner;
-import net.dmulloy2.swornpermissions.util.FormatUtil;
+import net.dmulloy2.types.StringJoiner;
+import net.dmulloy2.util.FormatUtil;
 
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
@@ -55,6 +55,7 @@ public class CmdUser extends SwornPermissionsCommand
 		subCommands.add(new CmdRemovePermission(plugin));
 		subCommands.add(new CmdRemoveSubgroup(plugin));
 		subCommands.add(new CmdRemoveTemp(plugin));
+		subCommands.add(new CmdReset(plugin));
 		subCommands.add(new CmdSetGroup(plugin));
 		subCommands.add(new CmdSetOption(plugin));
 		subCommands.add(new CmdSetPrefix(plugin));
@@ -69,24 +70,37 @@ public class CmdUser extends SwornPermissionsCommand
 		if (user == null)
 			return;
 
+		// No extra args
 		if (args.length == 1)
 		{
 			printUserInfo(user);
 			return;
 		}
 
-		List<String> argsList = new ArrayList<String>();
+		String action = "";
+		String name = "";
+		List<String> argsList = new ArrayList<>();
 
-		String action = args[1];
-		String name = args[2];
-		for (int i = 3; i < args.length; i++)
-			argsList.add(args[i]);
+		if (args.length == 2)
+		{
+			action = "";
+			name = args[1];
+			for (int i = 2; i < args.length; i++)
+				argsList.add(args[i]);
+		}
+		else
+		{
+			action = args[1];
+			name = args[2];
+			for (int i = 3; i < args.length; i++)
+				argsList.add(args[i]);
+		}
 
 		for (UserCommand command : subCommands)
 		{
 			if (command.getAction().equalsIgnoreCase(action))
 			{
-				if (name.equalsIgnoreCase(command.getName()) || command.getAliases().contains(name.toLowerCase()))
+				if (command.getName().equalsIgnoreCase(name) || command.getAliases().contains(name.toLowerCase()))
 				{
 					command.execute(sender, user, world, argsList.toArray(new String[0]));
 					return;

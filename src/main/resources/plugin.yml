@@ -65,6 +65,7 @@ permissions:
       swornpermissions.user.has.group: true
       swornpermissions.user.has.option: true
       swornpermissions.user.list.permissions: true
+      swornpermissions.user.reset: true
   swornpermissions.user.view.info:
     default: false
   swornpermissions.user.add.subgroup:
@@ -90,6 +91,8 @@ permissions:
   swornpermissions.user.has.option:
     default: false
   swornpermissions.user.list.permissions:
+    default: false
+  swornpermissions.user.reset:
     default: false
   swornpermissions.manage.groups:
     description: Manage groups' permissions

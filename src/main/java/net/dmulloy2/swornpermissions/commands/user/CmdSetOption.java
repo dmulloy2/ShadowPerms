@@ -7,9 +7,9 @@ import java.util.Arrays;
 
 import net.dmulloy2.swornpermissions.SwornPermissions;
 import net.dmulloy2.swornpermissions.types.Permission;
-import net.dmulloy2.swornpermissions.util.FormatUtil;
-import net.dmulloy2.swornpermissions.util.NumberUtil;
-import net.dmulloy2.swornpermissions.util.Util;
+import net.dmulloy2.util.FormatUtil;
+import net.dmulloy2.util.NumberUtil;
+import net.dmulloy2.util.Util;
 
 /**
  * @author dmulloy2

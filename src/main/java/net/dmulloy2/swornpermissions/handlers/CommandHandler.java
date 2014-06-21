@@ -9,7 +9,7 @@ import java.util.List;
 import net.dmulloy2.swornpermissions.SwornPermissions;
 import net.dmulloy2.swornpermissions.commands.CmdHelp;
 import net.dmulloy2.swornpermissions.commands.SwornPermissionsCommand;
-import net.dmulloy2.swornpermissions.util.FormatUtil;
+import net.dmulloy2.util.FormatUtil;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
