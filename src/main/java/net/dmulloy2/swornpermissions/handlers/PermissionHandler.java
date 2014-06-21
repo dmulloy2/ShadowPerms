@@ -347,9 +347,9 @@ public class PermissionHandler implements Reloadable
 		return true;
 	}
 
-	private final String getPermissionString(net.dmulloy2.swornpermissions.types.Permission permission)
+	public final String getPermissionString(net.dmulloy2.swornpermissions.types.Permission permission)
 	{
-		return plugin.getName() + "." + permission.getNode().toLowerCase();
+		return plugin.getName().toLowerCase() + "." + permission.getNode().toLowerCase();
 	}
 
 	// ---- Cleanup

@@ -16,7 +16,6 @@ import net.dmulloy2.types.StringJoiner;
 import net.dmulloy2.util.FormatUtil;
 
 import org.bukkit.World;
-import org.bukkit.command.CommandSender;
 
 /**
  * @author dmulloy2
@@ -70,7 +69,6 @@ public class CmdUser extends SwornPermissionsCommand
 		if (user == null)
 			return;
 
-		// No extra args
 		if (args.length == 1)
 		{
 			printUserInfo(user);
@@ -112,16 +110,9 @@ public class CmdUser extends SwornPermissionsCommand
 	}
 
 	@Override
-	public List<String> getSubCommandHelp(CommandSender sender)
+	public List<UserCommand> getSubCommands()
 	{
-		List<String> ret = new ArrayList<String>();
-		for (UserCommand command : subCommands)
-		{
-			if (plugin.getPermissionHandler().hasPermission(sender, command.getPermission()))
-				ret.add(command.getUsageTemplate(true));
-		}
-
-		return ret;
+		return subCommands;
 	}
 
 	private final void printUserInfo(User user)

@@ -15,7 +15,6 @@ import net.dmulloy2.swornpermissions.types.Permission;
 import net.dmulloy2.types.StringJoiner;
 
 import org.bukkit.World;
-import org.bukkit.command.CommandSender;
 
 /**
  * @author dmulloy2
@@ -70,12 +69,24 @@ public class CmdGroup extends SwornPermissionsCommand
 			return;
 		}
 
-		List<String> argsList = new ArrayList<String>();
+		String action = "";
+		String name = "";
+		List<String> argsList = new ArrayList<>();
 
-		String action = args[1];
-		String name = args[2];
-		for (int i = 3; i < args.length; i++)
-			argsList.add(args[i]);
+		if (args.length == 2)
+		{
+			action = "";
+			name = args[1];
+			for (int i = 2; i < args.length; i++)
+				argsList.add(args[i]);
+		}
+		else
+		{
+			action = args[1];
+			name = args[2];
+			for (int i = 3; i < args.length; i++)
+				argsList.add(args[i]);
+		}
 
 		for (GroupCommand command : subCommands)
 		{
@@ -93,16 +104,9 @@ public class CmdGroup extends SwornPermissionsCommand
 	}
 
 	@Override
-	public List<String> getSubCommandHelp(CommandSender sender)
+	public List<GroupCommand> getSubCommands()
 	{
-		List<String> ret = new ArrayList<String>();
-		for (GroupCommand command : subCommands)
-		{
-			if (plugin.getPermissionHandler().hasPermission(sender, command.getPermission()))
-				ret.add(command.getUsageTemplate(true));
-		}
-
-		return ret;
+		return subCommands;
 	}
 
 	private final void printGroupInfo(Group group)

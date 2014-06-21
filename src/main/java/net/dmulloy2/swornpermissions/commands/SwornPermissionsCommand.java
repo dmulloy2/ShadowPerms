@@ -7,19 +7,27 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
+import net.dmulloy2.chat.BaseComponent;
+import net.dmulloy2.chat.ClickEvent;
+import net.dmulloy2.chat.ComponentBuilder;
+import net.dmulloy2.chat.HoverEvent;
+import net.dmulloy2.chat.TextComponent;
 import net.dmulloy2.swornpermissions.SwornPermissions;
 import net.dmulloy2.swornpermissions.permissions.Group;
 import net.dmulloy2.swornpermissions.permissions.User;
 import net.dmulloy2.swornpermissions.types.Permission;
+import net.dmulloy2.types.StringJoiner;
 import net.dmulloy2.util.FormatUtil;
+import net.dmulloy2.util.NumberUtil;
 import net.dmulloy2.util.Util;
 
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.block.Block;
 import org.bukkit.command.BlockCommandSender;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 /**
@@ -28,7 +36,7 @@ import org.bukkit.entity.Player;
 
 public abstract class SwornPermissionsCommand implements CommandExecutor
 {
-	protected final SwornPermissions plugin;
+	protected SwornPermissions plugin;
 
 	protected CommandSender sender;
 	protected Player player;
@@ -40,13 +48,11 @@ public abstract class SwornPermissionsCommand implements CommandExecutor
 	protected Permission permission;
 
 	protected boolean mustBePlayer;
-
 	protected List<String> requiredArgs;
 	protected List<String> optionalArgs;
 	protected List<String> aliases;
 
 	protected boolean usesPrefix;
-
 	protected boolean hasSubCommands;
 
 	public SwornPermissionsCommand(SwornPermissions plugin)
@@ -57,34 +63,25 @@ public abstract class SwornPermissionsCommand implements CommandExecutor
 		this.aliases = new ArrayList<String>(2);
 	}
 
+	// ---- Execution
+
 	@Override
-	public final boolean onCommand(CommandSender sender, Command command, String label, String[] args)
+	public final boolean onCommand(CommandSender sender, org.bukkit.command.Command command, String label, String[] args)
 	{
 		execute(sender, args);
 		return true;
 	}
 
-	public void execute(CommandSender sender, String[] args)
+	public final void execute(CommandSender sender, String[] args)
 	{
 		this.sender = sender;
 		this.args = args;
-
-		// Prevent commands being run on command blocks, if applicable
-		if (sender instanceof BlockCommandSender && ! plugin.getConfig().getBoolean("allowCommandBlocks"))
-		{
-			Block block = ((BlockCommandSender) sender).getBlock();
-			plugin.getLogHandler().log(Level.WARNING, "SwornPermissions commands cannot be used from command blocks!");
-			plugin.getLogHandler().log(Level.WARNING, "Location: {0}, {1}, {2} ({3})", block.getX(), block.getY(), block.getZ(),
-					block.getWorld().getName());
-			return;
-		}
-
 		if (sender instanceof Player)
 			player = (Player) sender;
 
 		if (mustBePlayer && ! isPlayer())
 		{
-			err("You must be a player to execute this command!");
+			err("You must be a player to perform this command!");
 			return;
 		}
 
@@ -96,8 +93,7 @@ public abstract class SwornPermissionsCommand implements CommandExecutor
 
 		if (! hasPermission())
 		{
-			err("You do not have permission to perform this command!");
-			plugin.getLogHandler().log(Level.WARNING, sender.getName() + " was denied access to a command!");
+			err("You must have the permission \"&c{0}&4\" to perform this command!", getPermissionString());
 			return;
 		}
 
@@ -105,23 +101,30 @@ public abstract class SwornPermissionsCommand implements CommandExecutor
 		{
 			perform();
 		}
-		catch (Throwable e)
+		catch (Throwable ex)
 		{
-			err("Error executing command: &c{0}&4: &c{1}", e.getClass().getName(), e.getLocalizedMessage());
-			plugin.getLogHandler().log(Level.WARNING, Util.getUsefulStack(e, "executing command " + name));
+			err("Encountered an exception executing this command: &c{0}", ex.toString());
+			plugin.getLogHandler().log(Level.WARNING, Util.getUsefulStack(ex, "executing command " + name));
 		}
-
-		// ---- Clear Variables
-		this.sender = null;
-		this.args = null;
-		this.player = null;
 	}
 
 	public abstract void perform();
 
 	protected final boolean isPlayer()
 	{
-		return player != null;
+		return sender instanceof Player;
+	}
+
+	// ---- Permission Management
+
+	protected final boolean hasPermission(CommandSender sender, Permission permission)
+	{
+		return plugin.getPermissionHandler().hasPermission(sender, permission);
+	}
+
+	protected final boolean hasPermission(Permission permission)
+	{
+		return hasPermission(sender, permission);
 	}
 
 	protected final boolean hasPermission()
@@ -129,62 +132,21 @@ public abstract class SwornPermissionsCommand implements CommandExecutor
 		return hasPermission(permission);
 	}
 
-	protected final boolean hasPermission(Permission permission)
+	protected final String getPermissionString(Permission permission)
 	{
-		return plugin.getPermissionHandler().hasPermission(sender, permission);
+		return plugin.getPermissionHandler().getPermissionString(permission);
 	}
 
-	public final Permission getPermission()
+	private final String getPermissionString()
 	{
-		return permission;
+		return getPermissionString(permission);
 	}
 
-	public final String getDescription()
+	// ---- Messaging
+
+	protected final void err(String msg, Object... args)
 	{
-		return FormatUtil.format(description);
-	}
-
-	public final List<String> getAliases()
-	{
-		return aliases;
-	}
-
-	public final String getName()
-	{
-		return name;
-	}
-
-	public final boolean hasSubCommands()
-	{
-		return hasSubCommands;
-	}
-
-	// Sub Command Help - This is required if hasSubCommands is true
-	public List<String> getSubCommandHelp(CommandSender sender)
-	{
-		return null;
-	}
-
-	public String getUsageTemplate(boolean displayHelp)
-	{
-		StringBuilder ret = new StringBuilder();
-
-		if (usesPrefix)
-			ret.append("&b/" + plugin.getCommandHandler().getCommandPrefix() + " ");
-
-		ret.append(name);
-
-		ret.append("&3 ");
-		for (String s : requiredArgs)
-			ret.append(String.format("<%s> ", s));
-
-		for (String s : optionalArgs)
-			ret.append(String.format("[%s] ", s));
-
-		if (displayHelp)
-			ret.append("&e" + description);
-
-		return FormatUtil.format(ret.toString());
+		sendMessage("&cError: &4" + FormatUtil.format(msg, args));
 	}
 
 	protected final void sendpMessage(String message, Object... objects)
@@ -194,12 +156,7 @@ public abstract class SwornPermissionsCommand implements CommandExecutor
 
 	protected final void sendMessage(String message, Object... objects)
 	{
-		sender.sendMessage(FormatUtil.format("&e" + message, objects));
-	}
-
-	protected final void sendMessage(Player player, String message, Object... objects)
-	{
-		player.sendMessage(FormatUtil.format(message, objects));
+		sender.sendMessage(ChatColor.YELLOW + FormatUtil.format(message, objects));
 	}
 
 	protected final void sendpMessage(Player player, String message, Object... objects)
@@ -207,14 +164,211 @@ public abstract class SwornPermissionsCommand implements CommandExecutor
 		sendMessage(player, plugin.getPrefix() + message, objects);
 	}
 
-	protected final void err(String string, Object... objects)
+	protected final void sendMessage(Player player, String message, Object... objects)
 	{
-		sendMessage("&cError: &4" + string, objects);
+		player.sendMessage(ChatColor.YELLOW + FormatUtil.format(message, objects));
 	}
 
-	protected void invalidArgs()
+	// ---- Help
+
+	public final String getName()
 	{
-		err("Invalid arguments! Try: " + getUsageTemplate(false));
+		return name;
+	}
+
+	public final List<String> getAliases()
+	{
+		return aliases;
+	}
+
+	public Permission getPermission()
+	{
+		return permission;
+	}
+
+	public boolean hasSubCommands()
+	{
+		return hasSubCommands;
+	}
+
+	public String getUsageTemplate(boolean displayHelp)
+	{
+		StringBuilder ret = new StringBuilder();
+		ret.append("&b/");
+
+		if (plugin.getCommandHandler().usesCommandPrefix() && usesPrefix)
+			ret.append(plugin.getCommandHandler().getCommandPrefix() + " ");
+
+		ret.append(name);
+
+		for (String s : optionalArgs)
+			ret.append(String.format(" &3[%s]", s));
+
+		for (String s : requiredArgs)
+			ret.append(String.format(" &3<%s>", s));
+
+		if (displayHelp)
+			ret.append(" &e" + description);
+
+		return FormatUtil.format(ret.toString());
+	}
+
+	public final List<String> getSubCommandHelp(boolean displayHelp)
+	{
+		List<String> ret = new ArrayList<>();
+
+		for (SwornPermissionsCommand cmd : getSubCommands())
+		{
+			ret.add(cmd.getUsageTemplate(displayHelp));
+		}
+
+		return ret;
+	}
+
+	public final BaseComponent[] getFancyUsageTemplate()
+	{
+		return getFancyUsageTemplate(false);
+	}
+
+	public final BaseComponent[] getFancyUsageTemplate(boolean list)
+	{
+		String prefix = list ? "- " : "";
+		String usageTemplate = getUsageTemplate(false);
+
+		ComponentBuilder builder = new ComponentBuilder(ChatColor.AQUA + prefix + usageTemplate);
+
+		StringBuilder hoverTextBuilder = new StringBuilder();
+		hoverTextBuilder.append(usageTemplate + ":\n");
+
+		StringJoiner description = new StringJoiner("\n");
+		for (String s : getDescription())
+			description.append(ChatColor.YELLOW + s);
+		hoverTextBuilder.append(FormatUtil.format(description.toString()));
+
+		if (permission != null)
+		{
+			hoverTextBuilder.append("\n\n");
+			hoverTextBuilder.append(ChatColor.DARK_RED + "Permission:");
+			hoverTextBuilder.append("\n" + getPermissionString());
+		}
+
+		String hoverText = hoverTextBuilder.toString();
+
+		HoverEvent hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(hoverText));
+		builder.event(hoverEvent);
+
+		ClickEvent clickEvent = new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, ChatColor.stripColor(usageTemplate));
+		builder.event(clickEvent);
+
+		return builder.create();
+	}
+
+	public final List<BaseComponent[]> getFancySubCommandHelp()
+	{
+		return getFancySubCommandHelp(false);
+	}
+
+	public final List<BaseComponent[]> getFancySubCommandHelp(boolean list)
+	{
+		List<BaseComponent[]> ret = new ArrayList<>();
+
+		for (SwornPermissionsCommand cmd : getSubCommands())
+		{
+			ret.add(cmd.getFancyUsageTemplate(list));
+		}
+
+		return ret;
+	}
+
+	public List<? extends SwornPermissionsCommand> getSubCommands()
+	{
+		return null;
+	}
+
+	protected List<String> getDescription()
+	{
+		return Util.toList(description);
+	}
+
+	// ---- Argument Manipulation
+
+	protected final boolean argMatchesAlias(String arg, String... aliases)
+	{
+		for (String s : aliases)
+		{
+			if (arg.equalsIgnoreCase(s))
+				return true;
+		}
+
+		return false;
+	}
+
+	protected final int argAsInt(int arg, boolean msg)
+	{
+		int ret = -1;
+		if (args.length >= arg)
+			ret = NumberUtil.toInt(args[arg]);
+
+		if (msg && ret == - 1)
+			err("&c{0} &4is not a number.", args[arg]);
+
+		return ret;
+	}
+
+	protected final double argAsDouble(int arg, boolean msg)
+	{
+		double ret = -1.0D;
+		if (args.length >= arg)
+			ret = NumberUtil.toDouble(args[arg]);
+
+		if (msg && ret == -1.0D)
+			err("&c{0} &4is not a number.", args[arg]);
+
+		return ret;
+	}
+
+	protected final boolean argAsBoolean(int arg)
+	{
+		return Util.toBoolean(args[arg]);
+	}
+
+	protected final String getFinalArg(int start)
+	{
+		StringBuilder ret = new StringBuilder();
+		for (int i = 0; i < args.length; i++)
+		{
+			if (i != start)
+				ret.append(" ");
+
+			ret.append(args[i]);
+		}
+
+		return ret.toString();
+	}
+
+	// ---- Utility
+
+	protected final void invalidArgs()
+	{
+		err("Invalid arguments! Try: {0}", getUsageTemplate(false));
+	}
+
+	protected final String getName(CommandSender sender)
+	{
+		if (sender instanceof BlockCommandSender)
+		{
+			BlockCommandSender commandBlock = (BlockCommandSender) sender;
+			Location location = commandBlock.getBlock().getLocation();
+			return FormatUtil.format("CommandBlock ({0}, {1}, {2})", location.getBlockX(), location.getBlockY(), location.getBlockZ());
+		}
+		else if (sender instanceof ConsoleCommandSender)
+		{
+			return "Console";
+		}
+		else
+		{
+			return sender.getName();
+		}
 	}
 
 	protected final User getUser(boolean msg)

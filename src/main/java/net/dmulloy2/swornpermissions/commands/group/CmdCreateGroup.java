@@ -17,7 +17,8 @@ public class CmdCreateGroup extends SwornPermissionsCommand
 	public CmdCreateGroup(SwornPermissions plugin)
 	{
 		super(plugin);
-		this.name = "creategroup";
+		this.name = "create";
+		this.requiredArgs.add("group");
 		this.description = "Creates a group";
 		this.permission = Permission.GROUP_CREATE;
 		this.usesPrefix = true;
