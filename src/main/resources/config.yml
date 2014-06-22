@@ -101,8 +101,10 @@ suffix:
 ##############################################
 
 # Anti Item
+# enabled (boolean) - Whether or not to enable AntiItem item management
 # regulateEnchantments (boolean) - Disallow items with enchantments too high or low
 # maxEnchantmentLevel (int) - Max enchantment level for enchantment regulation
 antiItem:
+  enabled: false
   regulateEnchantments: false
   maxEnchantmentLevel: 25

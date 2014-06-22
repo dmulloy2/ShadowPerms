@@ -30,6 +30,7 @@ import org.bukkit.inventory.PlayerInventory;
 
 public class AntiItemHandler implements Listener, Reloadable
 {
+	private boolean enabled;
 	private int maxEnchantmentLevel;
 	private boolean regulateEnchantments;
 
@@ -38,11 +39,16 @@ public class AntiItemHandler implements Listener, Reloadable
 	{
 		this.plugin = plugin;
 		this.reload();
+
+		plugin.getServer().getPluginManager().registerEvents(this, plugin);
 	}
 
 	@EventHandler(priority = EventPriority.LOW)
 	public void onPlayerInteract(PlayerInteractEvent event)
 	{
+		if (! enabled || event.isCancelled())
+			return;
+		
 		Player player = event.getPlayer();
 		User user = plugin.getPermissionHandler().getUser(player);
 
@@ -115,6 +121,9 @@ public class AntiItemHandler implements Listener, Reloadable
 	@EventHandler(priority = EventPriority.LOW)
 	public void onBlockPlace(BlockPlaceEvent event)
 	{
+		if (! enabled || event.isCancelled())
+			return;
+
 		Player player = event.getPlayer();
 		if (player == null)
 			return;
@@ -142,39 +151,42 @@ public class AntiItemHandler implements Listener, Reloadable
 
 			User user = plugin.getPermissionHandler().getUser(player);
 
-			ItemStack helmet = inv.getHelmet();
-			if (helmet != null && user.hasPermissionNode("antiitem.item." + new MyMaterial(helmet.getType()).toString()))
+			if (enabled)
 			{
-				blockedItem(player, helmet.getType());
-				inv.setHelmet(null);
-			}
-
-			ItemStack chest = inv.getChestplate();
-			if (chest != null && user.hasPermissionNode("antiitem.item." + new MyMaterial(chest.getType())))
-			{
-				blockedItem(player, chest.getType());
-				inv.setChestplate(null);
-			}
-
-			ItemStack legs = inv.getLeggings();
-			if (legs != null && user.hasPermissionNode("antiitem.item." + new MyMaterial(legs.getType())))
-			{
-				blockedItem(player, legs.getType());
-				inv.setLeggings(null);
-			}
-
-			ItemStack boots = inv.getBoots();
-			if (boots != null && user.hasPermissionNode("antiitem.item." + new MyMaterial(boots.getType())))
-			{
-				blockedItem(player, boots.getType());
-				inv.setBoots(null);
+				ItemStack helmet = inv.getHelmet();
+				if (helmet != null && user.hasPermissionNode("antiitem.item." + new MyMaterial(helmet.getType()).toString()))
+				{
+					blockedItem(player, helmet.getType());
+					inv.setHelmet(null);
+				}
+	
+				ItemStack chest = inv.getChestplate();
+				if (chest != null && user.hasPermissionNode("antiitem.item." + new MyMaterial(chest.getType())))
+				{
+					blockedItem(player, chest.getType());
+					inv.setChestplate(null);
+				}
+	
+				ItemStack legs = inv.getLeggings();
+				if (legs != null && user.hasPermissionNode("antiitem.item." + new MyMaterial(legs.getType())))
+				{
+					blockedItem(player, legs.getType());
+					inv.setLeggings(null);
+				}
+	
+				ItemStack boots = inv.getBoots();
+				if (boots != null && user.hasPermissionNode("antiitem.item." + new MyMaterial(boots.getType())))
+				{
+					blockedItem(player, boots.getType());
+					inv.setBoots(null);
+				}
 			}
 
 			for (ItemStack item : inv.getContents())
 			{
 				if (item != null && item.getType() != Material.AIR)
 				{
-					if (user.hasPermissionNode("antiitem.item." + new MyMaterial(item.getType(), item.getData())))
+					if (enabled && user.hasPermissionNode("antiitem.item." + new MyMaterial(item.getType(), item.getData())))
 					{
 						blockedItem(player, item.getType());
 						inv.remove(item);
@@ -244,7 +256,9 @@ public class AntiItemHandler implements Listener, Reloadable
 	@Override
 	public void reload()
 	{
-		this.regulateEnchantments = plugin.getConfig().getBoolean("antiItem.regulateEnchantments", false);
+		this.enabled = plugin.getConfig().getBoolean("antiItem.enabled", false);
 		this.maxEnchantmentLevel = plugin.getConfig().getInt("antiItem.maxEnchantmentLevel", 25);
+		this.regulateEnchantments = plugin.getConfig().getBoolean("antiItem.regulateEnchantments", false);
+
 	}
 }

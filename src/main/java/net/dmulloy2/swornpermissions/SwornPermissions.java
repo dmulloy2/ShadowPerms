@@ -32,6 +32,7 @@ import net.dmulloy2.swornpermissions.commands.group.CmdListGroups;
 import net.dmulloy2.swornpermissions.commands.user.CmdUser;
 import net.dmulloy2.swornpermissions.commands.wizard.CmdWizard;
 import net.dmulloy2.swornpermissions.conversion.ConversionHandler;
+import net.dmulloy2.swornpermissions.handlers.AntiItemHandler;
 import net.dmulloy2.swornpermissions.handlers.ChatHandler;
 import net.dmulloy2.swornpermissions.handlers.CommandHandler;
 import net.dmulloy2.swornpermissions.handlers.DataHandler;
@@ -60,6 +61,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class SwornPermissions extends JavaPlugin implements Reloadable
 {
 	private @Getter PermissionHandler permissionHandler;
+	private @Getter AntiItemHandler antiItemHandler;
 	private @Getter CommandHandler commandHandler;
 	private @Getter MirrorHandler mirrorHandler;
 	private @Getter WizardHandler wizardHandler;
@@ -109,6 +111,7 @@ public class SwornPermissions extends JavaPlugin implements Reloadable
 		reloadConfig();
 
 		/** Define Other Handlers **/
+		antiItemHandler = new AntiItemHandler(this);
 		commandHandler = new CommandHandler(this);
 		mirrorHandler = new MirrorHandler(this);
 		wizardHandler = new WizardHandler(this);
