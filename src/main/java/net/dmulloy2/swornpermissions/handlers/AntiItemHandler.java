@@ -61,7 +61,7 @@ public class AntiItemHandler implements Listener, Reloadable
 				if (item != null)
 				{
 					MyMaterial mat = new MyMaterial(item.getType());
-					if (user.hasPermissionNode("antiitem.rightclick." + mat.toString()))
+					if (user.canUse("-antiitem.item.", mat))
 					{
 						event.setCancelled(true);
 					}
@@ -90,7 +90,7 @@ public class AntiItemHandler implements Listener, Reloadable
 				if (clicked != null)
 				{
 					MyMaterial mat = new MyMaterial(clicked.getType(), clicked.getState().getData());
-					if (user.hasPermissionNode("antiitem.item." + mat.toString()))
+					if (user.canUse("-antiitem.item.", mat))
 					{
 						event.setCancelled(true);
 					}
@@ -105,7 +105,7 @@ public class AntiItemHandler implements Listener, Reloadable
 				if (item != null)
 				{
 					MyMaterial mat = new MyMaterial(item.getType());
-					if (user.hasPermissionNode("antiitem.leftclick." + mat.toString()))
+					if (user.canUse("-antiitem.leftclick.", mat))
 					{
 						event.setCancelled(true);
 					}
@@ -134,7 +134,7 @@ public class AntiItemHandler implements Listener, Reloadable
 		if (placed != null)
 		{
 			MyMaterial mat = new MyMaterial(placed.getType(), placed.getState().getData());
-			if (user.hasPermissionNode("antiitem.place." + mat.toString()))
+			if (user.canUse("-antiitem.place.", mat))
 			{
 				event.setCancelled(true);
 			}
@@ -154,28 +154,28 @@ public class AntiItemHandler implements Listener, Reloadable
 			if (enabled)
 			{
 				ItemStack helmet = inv.getHelmet();
-				if (helmet != null && user.hasPermissionNode("antiitem.item." + new MyMaterial(helmet.getType()).toString()))
+				if (helmet != null && user.canUse("-antiitem.item.", new MyMaterial(helmet.getType())))
 				{
 					blockedItem(player, helmet.getType());
 					inv.setHelmet(null);
 				}
 	
 				ItemStack chest = inv.getChestplate();
-				if (chest != null && user.hasPermissionNode("antiitem.item." + new MyMaterial(chest.getType())))
+				if (chest != null && user.canUse("-antiitem.item.", new MyMaterial(chest.getType())))
 				{
 					blockedItem(player, chest.getType());
 					inv.setChestplate(null);
 				}
 	
 				ItemStack legs = inv.getLeggings();
-				if (legs != null && user.hasPermissionNode("antiitem.item." + new MyMaterial(legs.getType())))
+				if (legs != null && user.canUse("-antiitem.item.", new MyMaterial(legs.getType())))
 				{
 					blockedItem(player, legs.getType());
 					inv.setLeggings(null);
 				}
 	
 				ItemStack boots = inv.getBoots();
-				if (boots != null && user.hasPermissionNode("antiitem.item." + new MyMaterial(boots.getType())))
+				if (boots != null && user.canUse("-antiitem.item.", new MyMaterial(boots.getType())))
 				{
 					blockedItem(player, boots.getType());
 					inv.setBoots(null);
@@ -186,7 +186,7 @@ public class AntiItemHandler implements Listener, Reloadable
 			{
 				if (item != null && item.getType() != Material.AIR)
 				{
-					if (enabled && user.hasPermissionNode("antiitem.item." + new MyMaterial(item.getType(), item.getData())))
+					if (enabled && user.canUse("-antiitem.item.", new MyMaterial(item.getType(), item.getData())))
 					{
 						blockedItem(player, item.getType());
 						inv.remove(item);

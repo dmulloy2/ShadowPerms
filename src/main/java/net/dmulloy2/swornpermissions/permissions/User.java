@@ -13,6 +13,7 @@ import java.util.UUID;
 import java.util.logging.Level;
 
 import net.dmulloy2.swornpermissions.SwornPermissions;
+import net.dmulloy2.swornpermissions.types.MyMaterial;
 import net.dmulloy2.util.Util;
 
 import org.bukkit.World;
@@ -543,6 +544,34 @@ public class User extends Permissible
 	{
 		options.remove("suffix");
 		this.suffix = "";
+	}
+
+	// ---- AntiItem
+
+	@SuppressWarnings("deprecation") // Data bytes
+	public final boolean canUse(String regexPrefix, MyMaterial material)
+	{
+		for (String permission : sortedPermissions)
+		{
+			// Data-specific
+			if (permission.contains(":"))
+			{
+				String node = permission.substring(0, permission.lastIndexOf(":"));
+				if (node.matches(regexPrefix + material.getMaterial().name()))
+				{
+					String data = permission.substring(permission.lastIndexOf(":") + 1);
+					if (data.matches(material.getData().getData() + ""))
+						return false;
+				}
+			}
+			else
+			{
+				if (permission.matches(regexPrefix + material.getMaterial().name()))
+					return false;
+			}
+		}
+
+		return true;
 	}
 
 	// ---- Generic Methods
