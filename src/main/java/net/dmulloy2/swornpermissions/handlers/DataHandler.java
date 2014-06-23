@@ -257,28 +257,28 @@ public class DataHandler implements Reloadable
 		return loadedWorlds.contains(world.toLowerCase());
 	}
 
-	public final User loadUser(String world, String name)
+	public final User loadUser(String world, String identifier)
 	{
-		OfflinePlayer op = Util.matchOfflinePlayer(name);
-		if (op == null)
+		OfflinePlayer player = Util.matchOfflinePlayer(identifier);
+		if (player == null)
 			return null;
 
 		world = plugin.getMirrorHandler().getUsersParent(world);
 
-		String key = op.getUniqueId().toString();
+		String key = player.getUniqueId().toString();
 		FileConfiguration config = getUserConfig(world);
 		if (! config.isSet("users." + key))
 		{
-			if (op.isOnline())
-				return new User(plugin, op.getPlayer());
+			if (player.isOnline())
+				return new User(plugin, player.getPlayer());
 			else
-				return new OfflineUser(plugin, op);
+				return new OfflineUser(plugin, player);
 		}
 
-		if (op.isOnline())
-			return new User(plugin, op.getPlayer(), (MemorySection) config.get("users." + key));
+		if (player.isOnline())
+			return new User(plugin, player.getPlayer(), (MemorySection) config.get("users." + key));
 		else
-			return new OfflineUser(plugin, op, (MemorySection) config.get("users." + key));
+			return new OfflineUser(plugin, player, (MemorySection) config.get("users." + key));
 	}
 
 	public final User loadUser(Player player)

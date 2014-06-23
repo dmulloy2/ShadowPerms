@@ -21,6 +21,7 @@ import net.dmulloy2.swornpermissions.permissions.WorldGroup;
 import net.dmulloy2.types.Reloadable;
 import net.dmulloy2.util.Util;
 
+import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.MemorySection;
@@ -84,8 +85,18 @@ public class PermissionHandler implements Reloadable
 		return getUser(world.getName(), player.getUniqueId().toString());
 	}
 
+	public final User getUser(String world, OfflinePlayer player)
+	{
+		return getUser(world, player.getUniqueId().toString());
+	}
+
+	public final User getUser(World world, OfflinePlayer player)
+	{
+		return getUser(world.getName(), player.getUniqueId().toString());
+	}
+
 	// Root get user method... All getUser calls should be directed here
-	public final User getUser(String world, String name)
+	public final User getUser(String world, String identifier)
 	{
 		if (world == null)
 			world = getDefaultWorld().getName();
@@ -95,12 +106,12 @@ public class PermissionHandler implements Reloadable
 		// Attempt to grab from online users
 		for (User user : users.get(world))
 		{
-			if (user.getUniqueId().equals(name) || user.getName().equalsIgnoreCase(name))
+			if (user.getUniqueId().equals(identifier) || user.getName().equalsIgnoreCase(identifier))
 				return user;
 		}
 
 		// Attempt to load the user
-		User user = plugin.getDataHandler().loadUser(world, name);
+		User user = plugin.getDataHandler().loadUser(world, identifier);
 		if (user == null)
 			return null;
 

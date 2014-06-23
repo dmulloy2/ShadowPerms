@@ -12,6 +12,8 @@ import net.dmulloy2.swornpermissions.permissions.User;
 import net.dmulloy2.swornpermissions.permissions.WorldGroup;
 import net.milkbowl.vault.permission.Permission;
 
+import org.bukkit.OfflinePlayer;
+
 /**
  * @author dmulloy2
  */
@@ -62,6 +64,22 @@ public class SwornPermissionsVault extends Permission
 
 	@Override
 	public String getPrimaryGroup(String world, String player)
+	{
+		return getPlayerGroups(world, player)[0];
+	}
+
+	@Override
+	public String[] getPlayerGroups(String world, OfflinePlayer player)
+	{
+		User user = plugin.getPermissionHandler().getUser(world, player);
+		if (user == null)
+			return null;
+
+		return user.getGroups().toArray(new String[0]);
+	}
+
+	@Override
+	public String getPrimaryGroup(String world, OfflinePlayer player)
 	{
 		return getPlayerGroups(world, player)[0];
 	}
@@ -180,6 +198,81 @@ public class SwornPermissionsVault extends Permission
 
 	@Override
 	public boolean playerRemoveGroup(String world, String player, String group)
+	{
+		if (! playerInGroup(world, player, group))
+			return false;
+
+		User user = plugin.getPermissionHandler().getUser(world, player);
+		if (user == null)
+			return false;
+
+		user.removeSubGroup(group);
+		user.updatePermissions(true);
+		return true;
+	}
+
+	@Override
+	public boolean playerAdd(String world, OfflinePlayer player, String permission)
+	{
+		User user = plugin.getPermissionHandler().getUser(world, player);
+		if (user == null)
+			return false;
+
+		user.addPermission(permission);
+		user.updatePermissions(true);
+		return true;
+	}
+
+	@Override
+	public boolean playerAddGroup(String world, OfflinePlayer player, String groupName)
+	{
+		User user = plugin.getPermissionHandler().getUser(world, player);
+		if (user == null)
+			return false;
+
+		Group group = plugin.getPermissionHandler().getGroup(world, groupName);
+		if (group == null)
+			return false;
+
+		user.addSubGroup(group);
+		user.updatePermissions(true);
+		return true;
+	}
+
+	@Override
+	public boolean playerHas(String world, OfflinePlayer player, String permission)
+	{
+		User user = plugin.getPermissionHandler().getUser(world, player);
+		if (user == null)
+			return false;
+
+		return user.hasPermission(permission);
+	}
+
+	@Override
+	public boolean playerInGroup(String world, OfflinePlayer player, String group)
+	{
+		User user = plugin.getPermissionHandler().getUser(world, player);
+		if (user == null)
+			return false;
+
+		return user.isInGroup(group);
+	}
+
+	@Override
+	public boolean playerRemove(String world, OfflinePlayer player, String permission)
+	{
+		User user = plugin.getPermissionHandler().getUser(world, player);
+		if (user == null)
+			return false;
+
+		user.removePermission(permission);
+		user.updatePermissions(true);
+		return true;
+	}
+
+	@Override
+	public boolean playerRemoveGroup(String world, OfflinePlayer player, String group)
 	{
 		if (! playerInGroup(world, player, group))
 			return false;

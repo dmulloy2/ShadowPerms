@@ -46,9 +46,6 @@ public class AntiItemHandler implements Listener, Reloadable
 	@EventHandler(priority = EventPriority.LOW)
 	public void onPlayerInteract(PlayerInteractEvent event)
 	{
-		if (! enabled || event.isCancelled())
-			return;
-		
 		Player player = event.getPlayer();
 		User user = plugin.getPermissionHandler().getUser(player);
 
@@ -61,7 +58,7 @@ public class AntiItemHandler implements Listener, Reloadable
 				if (item != null)
 				{
 					MyMaterial mat = new MyMaterial(item.getType());
-					if (user.canUse("-antiitem.item.", mat))
+					if (enabled && ! user.canUse("-antiitem.item.", mat))
 					{
 						event.setCancelled(true);
 					}
@@ -90,7 +87,7 @@ public class AntiItemHandler implements Listener, Reloadable
 				if (clicked != null)
 				{
 					MyMaterial mat = new MyMaterial(clicked.getType(), clicked.getState().getData());
-					if (user.canUse("-antiitem.item.", mat))
+					if (enabled && ! user.canUse("-antiitem.item.", mat))
 					{
 						event.setCancelled(true);
 					}
@@ -105,7 +102,7 @@ public class AntiItemHandler implements Listener, Reloadable
 				if (item != null)
 				{
 					MyMaterial mat = new MyMaterial(item.getType());
-					if (user.canUse("-antiitem.leftclick.", mat))
+					if (enabled && ! user.canUse("-antiitem.leftclick.", mat))
 					{
 						event.setCancelled(true);
 					}
@@ -118,12 +115,9 @@ public class AntiItemHandler implements Listener, Reloadable
 		}
 	}
 
-	@EventHandler(priority = EventPriority.LOW)
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void onBlockPlace(BlockPlaceEvent event)
 	{
-		if (! enabled || event.isCancelled())
-			return;
-
 		Player player = event.getPlayer();
 		if (player == null)
 			return;
@@ -134,7 +128,7 @@ public class AntiItemHandler implements Listener, Reloadable
 		if (placed != null)
 		{
 			MyMaterial mat = new MyMaterial(placed.getType(), placed.getState().getData());
-			if (user.canUse("-antiitem.place.", mat))
+			if (enabled && ! user.canUse("-antiitem.place.", mat))
 			{
 				event.setCancelled(true);
 			}
@@ -154,28 +148,28 @@ public class AntiItemHandler implements Listener, Reloadable
 			if (enabled)
 			{
 				ItemStack helmet = inv.getHelmet();
-				if (helmet != null && user.canUse("-antiitem.item.", new MyMaterial(helmet.getType())))
+				if (helmet != null && ! user.canUse("-antiitem.item.", new MyMaterial(helmet.getType())))
 				{
 					blockedItem(player, helmet.getType());
 					inv.setHelmet(null);
 				}
 	
 				ItemStack chest = inv.getChestplate();
-				if (chest != null && user.canUse("-antiitem.item.", new MyMaterial(chest.getType())))
+				if (chest != null && ! user.canUse("-antiitem.item.", new MyMaterial(chest.getType())))
 				{
 					blockedItem(player, chest.getType());
 					inv.setChestplate(null);
 				}
 	
 				ItemStack legs = inv.getLeggings();
-				if (legs != null && user.canUse("-antiitem.item.", new MyMaterial(legs.getType())))
+				if (legs != null && ! user.canUse("-antiitem.item.", new MyMaterial(legs.getType())))
 				{
 					blockedItem(player, legs.getType());
 					inv.setLeggings(null);
 				}
 	
 				ItemStack boots = inv.getBoots();
-				if (boots != null && user.canUse("-antiitem.item.", new MyMaterial(boots.getType())))
+				if (boots != null && ! user.canUse("-antiitem.item.", new MyMaterial(boots.getType())))
 				{
 					blockedItem(player, boots.getType());
 					inv.setBoots(null);
@@ -186,7 +180,7 @@ public class AntiItemHandler implements Listener, Reloadable
 			{
 				if (item != null && item.getType() != Material.AIR)
 				{
-					if (enabled && user.canUse("-antiitem.item.", new MyMaterial(item.getType(), item.getData())))
+					if (enabled && ! user.canUse("-antiitem.item.", new MyMaterial(item.getType(), item.getData())))
 					{
 						blockedItem(player, item.getType());
 						inv.remove(item);
@@ -259,6 +253,5 @@ public class AntiItemHandler implements Listener, Reloadable
 		this.enabled = plugin.getConfig().getBoolean("antiItem.enabled", false);
 		this.maxEnchantmentLevel = plugin.getConfig().getInt("antiItem.maxEnchantmentLevel", 25);
 		this.regulateEnchantments = plugin.getConfig().getBoolean("antiItem.regulateEnchantments", false);
-
 	}
 }

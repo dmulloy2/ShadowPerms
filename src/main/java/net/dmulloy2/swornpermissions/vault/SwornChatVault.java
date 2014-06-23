@@ -11,6 +11,8 @@ import net.dmulloy2.util.Util;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.permission.Permission;
 
+import org.bukkit.OfflinePlayer;
+
 /**
  * @author dmulloy2
  */
@@ -71,6 +73,46 @@ public class SwornChatVault extends Chat
 
 	@Override
 	public void setPlayerSuffix(String world, String player, String suffix)
+	{
+		User user = plugin.getPermissionHandler().getUser(world, player);
+		if (user == null)
+			return;
+
+		user.setSuffix(suffix);
+	}
+
+	@Override
+	public String getPlayerPrefix(String world, OfflinePlayer player)
+	{
+		User user = plugin.getPermissionHandler().getUser(world, player);
+		if (user == null)
+			return "";
+
+		return user.getPrefix();
+	}
+
+	@Override
+	public void setPlayerPrefix(String world, OfflinePlayer player, String prefix)
+	{
+		User user = plugin.getPermissionHandler().getUser(world, player);
+		if (user == null)
+			return;
+
+		user.setPrefix(prefix);
+	}
+
+	@Override
+	public String getPlayerSuffix(String world, OfflinePlayer player)
+	{
+		User user = plugin.getPermissionHandler().getUser(world, player);
+		if (user == null)
+			return "";
+
+		return user.getSuffix();
+	}
+
+	@Override
+	public void setPlayerSuffix(String world, OfflinePlayer player, String suffix)
 	{
 		User user = plugin.getPermissionHandler().getUser(world, player);
 		if (user == null)
@@ -142,6 +184,27 @@ public class SwornChatVault extends Chat
 		user.setOption(node, val);
 	}
 
+	private Object getPlayerInfo(String world, OfflinePlayer player, String node, Object def)
+	{
+		User user = plugin.getPermissionHandler().getUser(world, player);
+		if (user == null)
+			return def;
+
+		if (user.hasOption(node))
+			return user.getOption(node);
+
+		return def;
+	}
+
+	private void setPlayerInfo(String world, OfflinePlayer player, String node, Object val)
+	{
+		User user = plugin.getPermissionHandler().getUser(world, player);
+		if (user == null)
+			return;
+
+		user.setOption(node, val);
+	}
+
 	private Object getGroupInfo(String world, String groupName, String node, Object def)
 	{
 		Group group = plugin.getPermissionHandler().getGroup(world, groupName);
@@ -176,6 +239,18 @@ public class SwornChatVault extends Chat
 	}
 
 	@Override
+	public int getPlayerInfoInteger(String world, OfflinePlayer player, String node, int defaultValue)
+	{
+		return NumberUtil.toInt(getPlayerInfo(world, player, node, defaultValue));
+	}
+
+	@Override
+	public void setPlayerInfoInteger(String world, OfflinePlayer player, String node, int value)
+	{
+		setPlayerInfo(world, player, node, value);
+	}
+
+	@Override
 	public int getGroupInfoInteger(String world, String groupName, String node, int defaultValue)
 	{
 		return NumberUtil.toInt(getGroupInfo(world, groupName, node, defaultValue));
@@ -195,6 +270,18 @@ public class SwornChatVault extends Chat
 
 	@Override
 	public void setPlayerInfoDouble(String world, String player, String node, double value)
+	{
+		setPlayerInfo(world, player, node, value);
+	}
+
+	@Override
+	public double getPlayerInfoDouble(String world, OfflinePlayer player, String node, double defaultValue)
+	{
+		return NumberUtil.toDouble(getPlayerInfo(world, player, node, defaultValue));
+	}
+
+	@Override
+	public void setPlayerInfoDouble(String world, OfflinePlayer player, String node, double value)
 	{
 		setPlayerInfo(world, player, node, value);
 	}
@@ -224,6 +311,18 @@ public class SwornChatVault extends Chat
 	}
 
 	@Override
+	public boolean getPlayerInfoBoolean(String world, OfflinePlayer player, String node, boolean defaultValue)
+	{
+		return Util.toBoolean(getPlayerInfo(world, player, node, defaultValue));
+	}
+
+	@Override
+	public void setPlayerInfoBoolean(String world, OfflinePlayer player, String node, boolean value)
+	{
+		setPlayerInfo(world, player, node, value);
+	}
+
+	@Override
 	public boolean getGroupInfoBoolean(String world, String group, String node, boolean defaultValue)
 	{
 		return Util.toBoolean(getGroupInfo(world, group, node, defaultValue));
@@ -243,6 +342,18 @@ public class SwornChatVault extends Chat
 
 	@Override
 	public void setPlayerInfoString(String world, String player, String node, String value)
+	{
+		setPlayerInfo(world, player, node, value);
+	}
+
+	@Override
+	public String getPlayerInfoString(String world, OfflinePlayer player, String node, String defaultValue)
+	{
+		return getPlayerInfo(world, player, node, defaultValue).toString();
+	}
+
+	@Override
+	public void setPlayerInfoString(String world, OfflinePlayer player, String node, String value)
 	{
 		setPlayerInfo(world, player, node, value);
 	}

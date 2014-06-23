@@ -551,6 +551,9 @@ public class User extends Permissible
 	@SuppressWarnings("deprecation") // Data bytes
 	public final boolean canUse(String regexPrefix, MyMaterial material)
 	{
+		if (! regexPrefix.startsWith("-"))
+			regexPrefix = "-" + regexPrefix;
+		
 		for (String permission : sortedPermissions)
 		{
 			// Data-specific
