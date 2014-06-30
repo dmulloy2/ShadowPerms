@@ -198,12 +198,17 @@ public class PermissionHandler implements Reloadable
 
 	public final boolean isValidPlayer(Player player)
 	{
-		for (Player pl : plugin.getServer().getOnlinePlayers())
+		try
 		{
-			if (player.equals(pl))
-				return true;
-		}
+			if (player.hasMetadata("NPC"))
+				return false;
 
+			for (Player online : Util.getOnlinePlayers())
+			{
+				if (online.getUniqueId().equals(player.getUniqueId()))
+					return true;
+			}
+		} catch (Throwable ex) { }
 		return false;
 	}
 
