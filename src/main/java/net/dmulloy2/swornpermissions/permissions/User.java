@@ -101,7 +101,7 @@ public class User extends Permissible
 	@Override
 	public boolean shouldBeSaved()
 	{
-		return ! group.equals(plugin.getPermissionHandler().getDefaultGroup(world)) || ! permissionNodes.isEmpty()
+		return ! plugin.getPermissionHandler().getDefaultGroup(world).equals(getGroup()) || ! permissionNodes.isEmpty()
 				|| ! subGroupNames.isEmpty() || ! timestamps.isEmpty() || ! options.isEmpty();
 	}
 
@@ -391,6 +391,14 @@ public class User extends Permissible
 
 	public Group getGroup()
 	{
+		if (group == null)
+		{
+			if (groupName == null || groupName.isEmpty())
+				group = plugin.getPermissionHandler().getDefaultGroup(world);
+			else
+				group = plugin.getPermissionHandler().getGroup(groupName);
+		}
+
 		return group;
 	}
 

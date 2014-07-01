@@ -105,14 +105,21 @@ public class DataHandler implements Reloadable
 					FileConfiguration fc = YamlConfiguration.loadConfiguration(file);
 					for (User user : plugin.getPermissionHandler().getUsers(world))
 					{
-						if (user.shouldBeSaved())
+						try
 						{
-							fc.createSection("users." + user.getSaveName(), user.serialize());
+							if (user.shouldBeSaved())
+							{
+								fc.createSection("users." + user.getSaveName(), user.serialize());
+							}
+							else
+							{
+								if (fc.isSet("users." + user.getSaveName()))
+									fc.set("users." + user.getSaveName(), null);
+							}
 						}
-						else
+						catch (Throwable ex)
 						{
-							if (fc.isSet("users." + user.getSaveName()))
-								fc.set("users." + user.getSaveName(), null);
+							plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(ex, "saving user " + user.getName()));
 						}
 					}
 
@@ -152,7 +159,14 @@ public class DataHandler implements Reloadable
 					FileConfiguration fc = YamlConfiguration.loadConfiguration(file);
 					for (Group group : plugin.getPermissionHandler().getGroups(world))
 					{
-						fc.createSection("groups." + group.getSaveName(), group.serialize());
+						try
+						{
+							fc.createSection("groups." + group.getSaveName(), group.serialize());
+						}
+						catch (Throwable ex)
+						{
+							plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(ex, "saving group " + group.getName()));
+						}
 					}
 
 					fc.save(file);

@@ -46,7 +46,7 @@ public class PermissionHandler implements Reloadable
 	public PermissionHandler(SwornPermissions plugin)
 	{
 		this.plugin = plugin;
-		this.users = new HashMap<String, List<User>>();
+		this.users = new HashMap<>();
 	}
 
 	// ---- User Getters
@@ -208,8 +208,14 @@ public class PermissionHandler implements Reloadable
 				if (online.getUniqueId().equals(player.getUniqueId()))
 					return true;
 			}
-		} catch (Throwable ex) { }
-		return false;
+
+			return false;
+		}
+		catch (Throwable ex)
+		{
+			plugin.getLogHandler().log(Level.WARNING, Util.getUsefulStack(ex, "validating player " + player.getName()));
+			return true;
+		}
 	}
 
 	public final boolean isRegistered(String id)
@@ -394,12 +400,11 @@ public class PermissionHandler implements Reloadable
 	}
 
 	// Remove offline users
-	// TODO: Some optimization in this method
 	private final void cleanupUsers0()
 	{
-		for (Entry<String, List<User>> entry : new HashMap<String, List<User>>(users).entrySet())
+		for (Entry<String, List<User>> entry : new HashMap<>(users).entrySet())
 		{
-			for (User user : new ArrayList<User>(entry.getValue()))
+			for (User user : new ArrayList<>(entry.getValue()))
 			{
 				if (! user.isOnline())
 					users.get(entry.getKey()).remove(user);
