@@ -13,7 +13,7 @@ import java.util.UUID;
 import java.util.logging.Level;
 
 import net.dmulloy2.swornpermissions.SwornPermissions;
-import net.dmulloy2.swornpermissions.types.MyMaterial;
+import net.dmulloy2.types.MyMaterial;
 import net.dmulloy2.util.Util;
 
 import org.bukkit.World;
