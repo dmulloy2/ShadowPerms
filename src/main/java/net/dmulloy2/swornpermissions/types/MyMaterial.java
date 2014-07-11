@@ -3,118 +3,183 @@
  */
 package net.dmulloy2.swornpermissions.types;
 
+import lombok.Data;
+import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.MaterialUtil;
+import net.dmulloy2.util.NumberUtil;
 
 import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 
 /**
+ * Represents a Material and data combination
+ *
  * @author dmulloy2
  */
 
+@Data
 public class MyMaterial
 {
-	private Material mat;
-	private MaterialData dat;
+	private final boolean ignoreData;
+	private final Material material;
+	private final short data;
 
-	public MyMaterial(Material mat, MaterialData dat)
+	public MyMaterial(Material material, short data, boolean ignoreData)
 	{
-		this.mat = mat;
-		this.dat = dat;
+		this.ignoreData = ignoreData;
+		this.material = material;
+		this.data = data;
 	}
 
-	public MyMaterial(Material mat)
+	public MyMaterial(Material material, short data)
 	{
-		this(mat, null);
+		this(material, data, false);
+	}
+
+	@SuppressWarnings("deprecation") // MaterialData#getData()
+	public MyMaterial(Material material, MaterialData data)
+	{
+		this(material, data.getData(), false);
+	}
+
+	public MyMaterial(Material material)
+	{
+		this(material, (short) 0, true);
 	}
 
 	/**
-	 * @deprecated Magic value
+	 * @deprecated ID's are deprecated
 	 */
 	@Deprecated
-	public MyMaterial(Material mat, byte dat)
+	public MyMaterial(int id, short data)
 	{
-		this.mat = mat;
-		this.dat = new MaterialData(mat, dat);
+		this(MaterialUtil.getMaterial(id), data);
 	}
 
 	/**
-	 * @deprecated Magic value
-	 */
-	@Deprecated
-	public MyMaterial(int id, byte dat)
-	{
-		this(MaterialUtil.getMaterial(id), dat);
-	}
-
-	/**
-	 * @deprecated Magic value
+	 * @deprecated ID's are deprecated
 	 */
 	@Deprecated
 	public MyMaterial(int id)
 	{
-		this(MaterialUtil.getMaterial(id));
+		this(id, (short) 0);
 	}
 
-	public Material getMaterial()
+	// --- ItemStacks
+
+	/**
+	 * Whether or not a given {@link ItemStack} matches this MyMaterial.
+	 *
+	 * @param item ItemStack to check
+	 * @return Whether or not they match
+	 */
+	public final boolean matches(ItemStack item)
 	{
-		return mat;
+		return item.getType() == material && ignoreData ? true : item.getDurability() == data;
 	}
 
-	public MaterialData getData()
+	/**
+	 * Creates a new {@link ItemStack} based around this MyMaterial.
+	 *
+	 * @param amount Amount, defaults to 1
+	 * @return The new {@link ItemStack}
+	 */
+	public final ItemStack newItemStack(int amount)
 	{
-		return dat;
+		if (amount <= 0)
+			amount = 1;
+
+		return new ItemStack(material, amount, ignoreData ? 0 : data);
 	}
 
+	// ---- Getters
+
+	/**
+	 * @return The friendly name of the underlying Material
+	 */
+	public final String getName()
+	{
+		return FormatUtil.getFriendlyName(material);
+	}
+
+	/**
+	 * @deprecated Replaced with {@link MyMaterial#getMaterial()}
+	 */
+	@Deprecated
+	public final Material getType()
+	{
+		return material;
+	}
+
+	// ---- Generic Methods
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String toString()
+	{
+		if (ignoreData)
+			return material.toString();
+
+		return "MyMaterial { material = " + material + ", data = " + data + " }";
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean equals(Object obj)
 	{
-		if (obj == this)
-			return true;
-
-		if (obj == null)
-			return false;
-
 		if (obj instanceof MyMaterial)
 		{
-			MyMaterial other = (MyMaterial) obj;
-			return mat == other.mat && dat == null ? other.dat == null : dat.equals(other.dat);
+			MyMaterial that = (MyMaterial) obj;
+			return this.material == that.material && (ignoreData ? true : this.data == that.data);
 		}
 
 		return false;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int hashCode()
 	{
-		int prime = 31;
-
-		int result = 1;
-		result = prime * result + dat.hashCode();
-		result = prime * result + (mat == null ? 0 : mat.hashCode());
-
-		return result;
+		int hash = 101;
+		hash *= 1 + material.hashCode();
+		hash *= 1 + (ignoreData ? data : 0);
+		return hash;
 	}
 
-	@Override
-	@SuppressWarnings("deprecation")
-	public String toString()
-	{
-		return mat.toString().toLowerCase() + (dat.getData() != 0 ? ":" + dat.getData() : "");
-	}
-
-	@SuppressWarnings("deprecation") // Material Data
+	/**
+	 * Attempts to get a MyMaterial from a given string.
+	 * <p>
+	 * Format: <code>Material:Data</code>
+	 *
+	 * @param string String to get the MyMaterial from
+	 * @return Resulting MyMaterial, or null if parsing failed
+	 */
 	public static MyMaterial fromString(String string)
 	{
-		if (string.contains(":"))
+		try
 		{
-			String[] split = string.split(":");
-			Material mat = MaterialUtil.getMaterial(split[0]);
-			MaterialData dat = new MaterialData(mat, Byte.parseByte(split[1]));
-			return new MyMaterial(mat, dat);
-		}
+			if (string.contains(":"))
+			{
+				String[] split = string.split(":");
+				Material material = MaterialUtil.getMaterial(split[0]);
+				short data = NumberUtil.toShort(split[1]);
+				boolean ignoreData = data == -1;
+				if (data <= 0)
+					data = 0;
 
-		Material mat = MaterialUtil.getMaterial(string);
-		return new MyMaterial(mat);
+				return new MyMaterial(material, data, ignoreData);
+			}
+
+			Material material = MaterialUtil.getMaterial(string);
+			return new MyMaterial(material);
+		} catch (Throwable ex) { }
+		return null;
 	}
 }

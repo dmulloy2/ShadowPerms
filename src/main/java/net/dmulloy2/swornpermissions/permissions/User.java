@@ -416,6 +416,7 @@ public class User extends Permissible
 	/**
 	 * @deprecated For conversion use ONLY
 	 */
+	@Deprecated
 	public void setGroupName(String groupName)
 	{
 		this.groupName = groupName;
@@ -434,6 +435,7 @@ public class User extends Permissible
 	/**
 	 * @deprecated For conversion use ONLY
 	 */
+	@Deprecated
 	public void setSubGroupNames(List<String> subGroupNames)
 	{
 		this.subGroupNames = subGroupNames;
@@ -556,12 +558,11 @@ public class User extends Permissible
 
 	// ---- AntiItem
 
-	@SuppressWarnings("deprecation") // Data bytes
 	public final boolean canUse(String regexPrefix, MyMaterial material)
 	{
 		if (! regexPrefix.startsWith("-"))
 			regexPrefix = "-" + regexPrefix;
-		
+
 		for (String permission : sortedPermissions)
 		{
 			// Data-specific
@@ -571,7 +572,7 @@ public class User extends Permissible
 				if (node.matches(regexPrefix + material.getMaterial().name()))
 				{
 					String data = permission.substring(permission.lastIndexOf(":") + 1);
-					if (data.matches(material.getData().getData() + ""))
+					if (data.matches(material.getData() + ""))
 						return false;
 				}
 			}
