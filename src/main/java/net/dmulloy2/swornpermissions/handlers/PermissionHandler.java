@@ -103,10 +103,15 @@ public class PermissionHandler implements Reloadable
 
 		world = plugin.getMirrorHandler().getUsersParent(world);
 
+		// Attempt to match player
+		Player player = Util.matchPlayer(identifier);
+		if (player != null)
+			identifier = player.getUniqueId().toString();
+
 		// Attempt to grab from online users
 		for (User user : users.get(world))
 		{
-			if (user.getUniqueId().equals(identifier) || user.getName().equalsIgnoreCase(identifier))
+			if (user.getUniqueId().toString().equals(identifier) || user.getName().equalsIgnoreCase(identifier))
 				return user;
 		}
 
