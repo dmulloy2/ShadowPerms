@@ -14,7 +14,7 @@ import net.dmulloy2.util.FormatUtil;
 
 /**
  * Generic help command.
- * 
+ *
  * @author dmulloy2
  */
 
@@ -87,12 +87,12 @@ public class CmdHelp extends SwornPermissionsCommand
 
 	public List<BaseComponent[]> getHeader(int index)
 	{
-		List<BaseComponent[]> ret = new ArrayList<>();
+		List<String> header = new ArrayList<>();
 
-		ret.add(TextComponent.fromLegacyText(FormatUtil.format("&3====[ &e{0} Commands &3(&e{1}&3/&e{2}&3) ]====", plugin.getName(),
-				index, getPageCount())));
+		header.add(FormatUtil.format("&3====[ &e{0} Commands &3(&e{1}&3/&e{2}&3) ]====", plugin.getName(), index, getPageCount()));
+		header.add(FormatUtil.format("&eKey: &3<required> [optional]"));
 
-		return ret;
+		return TextComponent.fromLegacyList(header);
 	}
 
 	public List<BaseComponent[]> getLines(int startIndex, int endIndex)
@@ -114,7 +114,7 @@ public class CmdHelp extends SwornPermissionsCommand
 
 	private final List<BaseComponent[]> buildHelpMenu()
 	{
-		List<BaseComponent[]> ret = new ArrayList<BaseComponent[]>();
+		List<BaseComponent[]> ret = new ArrayList<>();
 
 		for (SwornPermissionsCommand cmd : plugin.getCommandHandler().getRegisteredPrefixedCommands())
 		{

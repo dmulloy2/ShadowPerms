@@ -24,7 +24,7 @@ public abstract class WizardCommand extends SwornPermissionsCommand
 	public String getUsageTemplate(boolean displayHelp)
 	{
 		StringBuilder ret = new StringBuilder();
-		ret.append(String.format("&b/%s &bwizard", plugin.getCommandHandler().getCommandPrefix()));
+		ret.append(String.format("&b/%s &bwizard ", plugin.getCommandHandler().getCommandPrefix()));
 
 		if (! action.isEmpty())
 			ret.append(String.format("%s ", action));

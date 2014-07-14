@@ -11,12 +11,15 @@ import net.dmulloy2.chat.BaseComponent;
 import net.dmulloy2.chat.ClickEvent;
 import net.dmulloy2.chat.ComponentBuilder;
 import net.dmulloy2.chat.HoverEvent;
+import net.dmulloy2.chat.HoverEvent.Action;
 import net.dmulloy2.chat.TextComponent;
 import net.dmulloy2.swornpermissions.SwornPermissions;
 import net.dmulloy2.swornpermissions.permissions.Group;
 import net.dmulloy2.swornpermissions.permissions.User;
 import net.dmulloy2.swornpermissions.types.Permission;
+import net.dmulloy2.types.CommandVisibility;
 import net.dmulloy2.types.StringJoiner;
+import net.dmulloy2.util.ChatUtil;
 import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.NumberUtil;
 import net.dmulloy2.util.Util;
@@ -46,14 +49,15 @@ public abstract class SwornPermissionsCommand implements CommandExecutor
 	protected String description;
 
 	protected Permission permission;
+	protected CommandVisibility visibility = CommandVisibility.PERMISSION;
 
-	protected boolean mustBePlayer;
 	protected List<String> requiredArgs;
 	protected List<String> optionalArgs;
 	protected List<String> aliases;
 
-	protected boolean usesPrefix;
 	protected boolean hasSubCommands;
+	protected boolean mustBePlayer;
+	protected boolean usesPrefix;
 
 	public SwornPermissionsCommand(SwornPermissions plugin)
 	{
@@ -91,10 +95,25 @@ public abstract class SwornPermissionsCommand implements CommandExecutor
 			return;
 		}
 
-		if (! hasPermission())
+		if (! isVisibleTo(sender))
 		{
-			err("You must have the permission \"&c{0}&4\" to perform this command!", getPermissionString());
-			return;
+			if (visibility == CommandVisibility.PERMISSION)
+			{
+				StringJoiner hoverText = new StringJoiner("\n");
+				hoverText.append(FormatUtil.format("&4Permission:\n"));
+				hoverText.append(getPermissionString());
+
+				ComponentBuilder builder = new ComponentBuilder(FormatUtil.format("&cError: &4You do not have "));
+				builder.append(FormatUtil.format("&cpermission")).event(new HoverEvent(Action.SHOW_TEXT, hoverText.toString()));
+				builder.append(FormatUtil.format(" &4to perform this command!"));
+				sendMessage(builder.create());
+				return;
+			}
+			else
+			{
+				err("You cannot use this command!");
+				return;
+			}
 		}
 
 		try
@@ -103,8 +122,14 @@ public abstract class SwornPermissionsCommand implements CommandExecutor
 		}
 		catch (Throwable ex)
 		{
-			err("Encountered an exception executing this command: &c{0}", ex.toString());
-			plugin.getLogHandler().log(Level.WARNING, Util.getUsefulStack(ex, "executing command " + name));
+			String stack = Util.getUsefulStack(ex, "executing command " + name);
+			plugin.getLogHandler().log(Level.WARNING, stack);
+
+			String error = FormatUtil.format("&cError: &4Encountered an exception executing this command: ");
+
+			ComponentBuilder builder = new ComponentBuilder(error);
+			builder.append(FormatUtil.format("&c{0}", ex.toString())).event(new HoverEvent(Action.SHOW_TEXT, stack));
+			sendMessage(builder.create());
 		}
 	}
 
@@ -137,9 +162,24 @@ public abstract class SwornPermissionsCommand implements CommandExecutor
 		return plugin.getPermissionHandler().getPermissionString(permission);
 	}
 
-	private final String getPermissionString()
+	public final String getPermissionString()
 	{
 		return getPermissionString(permission);
+	}
+
+	public final boolean isVisibleTo(CommandSender sender)
+	{
+		switch (visibility)
+		{
+			case ALL:
+				return true;
+			case NONE:
+				return false;
+			case OPS:
+				return player.isOp();
+			default:
+				return hasPermission(sender, permission);
+		}
 	}
 
 	// ---- Messaging
@@ -159,14 +199,31 @@ public abstract class SwornPermissionsCommand implements CommandExecutor
 		sender.sendMessage(ChatColor.YELLOW + FormatUtil.format(message, objects));
 	}
 
-	protected final void sendpMessage(Player player, String message, Object... objects)
+	protected final void err(CommandSender sender, String msg, Object... args)
 	{
-		sendMessage(player, plugin.getPrefix() + message, objects);
+		sendMessage(sender, "&cError: &4" + FormatUtil.format(msg, args));
 	}
 
-	protected final void sendMessage(Player player, String message, Object... objects)
+	protected final void sendpMessage(CommandSender sender, String message, Object... objects)
 	{
-		player.sendMessage(ChatColor.YELLOW + FormatUtil.format(message, objects));
+		sendMessage(sender, plugin.getPrefix() + message, objects);
+	}
+
+	protected final void sendMessage(CommandSender sender, String message, Object... objects)
+	{
+		sender.sendMessage(ChatColor.YELLOW + FormatUtil.format(message, objects));
+	}
+
+	// ---- Fancy Messaging
+
+	protected final void sendMessage(BaseComponent... components)
+	{
+		sendMessage(sender, components);
+	}
+
+	protected final void sendMessage(CommandSender sender, BaseComponent... components)
+	{
+		ChatUtil.sendMessage(player, components);
 	}
 
 	// ---- Help
@@ -179,16 +236,6 @@ public abstract class SwornPermissionsCommand implements CommandExecutor
 	public final List<String> getAliases()
 	{
 		return aliases;
-	}
-
-	public Permission getPermission()
-	{
-		return permission;
-	}
-
-	public boolean hasSubCommands()
-	{
-		return hasSubCommands;
 	}
 
 	public String getUsageTemplate(boolean displayHelp)
@@ -213,24 +260,12 @@ public abstract class SwornPermissionsCommand implements CommandExecutor
 		return FormatUtil.format(ret.toString());
 	}
 
-	public final List<String> getSubCommandHelp(boolean displayHelp)
-	{
-		List<String> ret = new ArrayList<>();
-
-		for (SwornPermissionsCommand cmd : getSubCommands())
-		{
-			ret.add(cmd.getUsageTemplate(displayHelp));
-		}
-
-		return ret;
-	}
-
-	public final BaseComponent[] getFancyUsageTemplate()
+	public BaseComponent[] getFancyUsageTemplate()
 	{
 		return getFancyUsageTemplate(false);
 	}
 
-	public final BaseComponent[] getFancyUsageTemplate(boolean list)
+	public BaseComponent[] getFancyUsageTemplate(boolean list)
 	{
 		String prefix = list ? "- " : "";
 		String usageTemplate = getUsageTemplate(false);
@@ -263,12 +298,41 @@ public abstract class SwornPermissionsCommand implements CommandExecutor
 		return builder.create();
 	}
 
-	public final List<BaseComponent[]> getFancySubCommandHelp()
+	public List<String> getDescription()
+	{
+		return Util.toList(description);
+	}
+
+	// ---- Sub Commands
+
+	public final boolean hasSubCommands()
+	{
+		return hasSubCommands;
+	}
+
+	public List<? extends SwornPermissionsCommand> getSubCommands()
+	{
+		return null;
+	}
+
+	public List<String> getSubCommandHelp(boolean displayHelp)
+	{
+		List<String> ret = new ArrayList<>();
+
+		for (SwornPermissionsCommand cmd : getSubCommands())
+		{
+			ret.add(cmd.getUsageTemplate(displayHelp));
+		}
+
+		return ret;
+	}
+
+	public List<BaseComponent[]> getFancySubCommandHelp()
 	{
 		return getFancySubCommandHelp(false);
 	}
 
-	public final List<BaseComponent[]> getFancySubCommandHelp(boolean list)
+	public List<BaseComponent[]> getFancySubCommandHelp(boolean list)
 	{
 		List<BaseComponent[]> ret = new ArrayList<>();
 
@@ -278,16 +342,6 @@ public abstract class SwornPermissionsCommand implements CommandExecutor
 		}
 
 		return ret;
-	}
-
-	public List<? extends SwornPermissionsCommand> getSubCommands()
-	{
-		return null;
-	}
-
-	protected List<String> getDescription()
-	{
-		return Util.toList(description);
 	}
 
 	// ---- Argument Manipulation
@@ -309,7 +363,7 @@ public abstract class SwornPermissionsCommand implements CommandExecutor
 		if (args.length >= arg)
 			ret = NumberUtil.toInt(args[arg]);
 
-		if (msg && ret == - 1)
+		if (msg && ret == -1)
 			err("&c{0} &4is not a number.", args[arg]);
 
 		return ret;
@@ -335,7 +389,7 @@ public abstract class SwornPermissionsCommand implements CommandExecutor
 	protected final String getFinalArg(int start)
 	{
 		StringBuilder ret = new StringBuilder();
-		for (int i = 0; i < args.length; i++)
+		for (int i = start; i < args.length; i++)
 		{
 			if (i != start)
 				ret.append(" ");
@@ -383,23 +437,37 @@ public abstract class SwornPermissionsCommand implements CommandExecutor
 		return plugin.getPermissionHandler().getUser(player);
 	}
 
-	protected final User getUser(int arg, World world, boolean msg)
+	protected final User getUser()
 	{
-		if (args.length >= arg)
-			return getUser(args[arg], world, msg);
+		return getUser(true);
+	}
 
-		if (msg)
-			err("User not specified!");
+	protected final User getUser(int index, World world, boolean msg)
+	{
+		if (args.length > index)
+			return getUser(args[index], world, msg);
+
+		if (msg) err("User not specified!");
 		return null;
 	}
 
-	protected final User getUser(String name, World world, boolean msg)
+	protected final User getUser(int index, World world)
 	{
-		User user = plugin.getPermissionHandler().getUser(world.getName(), name);
+		return getUser(index, world, true);
+	}
+
+	protected final User getUser(String identifier, World world, boolean msg)
+	{
+		User user = plugin.getPermissionHandler().getUser(world.getName(), identifier);
 		if (user == null && msg)
-			err("User \"&c{0}&4\" not found!", name);
+			err("User \"&c{0}&4\" not found!", identifier);
 
 		return user;
+	}
+
+	protected final User getUser(String identifier, World world)
+	{
+		return getUser(identifier, world, true);
 	}
 
 	protected final Group getGroup(int arg, World world, boolean msg)
@@ -407,9 +475,13 @@ public abstract class SwornPermissionsCommand implements CommandExecutor
 		if (args.length > arg)
 			return getGroup(args[arg], world, msg);
 
-		if (msg)
-			err("Group not specified!");
+		if (msg) err("Group not specified!");
 		return null;
+	}
+
+	protected final Group getGroup(int arg, World world)
+	{
+		return getGroup(arg, world, true);
 	}
 
 	protected final Group getGroup(String name, World world, boolean msg)
@@ -421,11 +493,16 @@ public abstract class SwornPermissionsCommand implements CommandExecutor
 		return group;
 	}
 
+	protected final Group getGroup(String name, World world)
+	{
+		return getGroup(name, world, true);
+	}
+
 	public final World getWorld()
 	{
 		try
 		{
-			World world = plugin.getServer().getWorld(args[args.length]);
+			World world = plugin.getServer().getWorld(args[args.length - 1]);
 			if (world != null)
 				return world;
 		} catch (Throwable ex) { }
