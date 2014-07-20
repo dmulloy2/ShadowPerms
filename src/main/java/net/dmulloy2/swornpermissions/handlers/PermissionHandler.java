@@ -4,7 +4,6 @@
 package net.dmulloy2.swornpermissions.handlers;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -273,14 +272,14 @@ public class PermissionHandler implements Reloadable
 		return worldGroups.get(world).get(name);
 	}
 
-	public Collection<WorldGroup> getGroups(World world)
+	public List<WorldGroup> getGroups(World world)
 	{
 		return getGroups(world.getName());
 	}
 
-	public Collection<WorldGroup> getGroups(String world)
+	public List<WorldGroup> getGroups(String world)
 	{
-		return worldGroups.get(world.toLowerCase()).values();
+		return Util.newList(worldGroups.get(world.toLowerCase()).values());
 	}
 
 	public List<Group> getAllGroups()

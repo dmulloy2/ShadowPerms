@@ -17,7 +17,6 @@ import java.util.logging.Level;
 import lombok.Getter;
 import net.dmulloy2.swornpermissions.SwornPermissions;
 import net.dmulloy2.swornpermissions.permissions.Group;
-import net.dmulloy2.swornpermissions.permissions.OfflineUser;
 import net.dmulloy2.swornpermissions.permissions.User;
 import net.dmulloy2.types.Reloadable;
 import net.dmulloy2.util.Util;
@@ -283,16 +282,11 @@ public class DataHandler implements Reloadable
 		FileConfiguration config = getUserConfig(world);
 		if (! config.isSet("users." + key))
 		{
-			if (player.isOnline())
-				return new User(plugin, player.getPlayer());
-			else
-				return new OfflineUser(plugin, player);
+			// New user
+			return new User(plugin, player);
 		}
 
-		if (player.isOnline())
-			return new User(plugin, player.getPlayer(), (MemorySection) config.get("users." + key));
-		else
-			return new OfflineUser(plugin, player, (MemorySection) config.get("users." + key));
+		return new User(plugin, player, (MemorySection) config.get("users." + key));
 	}
 
 	public final User loadUser(Player player)

@@ -16,6 +16,7 @@ import net.dmulloy2.swornpermissions.SwornPermissions;
 import net.dmulloy2.types.MyMaterial;
 import net.dmulloy2.util.Util;
 
+import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.entity.Player;
@@ -45,14 +46,15 @@ public class User extends Permissible
 		super(plugin, name);
 		this.group = null;
 		this.groupName = null;
-		this.subGroups = new ArrayList<Group>();
-		this.subGroupNames = new ArrayList<String>();
+		this.subGroups = new ArrayList<>();
+		this.subGroupNames = new ArrayList<>();
 	}
 
-	public User(SwornPermissions plugin, Player player)
+	public User(SwornPermissions plugin, OfflinePlayer player)
 	{
 		this(plugin, player.getName());
-		this.world = player.getWorld();
+		if (player.isOnline())
+			this.world = player.getPlayer().getWorld();
 	}
 
 	public User(SwornPermissions plugin, String name, MemorySection section)
@@ -61,7 +63,7 @@ public class User extends Permissible
 		this.loadFromDisk(section);
 	}
 
-	public User(SwornPermissions plugin, Player player, MemorySection section)
+	public User(SwornPermissions plugin, OfflinePlayer player, MemorySection section)
 	{
 		this(plugin, player);
 		this.loadFromDisk(section);
@@ -137,18 +139,16 @@ public class User extends Permissible
 
 		World newWorld = player.getWorld();
 
-		boolean updatePermissions = force || world == null;
-
-		if (updatePermissions || ! plugin.getMirrorHandler().areGroupsLinked(world, newWorld))
+		boolean updatePermissions = false;
+		if (force || world == null || ! plugin.getMirrorHandler().areGroupsLinked(world, newWorld))
 		{
 			this.group = null;
-			this.subGroups = new ArrayList<Group>();
+			this.subGroups = new ArrayList<>();
 
 			// Default group
 			if (groupName == null || groupName.isEmpty())
 			{
 				this.group = plugin.getPermissionHandler().getDefaultGroup(newWorld);
-
 				if (group == null)
 				{
 					plugin.getLogHandler().log(Level.SEVERE, "Failed to find a default group! {0} will not have any perms!", name);
@@ -163,7 +163,6 @@ public class User extends Permissible
 			if (group == null)
 			{
 				this.group = plugin.getPermissionHandler().getDefaultGroup(newWorld);
-
 				if (group == null)
 				{
 					plugin.getLogHandler().log(Level.SEVERE, "Failed to find a default group! {0} will not have any perms!", name);
@@ -188,7 +187,7 @@ public class User extends Permissible
 		this.world = newWorld;
 
 		// Do we need to continue?
-		if (! force && ! updatePermissions)
+		if (! updatePermissions)
 			return;
 
 		// Update prefix
