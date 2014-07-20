@@ -18,7 +18,6 @@ public class CmdVersion extends SwornPermissionsCommand
 		this.name = "version";
 		this.aliases.add("v");
 		this.description = "Displays version information";
-
 		this.permission = Permission.CMD_VERSION;
 		this.usesPrefix = true;
 	}
@@ -27,8 +26,8 @@ public class CmdVersion extends SwornPermissionsCommand
 	public void perform()
 	{
 		sendMessage("&3====[ &eSwornPermissions &3]====");
-		sendMessage("&bAuthor: &edmulloy2");
-		sendMessage("&bVersion: &e{0}", plugin.getDescription().getVersion());
-		// sendMessage("&bBukkitDev Link:&e http://dev.bukkit.org/bukkit-plugins/swornpermissions");
+		sendMessage("&bVersion&e: {0}", plugin.getDescription().getVersion());
+		sendMessage("&bAuthor&e: dmulloy2");
+		sendMessage("&bIssues&e: https://github.com/dmulloy2/SwornPermissions/issues");
 	}
 }
