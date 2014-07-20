@@ -2,7 +2,7 @@
 
 ## Issues
 
-SwornGuard's issue tracker can be found here: https://github.com/dmulloy2/SwornPermissions/issues. Please follow the templates below.
+SwornPermissions' issue tracker can be found here: https://github.com/dmulloy2/SwornPermissions/issues. Please follow the templates below.
 
 ### Bug
 
