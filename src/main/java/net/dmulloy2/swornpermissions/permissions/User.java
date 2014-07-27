@@ -95,7 +95,7 @@ public class User extends Permissible
 			ret.put("timestamps", timestamps);
 
 		if (! options.isEmpty())
-		ret.put("options", options);
+			ret.put("options", options);
 
 		return ret;
 	}
