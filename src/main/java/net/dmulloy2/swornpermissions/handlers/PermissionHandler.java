@@ -268,7 +268,6 @@ public class PermissionHandler implements Reloadable
 			return serverGroups.get(name);
 
 		world = plugin.getMirrorHandler().getUsersParent(world);
-
 		return worldGroups.get(world).get(name);
 	}
 
@@ -279,12 +278,17 @@ public class PermissionHandler implements Reloadable
 
 	public List<WorldGroup> getGroups(String world)
 	{
-		return Util.newList(worldGroups.get(world.toLowerCase()).values());
+		Map<String, WorldGroup> groups = worldGroups.get(world.toLowerCase());
+		if (groups != null)
+			return new ArrayList<>(groups.values());
+
+		return null;
 	}
 
 	public List<Group> getAllGroups()
 	{
-		List<Group> ret = new ArrayList<Group>();
+		List<Group> ret = new ArrayList<>();
+
 		ret.addAll(serverGroups.values());
 		for (Map<String, WorldGroup> groups : worldGroups.values())
 		{

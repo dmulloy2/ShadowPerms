@@ -18,6 +18,7 @@ import lombok.Getter;
 import net.dmulloy2.swornpermissions.SwornPermissions;
 import net.dmulloy2.swornpermissions.permissions.Group;
 import net.dmulloy2.swornpermissions.permissions.User;
+import net.dmulloy2.swornpermissions.permissions.WorldGroup;
 import net.dmulloy2.types.Reloadable;
 import net.dmulloy2.util.Util;
 
@@ -156,19 +157,24 @@ public class DataHandler implements Reloadable
 						file.createNewFile();
 
 					FileConfiguration fc = YamlConfiguration.loadConfiguration(file);
-					for (Group group : plugin.getPermissionHandler().getGroups(world))
+					List<WorldGroup> groups = plugin.getPermissionHandler().getGroups(world);
+					if (groups != null)
 					{
-						try
+						for (Group group : plugin.getPermissionHandler().getGroups(world))
 						{
-							fc.createSection("groups." + group.getSaveName(), group.serialize());
+							try
+							{
+								fc.createSection("groups." + group.getSaveName(), group.serialize());
+							}
+							catch (Throwable ex)
+							{
+								plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(ex, "saving group " + group.getName()));
+							}
 						}
-						catch (Throwable ex)
-						{
-							plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(ex, "saving group " + group.getName()));
-						}
+
+						fc.save(file);
 					}
 
-					fc.save(file);
 					groupConfigs.put(world, fc);
 				}
 				catch (Throwable ex)
