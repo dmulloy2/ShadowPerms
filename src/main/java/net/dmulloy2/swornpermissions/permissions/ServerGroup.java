@@ -19,7 +19,7 @@ public class ServerGroup extends Group
 {
 	public ServerGroup(SwornPermissions plugin, String name)
 	{
-		super(plugin, name);
+		super(plugin, name, null);
 	}
 
 	public ServerGroup(SwornPermissions plugin, String name, MemorySection section)
@@ -33,7 +33,7 @@ public class ServerGroup extends Group
 	@Override
 	public Map<String, Object> serialize()
 	{
-		Map<String, Object> ret = new LinkedHashMap<String, Object>();
+		Map<String, Object> ret = new LinkedHashMap<>();
 
 		ret.put("permissions", permissionNodes);
 		ret.put("options", options);

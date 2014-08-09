@@ -289,26 +289,25 @@ public class DataHandler implements Reloadable
 		if (! config.isSet("users." + key))
 		{
 			// New user
-			return new User(plugin, player);
+			return new User(plugin, player, world);
 		}
 
-		return new User(plugin, player, (MemorySection) config.get("users." + key));
+		return new User(plugin, player, world, (MemorySection) config.get("users." + key));
 	}
 
 	public final User loadUser(Player player)
 	{
 		String world = player.getWorld().getName();
-
 		world = plugin.getMirrorHandler().getUsersParent(world);
 
 		String key = player.getUniqueId().toString();
 		FileConfiguration config = getUserConfig(world);
 		if (! config.isSet("users." + key))
 		{
-			return new User(plugin, player);
+			return new User(plugin, player, world);
 		}
 
-		return new User(plugin, player, (MemorySection) config.get("users." + key));
+		return new User(plugin, player, world, (MemorySection) config.get("users." + key));
 	}
 
 	public final List<User> loadAllUsers(String world)

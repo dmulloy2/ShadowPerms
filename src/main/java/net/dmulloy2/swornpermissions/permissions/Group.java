@@ -19,16 +19,16 @@ public abstract class Group extends Permissible
 	protected List<String> parents;
 	protected List<Group> parentGroups;
 
-	public Group(SwornPermissions plugin, String name)
+	public Group(SwornPermissions plugin, String name, String world)
 	{
-		super(plugin, name);
+		super(plugin, name, world);
 		this.parents = new ArrayList<String>();
 		this.parentGroups = new ArrayList<Group>();
 	}
 
-	public Group(SwornPermissions plugin, String name, MemorySection section)
+	public Group(SwornPermissions plugin, String name, String world, MemorySection section)
 	{
-		this(plugin, name);
+		this(plugin, name, world);
 		this.loadFromDisk(section);
 	}
 

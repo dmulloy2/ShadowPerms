@@ -162,7 +162,7 @@ public class PermissionsExConverter
 			try
 			{
 				String name = entry.getKey();
-				User user = new User(plugin, name);
+				User user = new User(plugin, name, worldName);
 
 				MemorySection section = (MemorySection) entry.getValue();
 

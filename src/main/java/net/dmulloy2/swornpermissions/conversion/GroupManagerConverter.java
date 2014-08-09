@@ -103,17 +103,17 @@ public class GroupManagerConverter
 							if (! groups.isEmpty())
 							{
 								plugin.getLogHandler().log("Converting {0} groups!", groups.size());
-								
+
 								File saveTo = new File(dir, "groups.yml");
 								if (! saveTo.exists())
 									saveTo.createNewFile();
-	
+
 								YamlConfiguration fc = YamlConfiguration.loadConfiguration(saveTo);
 								for (Entry<String, WorldGroup> entry : groups.entrySet())
 								{
 									fc.set("groups." + entry.getKey(), entry.getValue().serialize());
 								}
-	
+
 								fc.save(saveTo);
 							}
 						}
@@ -127,22 +127,22 @@ public class GroupManagerConverter
 							plugin.getLogHandler().log("Converting users from world {0}!", worldName);
 
 							File usersFile = new File(world, "users.yml");
-							Map<UUID, User> users = loadUsersFromFile(usersFile);
+							Map<UUID, User> users = loadUsersFromFile(worldName, usersFile);
 							if (! users.isEmpty())
 							{
 								plugin.getLogHandler().log("Converting {0} users!", users.size());
-	
+
 								File saveTo = new File(dir, "users.yml");
 								if (! saveTo.exists())
 									saveTo.createNewFile();
-	
+
 								YamlConfiguration fc = YamlConfiguration.loadConfiguration(saveTo);
 								for (Entry<UUID, User> entry : users.entrySet())
 								{
 									User user = entry.getValue();
 									fc.set("users." + entry.getKey().toString(), user.serialize());
 								}
-	
+
 								fc.save(saveTo);
 							}
 						}
@@ -161,7 +161,7 @@ public class GroupManagerConverter
 		plugin.getLogHandler().log("Successfully converted from GroupManager! Took {0} ms!", System.currentTimeMillis() - start);
 	}
 
-	private final Map<UUID, User> loadUsersFromFile(File file)
+	private final Map<UUID, User> loadUsersFromFile(String world, File file)
 	{
 		Map<UUID, User> uuidMap = new HashMap<UUID, User>();
 		Map<String, User> nameMap = new HashMap<String, User>();
@@ -181,7 +181,7 @@ public class GroupManagerConverter
 				// Newer versions of GM convert to UUID
 				String name = key.length() < 36 ? key : section.getString("lastname");
 				String id = key.length() == 36 ? key : null;
-				User user = new User(plugin, name);
+				User user = new User(plugin, name, world);
 
 				user.loadFromDisk(section); // Our system is similar to GM's
 

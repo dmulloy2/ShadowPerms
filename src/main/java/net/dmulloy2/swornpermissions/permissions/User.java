@@ -28,44 +28,42 @@ import org.bukkit.permissions.PermissionAttachment;
 
 public class User extends Permissible
 {
+	protected Group group;
 	protected String groupName;
+
+	protected List<Group> subGroups;
 	protected List<String> subGroupNames;
 
-	protected Group group;
-	protected List<Group> subGroups;
-
-	protected World world;
+	protected boolean wasOnline;
 	protected PermissionAttachment attachment;
 
 	// UUID Stuff
 	protected String lastKnownBy;
 	protected String uniqueId;
 
-	public User(SwornPermissions plugin, String name)
+	public User(SwornPermissions plugin, String name, String world)
 	{
-		super(plugin, name);
+		super(plugin, name, world);
 		this.group = null;
 		this.groupName = null;
 		this.subGroups = new ArrayList<>();
 		this.subGroupNames = new ArrayList<>();
 	}
 
-	public User(SwornPermissions plugin, OfflinePlayer player)
+	public User(SwornPermissions plugin, OfflinePlayer player, String world)
 	{
-		this(plugin, player.getName());
-		if (player.isOnline())
-			this.world = player.getPlayer().getWorld();
+		this(plugin, player.getName(), world);
 	}
 
-	public User(SwornPermissions plugin, String name, MemorySection section)
+	public User(SwornPermissions plugin, String name, String world, MemorySection section)
 	{
-		this(plugin, name);
+		this(plugin, name, world);
 		this.loadFromDisk(section);
 	}
 
-	public User(SwornPermissions plugin, OfflinePlayer player, MemorySection section)
+	public User(SwornPermissions plugin, OfflinePlayer player, String world, MemorySection section)
 	{
-		this(plugin, player);
+		this(plugin, player, world);
 		this.loadFromDisk(section);
 	}
 
@@ -103,8 +101,8 @@ public class User extends Permissible
 	@Override
 	public boolean shouldBeSaved()
 	{
-		return ! plugin.getPermissionHandler().getDefaultGroup(world).equals(getGroup()) || ! permissionNodes.isEmpty()
-				|| ! subGroupNames.isEmpty() || ! timestamps.isEmpty() || ! options.isEmpty();
+		return ! wasOnline || ! plugin.getPermissionHandler().getDefaultGroup(getWorld()).equals(getGroup())
+				|| ! permissionNodes.isEmpty() || ! subGroupNames.isEmpty() || ! timestamps.isEmpty() || ! options.isEmpty();
 	}
 
 	@Override
@@ -134,13 +132,15 @@ public class User extends Permissible
 		if (player == null || ! player.isOnline())
 			return;
 
+		this.wasOnline = true;
+
 		// Always keep UUID stuff up-to-date
 		updateUniqueID(player);
 
 		World newWorld = player.getWorld();
 
 		boolean updatePermissions = false;
-		if (force || world == null || ! plugin.getMirrorHandler().areGroupsLinked(world, newWorld))
+		if (force || group == null || ! plugin.getMirrorHandler().areGroupsLinked(getWorld(), newWorld))
 		{
 			this.group = null;
 			this.subGroups = new ArrayList<>();
@@ -184,7 +184,7 @@ public class User extends Permissible
 		}
 
 		// Update world
-		this.world = newWorld;
+		this.worldName = newWorld.getName();
 
 		// Do we need to continue?
 		if (! updatePermissions)
@@ -280,7 +280,7 @@ public class User extends Permissible
 	{
 		Player player = getPlayer();
 		if (player != null && player.isOnline())
-			return plugin.getMirrorHandler().areUsersLinked(world, player.getWorld());
+			return plugin.getMirrorHandler().areUsersLinked(getWorld(), player.getWorld());
 
 		return false;
 	}
@@ -352,7 +352,10 @@ public class User extends Permissible
 		ret.addAll(subGroupNames);
 
 		if (ret.isEmpty())
-			ret.add(plugin.getPermissionHandler().getDefaultGroup(world).getName());
+		{
+			Group group = getGroup();
+			ret.add(group.getName());
+		}
 
 		return ret;
 	}
@@ -393,7 +396,7 @@ public class User extends Permissible
 		if (group == null)
 		{
 			if (groupName == null || groupName.isEmpty())
-				group = plugin.getPermissionHandler().getDefaultGroup(world);
+				group = plugin.getPermissionHandler().getDefaultGroup(getWorld());
 			else
 				group = plugin.getPermissionHandler().getGroup(groupName);
 		}
@@ -590,7 +593,7 @@ public class User extends Permissible
 	@Override
 	public String toString()
 	{
-		return "User { name = " + getName() + ", world = " + world.getName() + " }";
+		return "User { name = " + name + ", world = " + worldName + " }";
 	}
 
 	@Override
@@ -599,10 +602,10 @@ public class User extends Permissible
 		if (obj instanceof User)
 		{
 			User that = (User) obj;
-			if (! this.getName().equals(that.getName()))
+			if (! this.name.equals(that.name))
 				return false;
 
-			return this.world.equals(that.world);
+			return this.worldName.equals(that.worldName);
 		}
 
 		return false;
@@ -613,7 +616,7 @@ public class User extends Permissible
 	{
 		int hash = 87;
 		hash *= 1 + lastKnownBy.hashCode();
-		hash *= 1 + world.hashCode();
+		hash *= 1 + worldName.hashCode();
 		return hash;
 	}
 }

@@ -20,13 +20,11 @@ import org.bukkit.configuration.MemorySection;
 
 public class WorldGroup extends Group
 {
-	private String worldName;
 	private boolean defaultGroup;
 
 	public WorldGroup(SwornPermissions plugin, String name, String world)
 	{
-		super(plugin, name);
-		this.worldName = world;
+		super(plugin, name, world);
 	}
 
 	public WorldGroup(SwornPermissions plugin, String name, String world, MemorySection section)
@@ -184,6 +182,7 @@ public class WorldGroup extends Group
 	/**
 	 * @deprecated For conversion use ONLY
 	 */
+	@Deprecated
 	public void setParentGroups(List<String> parents)
 	{
 		this.parents = parents;
@@ -208,7 +207,7 @@ public class WorldGroup extends Group
 	{
 		if (! permissions.isEmpty() || force)
 			return;
-		
+
 		// Update permission map
 		updatePermissionMap();
 

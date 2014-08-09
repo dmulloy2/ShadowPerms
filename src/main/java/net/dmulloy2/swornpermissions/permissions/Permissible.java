@@ -13,6 +13,7 @@ import java.util.Map.Entry;
 import net.dmulloy2.swornpermissions.SwornPermissions;
 import net.dmulloy2.util.Util;
 
+import org.bukkit.World;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.permissions.Permission;
@@ -32,14 +33,17 @@ public abstract class Permissible implements ConfigurationSerializable
 	protected String prefix;
 	protected String suffix;
 
+	protected String worldName;
+
 	protected final String name;
 	protected final SwornPermissions plugin;
 
 	// Base Constructor
-	public Permissible(SwornPermissions plugin, String name)
+	public Permissible(SwornPermissions plugin, String name, String worldName)
 	{
 		this.name = name;
 		this.plugin = plugin;
+		this.worldName = worldName;
 		this.timestamps = new HashMap<String, Long>();
 		this.permissionNodes = new ArrayList<String>();
 		this.sortedPermissions = new ArrayList<String>();
@@ -49,9 +53,9 @@ public abstract class Permissible implements ConfigurationSerializable
 		this.suffix = "";
 	}
 
-	public Permissible(SwornPermissions plugin, String name, MemorySection section)
+	public Permissible(SwornPermissions plugin, String name, String worldName, MemorySection section)
 	{
-		this(plugin, name);
+		this(plugin, name, worldName);
 		this.loadFromDisk(section);
 	}
 
@@ -456,11 +460,17 @@ public abstract class Permissible implements ConfigurationSerializable
 		return suffix != "";
 	}
 
+	public final World getWorld()
+	{
+		return plugin.getServer().getWorld(worldName);
+	}
+
 	// ---- Conversion Methods
 
 	/**
 	 * @deprecated For conversion use ONLY
 	 */
+	@Deprecated
 	public final void setPermissionNodes(List<String> permissionNodes)
 	{
 		this.permissionNodes = permissionNodes;
@@ -469,6 +479,7 @@ public abstract class Permissible implements ConfigurationSerializable
 	/**
 	 * @deprecated For conversion use ONLY
 	 */
+	@Deprecated
 	public final void setOptions(Map<String, Object> options)
 	{
 		for (Entry<String, Object> entry : options.entrySet())
