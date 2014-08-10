@@ -34,7 +34,7 @@ public class User extends Permissible
 	protected List<Group> subGroups;
 	protected List<String> subGroupNames;
 
-	protected boolean wasOnline;
+	protected boolean offline = true;
 	protected PermissionAttachment attachment;
 
 	// UUID Stuff
@@ -82,7 +82,7 @@ public class User extends Permissible
 	@Override
 	public Map<String, Object> serialize()
 	{
-		Map<String, Object> ret = new LinkedHashMap<String, Object>();
+		Map<String, Object> ret = new LinkedHashMap<>();
 
 		ret.put("lastKnownBy", lastKnownBy);
 		ret.put("group", groupName);
@@ -101,7 +101,7 @@ public class User extends Permissible
 	@Override
 	public boolean shouldBeSaved()
 	{
-		return ! wasOnline || ! plugin.getPermissionHandler().getDefaultGroup(getWorld()).equals(getGroup())
+		return offline || ! plugin.getPermissionHandler().getDefaultGroup(getWorld()).equals(getGroup())
 				|| ! permissionNodes.isEmpty() || ! subGroupNames.isEmpty() || ! timestamps.isEmpty() || ! options.isEmpty();
 	}
 
@@ -132,7 +132,8 @@ public class User extends Permissible
 		if (player == null || ! player.isOnline())
 			return;
 
-		this.wasOnline = true;
+		// They're online
+		this.offline = false;
 
 		// Always keep UUID stuff up-to-date
 		updateUniqueID(player);
@@ -602,10 +603,7 @@ public class User extends Permissible
 		if (obj instanceof User)
 		{
 			User that = (User) obj;
-			if (! this.name.equals(that.name))
-				return false;
-
-			return this.worldName.equals(that.worldName);
+			return this.uniqueId.equals(that.uniqueId) && this.worldName.equals(that.worldName);
 		}
 
 		return false;
@@ -615,7 +613,7 @@ public class User extends Permissible
 	public int hashCode()
 	{
 		int hash = 87;
-		hash *= 1 + lastKnownBy.hashCode();
+		hash *= 1 + uniqueId.hashCode();
 		hash *= 1 + worldName.hashCode();
 		return hash;
 	}

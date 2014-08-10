@@ -240,10 +240,7 @@ public class WorldGroup extends Group
 		if (obj instanceof WorldGroup)
 		{
 			WorldGroup that = (WorldGroup) obj;
-			if (! this.getName().equals(that.getName()))
-				return false;
-
-			return this.worldName.equals(that.worldName);
+			return this.name.equals(that.name) && this.worldName.equals(that.worldName);
 		}
 
 		return false;

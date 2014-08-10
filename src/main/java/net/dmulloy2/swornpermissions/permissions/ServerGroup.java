@@ -112,7 +112,7 @@ public class ServerGroup extends Group
 		if (obj instanceof ServerGroup)
 		{
 			ServerGroup that = (ServerGroup) obj;
-			return this.getName().equals(that.getName());
+			return this.name.equals(that.name);
 		}
 
 		return false;
