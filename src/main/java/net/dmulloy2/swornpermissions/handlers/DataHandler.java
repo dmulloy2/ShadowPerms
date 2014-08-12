@@ -278,21 +278,29 @@ public class DataHandler implements Reloadable
 
 	public final User loadUser(String world, String identifier)
 	{
-		OfflinePlayer player = Util.matchOfflinePlayer(identifier);
-		if (player == null)
-			return null;
-
-		world = plugin.getMirrorHandler().getUsersParent(world);
-
-		String key = player.getUniqueId().toString();
-		FileConfiguration config = getUserConfig(world);
-		if (! config.isSet("users." + key))
+		try
 		{
-			// New user
-			return new User(plugin, player, world);
-		}
+			OfflinePlayer player = Util.matchOfflinePlayer(identifier);
+			if (player == null)
+				return null;
 
-		return new User(plugin, player, world, (MemorySection) config.get("users." + key));
+			world = plugin.getMirrorHandler().getUsersParent(world);
+
+			String key = player.getUniqueId().toString();
+			FileConfiguration config = getUserConfig(world);
+			if (! config.isSet("users." + key))
+			{
+				// New user
+				return new User(plugin, player, world);
+			}
+
+			return new User(plugin, player, world, (MemorySection) config.get("users." + key));
+		}
+		catch (Throwable ex)
+		{
+			plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(ex, "loading user: " + identifier));
+			return null;
+		}
 	}
 
 	public final User loadUser(Player player)

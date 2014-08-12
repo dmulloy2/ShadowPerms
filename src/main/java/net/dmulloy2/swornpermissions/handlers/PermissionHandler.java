@@ -97,30 +97,38 @@ public class PermissionHandler implements Reloadable
 	// Root get user method... All getUser calls should be directed here
 	public final User getUser(String world, String identifier)
 	{
-		if (world == null)
-			world = getDefaultWorld().getName();
-
-		world = plugin.getMirrorHandler().getUsersParent(world);
-
-		// Attempt to match player
-		Player player = Util.matchPlayer(identifier);
-		if (player != null)
-			identifier = player.getUniqueId().toString();
-
-		// Attempt to grab from online users
-		for (User user : users.get(world))
+		try
 		{
-			if (user.getUniqueId().toString().equals(identifier) || user.getName().equalsIgnoreCase(identifier))
-				return user;
+			if (world == null)
+				world = getDefaultWorld().getName();
+
+			world = plugin.getMirrorHandler().getUsersParent(world);
+
+			// Attempt to match player
+			Player player = Util.matchPlayer(identifier);
+			if (player != null)
+				identifier = player.getUniqueId().toString();
+
+			// Attempt to grab from online users
+			for (User user : users.get(world))
+			{
+				if (identifier.equals(user.getUniqueId()) || identifier.equalsIgnoreCase(user.getName()))
+					return user;
+			}
+
+			// Attempt to load the user
+			User user = plugin.getDataHandler().loadUser(world, identifier);
+			if (user == null)
+				return null;
+
+			users.get(world).add(user);
+			return user;
 		}
-
-		// Attempt to load the user
-		User user = plugin.getDataHandler().loadUser(world, identifier);
-		if (user == null)
+		catch (Throwable ex)
+		{
+			plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(ex, "getting user: " + identifier));
 			return null;
-
-		users.get(world.toLowerCase()).add(user);
-		return user;
+		}
 	}
 
 	public final List<User> getUsers(World world)

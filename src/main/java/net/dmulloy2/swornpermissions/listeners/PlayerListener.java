@@ -6,6 +6,7 @@ package net.dmulloy2.swornpermissions.listeners;
 import lombok.AllArgsConstructor;
 import net.dmulloy2.swornpermissions.SwornPermissions;
 import net.dmulloy2.swornpermissions.permissions.User;
+import net.dmulloy2.util.FormatUtil;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -28,10 +29,14 @@ public class PlayerListener implements Listener
 	public void onPlayerJoin(PlayerJoinEvent event)
 	{
 		Player player = event.getPlayer();
-
 		User user = plugin.getPermissionHandler().getUser(player);
-		user.removeAttachment();
+		if (user == null)
+		{
+			player.sendMessage(plugin.getPrefix() + FormatUtil.format("Failed to get a user instance! Contact an administrator!"));
+			return;
+		}
 
+		user.removeAttachment();
 		user.updatePermissions(true);
 	}
 
@@ -40,6 +45,11 @@ public class PlayerListener implements Listener
 	{
 		Player player = event.getPlayer();
 		User user = plugin.getPermissionHandler().getUser(player);
+		if (user == null)
+		{
+			player.sendMessage(plugin.getPrefix() + FormatUtil.format("Failed to get a user instance! Contact an administrator!"));
+			return;
+		}
 
 		if (plugin.getPermissionHandler().areUsersDifferent(event.getFrom(), player.getWorld()))
 			user = plugin.getPermissionHandler().moveWorld(player, event.getFrom(), player.getWorld());
@@ -51,8 +61,13 @@ public class PlayerListener implements Listener
 	public void onPlayerQuit(PlayerQuitEvent event)
 	{
 		Player player = event.getPlayer();
-
 		User user = plugin.getPermissionHandler().getUser(player);
+		if (user == null)
+		{
+			player.sendMessage(plugin.getPrefix() + FormatUtil.format("Failed to get a user instance! Contact an administrator!"));
+			return;
+		}
+
 		user.onQuit();
 	}
 }

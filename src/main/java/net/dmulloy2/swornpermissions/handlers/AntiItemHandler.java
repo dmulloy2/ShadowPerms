@@ -48,6 +48,8 @@ public class AntiItemHandler implements Listener, Reloadable
 	{
 		Player player = event.getPlayer();
 		User user = plugin.getPermissionHandler().getUser(player);
+		if (user == null)
+			return;
 
 		switch (event.getAction())
 		{
@@ -123,6 +125,8 @@ public class AntiItemHandler implements Listener, Reloadable
 			return;
 
 		User user = plugin.getPermissionHandler().getUser(player);
+		if (user == null)
+			return;
 
 		Block placed = event.getBlockPlaced();
 		if (placed != null)
@@ -145,7 +149,7 @@ public class AntiItemHandler implements Listener, Reloadable
 
 			User user = plugin.getPermissionHandler().getUser(player);
 
-			if (enabled)
+			if (enabled && user != null)
 			{
 				ItemStack helmet = inv.getHelmet();
 				if (helmet != null && ! user.canUse("-antiitem.item.", new MyMaterial(helmet.getType())))
@@ -153,21 +157,21 @@ public class AntiItemHandler implements Listener, Reloadable
 					blockedItem(player, helmet.getType());
 					inv.setHelmet(null);
 				}
-	
+
 				ItemStack chest = inv.getChestplate();
 				if (chest != null && ! user.canUse("-antiitem.item.", new MyMaterial(chest.getType())))
 				{
 					blockedItem(player, chest.getType());
 					inv.setChestplate(null);
 				}
-	
+
 				ItemStack legs = inv.getLeggings();
 				if (legs != null && ! user.canUse("-antiitem.item.", new MyMaterial(legs.getType())))
 				{
 					blockedItem(player, legs.getType());
 					inv.setLeggings(null);
 				}
-	
+
 				ItemStack boots = inv.getBoots();
 				if (boots != null && ! user.canUse("-antiitem.item.", new MyMaterial(boots.getType())))
 				{
@@ -180,7 +184,7 @@ public class AntiItemHandler implements Listener, Reloadable
 			{
 				if (item != null && item.getType() != Material.AIR)
 				{
-					if (enabled && ! user.canUse("-antiitem.item.", new MyMaterial(item.getType(), item.getData())))
+					if (enabled && user != null && ! user.canUse("-antiitem.item.", new MyMaterial(item.getType(), item.getData())))
 					{
 						blockedItem(player, item.getType());
 						inv.remove(item);
@@ -237,14 +241,16 @@ public class AntiItemHandler implements Listener, Reloadable
 
 	private final void regulatedEnchantment(Player player, Enchantment ench, int level, Material mat, String why)
 	{
-		player.sendMessage(FormatUtil.format("&4Enchantment &f{0}&4:&f{1} &4has been removed from &f{2} &4because it was too &f{3}&4.",
-				FormatUtil.getFriendlyName(ench), level, FormatUtil.getFriendlyName(mat), why));
+		player.sendMessage(plugin.getPrefix() +
+				FormatUtil.format("&4Enchantment &f{0}&4:&f{1} &4has been removed from &f{2} &4because it was too &f{3}&4.",
+						FormatUtil.getFriendlyName(ench), level, FormatUtil.getFriendlyName(mat), why));
 	}
 
 	private final void blockedItem(Player player, Material mat)
 	{
-		player.sendMessage(FormatUtil.format("&4Item &f{0} &4is not allowed and has been removed from your inventory.",
-				FormatUtil.getFriendlyName(mat)));
+		player.sendMessage(plugin.getPrefix() +
+				FormatUtil.format("&4Item &f{0} &4is not allowed and has been removed from your inventory.",
+						FormatUtil.getFriendlyName(mat)));
 	}
 
 	@Override

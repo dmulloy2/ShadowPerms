@@ -30,10 +30,8 @@ public class ChatHandler implements Reloadable
 	/**
 	 * Parses a given chat message, replacing defined variables.
 	 *
-	 * @param player
-	 *        - Player chatting
-	 * @param message
-	 *        - Message sent
+	 * @param player Player chatting
+	 * @param message Message sent
 	 * @return Formatted chat message
 	 */
 	public final String parseChatMessage(Player player, String message)
@@ -42,6 +40,8 @@ public class ChatHandler implements Reloadable
 			return message;
 
 		User user = plugin.getPermissionHandler().getUser(player);
+		if (user == null)
+			return message;
 
 		// Characters that mess with chat
 		message = message.replace("%", "%%");
