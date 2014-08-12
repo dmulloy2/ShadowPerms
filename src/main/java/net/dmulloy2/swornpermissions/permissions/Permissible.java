@@ -39,23 +39,23 @@ public abstract class Permissible implements ConfigurationSerializable
 	protected final SwornPermissions plugin;
 
 	// Base Constructor
-	public Permissible(SwornPermissions plugin, String name, String worldName)
+	protected Permissible(SwornPermissions plugin, String name, String world)
 	{
 		this.name = name;
 		this.plugin = plugin;
-		this.worldName = worldName;
-		this.timestamps = new HashMap<String, Long>();
-		this.permissionNodes = new ArrayList<String>();
-		this.sortedPermissions = new ArrayList<String>();
-		this.permissions = new LinkedHashMap<String, Boolean>();
-		this.options = new HashMap<String, Object>();
+		this.worldName = world;
+		this.timestamps = new HashMap<>();
+		this.permissionNodes = new ArrayList<>();
+		this.sortedPermissions = new ArrayList<>();
+		this.permissions = new LinkedHashMap<>();
+		this.options = new HashMap<>();
 		this.prefix = "";
 		this.suffix = "";
 	}
 
-	public Permissible(SwornPermissions plugin, String name, String worldName, MemorySection section)
+	protected Permissible(SwornPermissions plugin, String name, String world, MemorySection section)
 	{
-		this(plugin, name, worldName);
+		this(plugin, name, world);
 		this.loadFromDisk(section);
 	}
 

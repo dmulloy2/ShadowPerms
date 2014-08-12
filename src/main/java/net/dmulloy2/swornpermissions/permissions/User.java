@@ -34,31 +34,30 @@ public class User extends Permissible
 	protected List<Group> subGroups;
 	protected List<String> subGroupNames;
 
-	protected boolean offline = true;
 	protected PermissionAttachment attachment;
 
 	// UUID Stuff
 	protected String lastKnownBy;
 	protected String uniqueId;
 
-	public User(SwornPermissions plugin, String name, String world)
+	// Base constructor
+	private User(SwornPermissions plugin, String name, String uniqueId, String world)
 	{
 		super(plugin, name, world);
-		this.group = null;
-		this.groupName = null;
+		this.uniqueId = uniqueId;
 		this.subGroups = new ArrayList<>();
 		this.subGroupNames = new ArrayList<>();
 	}
 
-	public User(SwornPermissions plugin, OfflinePlayer player, String world)
+	@Deprecated
+	public User(SwornPermissions plugin, String name, String world)
 	{
-		this(plugin, player.getName(), world);
+		this(plugin, name, null, world);
 	}
 
-	public User(SwornPermissions plugin, String name, String world, MemorySection section)
+	public User(SwornPermissions plugin, OfflinePlayer player, String world)
 	{
-		this(plugin, name, world);
-		this.loadFromDisk(section);
+		this(plugin, player.getName(), player.getUniqueId().toString(), world);
 	}
 
 	public User(SwornPermissions plugin, OfflinePlayer player, String world, MemorySection section)
@@ -101,8 +100,8 @@ public class User extends Permissible
 	@Override
 	public boolean shouldBeSaved()
 	{
-		return offline || ! plugin.getPermissionHandler().getDefaultGroup(getWorld()).equals(getGroup())
-				|| ! permissionNodes.isEmpty() || ! subGroupNames.isEmpty() || ! timestamps.isEmpty() || ! options.isEmpty();
+		return ! plugin.getPermissionHandler().getDefaultGroup(worldName).equals(getGroup()) || ! permissionNodes.isEmpty()
+				|| ! subGroupNames.isEmpty() || ! timestamps.isEmpty() || ! options.isEmpty();
 	}
 
 	@Override
@@ -131,9 +130,6 @@ public class User extends Permissible
 		Player player = getPlayer();
 		if (player == null || ! player.isOnline())
 			return;
-
-		// They're online
-		this.offline = false;
 
 		// Always keep UUID stuff up-to-date
 		updateUniqueID(player);
