@@ -205,7 +205,6 @@ public class DataHandler implements Reloadable
 	public final FileConfiguration getGroupConfig(String world)
 	{
 		world = plugin.getMirrorHandler().getGroupsParent(world);
-
 		return groupConfigs.get(world);
 	}
 
@@ -218,51 +217,52 @@ public class DataHandler implements Reloadable
 
 		try
 		{
-			File dir = new File(plugin.getDataFolder(), "worlds");
-			if (! dir.exists())
-				dir.mkdirs();
+			File worlds = new File(plugin.getDataFolder(), "worlds");
+			if (! worlds.exists())
+				worlds.mkdirs();
 
-			String worldName = world.getName().toLowerCase();
+			String name = world.getName().toLowerCase();
+			File folder = new File(worlds, name);
+			if (! folder.exists())
+				folder.mkdirs();
 
-			File worldFolder = new File(dir, worldName);
-			if (! worldFolder.exists())
-				worldFolder.mkdir();
+			MirrorHandler mirrors = plugin.getMirrorHandler();
 
-			File groupsFile = new File(worldFolder, "groups.yml");
-			if (! groupsFile.exists())
+			File groups = new File(folder, "groups.yml");
+			if (! groups.exists())
 			{
-				if (plugin.getMirrorHandler().areGroupsMirroredByDefault())
-					plugin.getMirrorHandler().addGroupMirror(plugin.getMirrorHandler().getDefaultGroupWorld(), worldName);
+				if (mirrors.areGroupsMirroredByDefault())
+					mirrors.addGroupMirror(name);
 				else
-					copy(plugin.getResource("groups.yml"), groupsFile);
+					copy(plugin.getResource("groups.yml"), groups);
 			}
 
-			if (groupsFile.exists())
+			if (groups.exists())
 			{
-				FileConfiguration groups = YamlConfiguration.loadConfiguration(groupsFile);
-				groupConfigs.put(worldName, groups);
+				FileConfiguration fc = YamlConfiguration.loadConfiguration(groups);
+				groupConfigs.put(name, fc);
 			}
 
-			File usersFile = new File(worldFolder, "users.yml");
-			if (! usersFile.exists())
+			File users = new File(folder, "users.yml");
+			if (! users.exists())
 			{
-				if (plugin.getMirrorHandler().areUsersMirroredByDefault())
-					plugin.getMirrorHandler().addUserMirror(plugin.getMirrorHandler().getDefaultUserWorld(), worldName);
+				if (mirrors.areUsersMirroredByDefault())
+					mirrors.addUserMirror(name);
 				else
-					usersFile.createNewFile();
+					copy(plugin.getResource("users.yml"), users);
 			}
 
-			if (usersFile.exists())
+			if (users.exists())
 			{
-				FileConfiguration users = YamlConfiguration.loadConfiguration(usersFile);
-				userConfigs.put(worldName, users);
+				FileConfiguration fc = YamlConfiguration.loadConfiguration(users);
+				userConfigs.put(name, fc);
 			}
 
-			loadedWorlds.add(worldName);
+			loadedWorlds.add(name);
 		}
 		catch (Throwable ex)
 		{
-			plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(ex, "loading world " + world.getName()));
+			plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(ex, "loading world: " + world.getName()));
 		}
 	}
 

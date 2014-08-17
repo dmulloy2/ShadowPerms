@@ -105,6 +105,11 @@ public class MirrorHandler implements Reloadable
 		userMirrors.get(parent).add(mirrored);
 	}
 
+	public final void addUserMirror(String mirrored)
+	{
+		addUserMirror(defaultUserWorld, mirrored);
+	}
+
 	// ---- Group Mirrors
 
 	public final boolean areGroupsMirrored(World world)
@@ -171,6 +176,11 @@ public class MirrorHandler implements Reloadable
 			groupMirrors.put(parent, new ArrayList<String>());
 
 		groupMirrors.get(parent).add(mirrored);
+	}
+
+	public final void addGroupMirror(String mirrored)
+	{
+		addGroupMirror(defaultGroupWorld, mirrored);
 	}
 
 	// ---- Loading

@@ -266,8 +266,15 @@ public class PermissionHandler implements Reloadable
 		return getGroup(world.getName(), name);
 	}
 
-	// Root group getter method
 	public final Group getGroup(String world, String name)
+	{
+		world = plugin.getMirrorHandler().getGroupsParent(world);
+		return getGroupRaw(world, name);
+	}
+
+	// Root group getter method
+	// Does not take mirroring into account
+	public final Group getGroupRaw(String world, String name)
 	{
 		// Groups are stored lowercase
 		name = name.toLowerCase();
@@ -275,7 +282,7 @@ public class PermissionHandler implements Reloadable
 		if (name.startsWith("s:"))
 			return serverGroups.get(name);
 
-		world = plugin.getMirrorHandler().getUsersParent(world);
+		world = world.toLowerCase();
 		return worldGroups.get(world).get(name);
 	}
 

@@ -47,7 +47,7 @@ public class WorldGroup extends Group
 	{
 		for (String parent : parents)
 		{
-			Group group = plugin.getPermissionHandler().getGroup(worldName, parent);
+			Group group = plugin.getPermissionHandler().getGroupRaw(worldName, parent);
 			if (group != null)
 				parentGroups.add(group);
 			else

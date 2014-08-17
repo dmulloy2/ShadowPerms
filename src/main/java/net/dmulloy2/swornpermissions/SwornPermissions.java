@@ -70,7 +70,7 @@ public class SwornPermissions extends JavaPlugin implements Reloadable
 	private @Getter LogHandler logHandler;
 
 	private @Getter boolean disabling;
-	
+
 	private @Getter String prefix = FormatUtil.format("&3[&eSwornPerms&3]&e ");
 
 	@Override
