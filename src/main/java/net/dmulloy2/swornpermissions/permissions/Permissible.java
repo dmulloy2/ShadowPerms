@@ -279,13 +279,16 @@ public abstract class Permissible implements ConfigurationSerializable
 			boolean negative = node.startsWith("-");
 			node = negative ? node.substring(1) : node;
 
-			for (Permission permission : plugin.getServer().getPluginManager().getPermissions())
+			if (node.contains("*"))
 			{
-				String name = permission.getName();
-				if (name.matches(node))
+				for (Permission permission : plugin.getServer().getPluginManager().getPermissions())
 				{
-					name = negative ? "-" + name : name;
-					ret.add(name);
+					String name = permission.getName();
+					if (name.matches(node))
+					{
+						name = negative ? "-" + name : name;
+						ret.add(name);
+					}
 				}
 			}
 		}
