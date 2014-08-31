@@ -174,6 +174,7 @@ public abstract class Permissible implements ConfigurationSerializable
 		return null;
 	}
 
+	// Positive nodes override negative nodes
 	protected final void updatePermissionMap()
 	{
 		// Sort the nodes
@@ -188,7 +189,7 @@ public abstract class Permissible implements ConfigurationSerializable
 		// Get children
 		permissionNodes = getAllChildren(permissionNodes);
 
-		Map<String, Boolean> permissions = new LinkedHashMap<String, Boolean>();
+		Map<String, Boolean> permissions = new LinkedHashMap<>();
 
 		// Add * first
 		if (permissionNodes.contains("*"))
@@ -197,25 +198,22 @@ public abstract class Permissible implements ConfigurationSerializable
 			permissions.put("*", true);
 		}
 
-		// Add positive nodes next
+		// Add negative nodes next
 		for (String permission : new ArrayList<String>(permissionNodes))
 		{
-			if (! permission.startsWith("-"))
+			if (permission.startsWith("-"))
 			{
 				permissionNodes.remove(permission);
-				permissions.put(permission, true);
+				permission = permission.substring(1);
+				permissions.put(permission, false);
 			}
 		}
 
-		// Add negative nodes last
+		// Add positive nodes last to override any negatives
 		for (String permission : new ArrayList<String>(permissionNodes))
 		{
-			permission = permission.substring(1);
-
 			permissionNodes.remove(permission);
-			permissions.remove(permission);
-
-			permissions.put(permission, false);
+			permissions.put(permission, true);
 		}
 
 		// Update permission map
@@ -226,8 +224,7 @@ public abstract class Permissible implements ConfigurationSerializable
 
 	protected abstract List<String> sortPermissions();
 
-	// Order: *, positive, negative
-	// If there is a positive node and a negative node, the positive node is chosen
+	// Order: *, negative, positive
 	protected final List<String> sort(List<String> permissions)
 	{
 		List<String> ret = new ArrayList<String>();
@@ -239,25 +236,26 @@ public abstract class Permissible implements ConfigurationSerializable
 			ret.add("*");
 		}
 
-		// Add positive nodes next
+		// Add negative nodes next
 		for (String permission : new ArrayList<String>(permissions))
 		{
-			if (! permission.startsWith("-"))
+			if (permission.startsWith("-"))
 			{
 				permissions.remove(permission);
-				if (! ret.contains(permission))
-					ret.add(permission);
+				ret.add(permission);
 			}
 		}
 
-		// Add negative nodes last
+		// Add positive nodes last, overrides negatives
 		for (String permission : new ArrayList<String>(permissions))
 		{
 			permissions.remove(permission);
-			if (! ret.contains(permission.substring(1)) && ! ret.contains(permission))
-				ret.add(permission);
+			if (ret.contains("-" + permission))
+				ret.remove("-" + permission);
+			ret.add(permission);
 		}
 
+		// Remove duplicates
 		return Util.removeDuplicates(ret);
 	}
 
