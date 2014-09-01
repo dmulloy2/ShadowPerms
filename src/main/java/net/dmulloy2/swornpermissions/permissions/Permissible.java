@@ -127,8 +127,10 @@ public abstract class Permissible implements ConfigurationSerializable
 		timestamps.remove(node);
 	}
 
-	public final boolean hasPermission(String permission)
+	public boolean hasPermission(String permission)
 	{
+		Map<String, Boolean> permissions = getPermissions();
+
 		boolean negative = permission.startsWith("-");
 		permission = negative ? permission.substring(1) : permission;
 

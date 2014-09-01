@@ -242,6 +242,16 @@ public class User extends Permissible
 		return sort(ret);
 	}
 
+	@Override
+	public final boolean hasPermission(String permission)
+	{
+		Player player = getPlayer();
+		if (player != null)
+			return player.hasPermission(permission);
+
+		return super.hasPermission(permission);
+	}
+
 	public final void reset()
 	{
 		// Clear Groups
