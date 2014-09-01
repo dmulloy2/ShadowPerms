@@ -131,9 +131,6 @@ public class User extends Permissible
 		if (player == null || ! player.isOnline())
 			return;
 
-		// Always keep UUID stuff up-to-date
-		updateUniqueID(player);
-
 		World newWorld = player.getWorld();
 
 		boolean updatePermissions = false;
@@ -270,7 +267,12 @@ public class User extends Permissible
 
 	public final Player getPlayer()
 	{
-		return Util.matchPlayer(name);
+		Player player = Util.matchPlayer(uniqueId);
+		if (player == null)
+			return null;
+
+		updateUniqueID(player);
+		return player;
 	}
 
 	public final boolean isOnline()

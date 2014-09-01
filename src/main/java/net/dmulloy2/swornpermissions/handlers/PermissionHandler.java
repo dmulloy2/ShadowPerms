@@ -424,13 +424,25 @@ public class PermissionHandler implements Reloadable
 	// Remove offline users
 	private final void cleanupUsers0()
 	{
-		for (Entry<String, List<User>> entry : new HashMap<>(users).entrySet())
+		try
 		{
-			for (User user : new ArrayList<>(entry.getValue()))
+			long start = System.currentTimeMillis();
+			plugin.getLogHandler().log("Cleaning up users...");
+
+			for (Entry<String, List<User>> entry : new HashMap<>(users).entrySet())
 			{
-				if (! user.isOnline())
-					users.get(entry.getKey()).remove(user);
+				for (User user : new ArrayList<>(entry.getValue()))
+				{
+					if (! user.isOnline())
+						users.get(entry.getKey()).remove(user);
+				}
 			}
+
+			plugin.getLogHandler().log("Finished cleaning up users. Took {0} ms!", System.currentTimeMillis() - start);
+		}
+		catch (Throwable ex)
+		{
+			plugin.getLogHandler().log(Level.WARNING, Util.getUsefulStack(ex, "cleaning up users"));
 		}
 	}
 
