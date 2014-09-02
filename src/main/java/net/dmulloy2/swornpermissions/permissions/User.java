@@ -5,10 +5,12 @@ package net.dmulloy2.swornpermissions.permissions;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
 
@@ -245,9 +247,8 @@ public class User extends Permissible
 	@Override
 	public final boolean hasPermission(String permission)
 	{
-		Player player = getPlayer();
-		if (player != null)
-			return player.hasPermission(permission);
+		if (isOnline())
+			return getPlayer().hasPermission(permission);
 
 		return super.hasPermission(permission);
 	}
@@ -383,6 +384,31 @@ public class User extends Permissible
 		}
 
 		return false;
+	}
+
+	public final boolean isGroupApplicable(String groupName)
+	{
+		// Check their actual groups first
+		if (isInGroup(groupName) || isInSubGroup(groupName))
+			return true;
+
+		// Get all applicable groups
+		for (Group group : getApplicableGroups())
+		{
+			if (group.getName().equalsIgnoreCase(groupName))
+				return true;
+		}
+
+		return false;
+	}
+
+	private final List<Group> getApplicableGroups()
+	{
+		Set<Group> ret = new HashSet<>();
+		ret.addAll(group.getAllParentGroups());
+		for (Group group : subGroups)
+			ret.addAll(group.getAllParentGroups());
+		return new ArrayList<>(ret);
 	}
 
 	// ---- Getters and Setters

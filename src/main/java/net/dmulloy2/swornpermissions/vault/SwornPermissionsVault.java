@@ -65,7 +65,15 @@ public class SwornPermissionsVault extends Permission
 	@Override
 	public String getPrimaryGroup(String world, String player)
 	{
-		return getPlayerGroups(world, player)[0];
+		User user = plugin.getPermissionHandler().getUser(world, player);
+		if (user == null)
+			return "";
+
+		Group group = user.getGroup();
+		if (group == null)
+			return "";
+
+		return group.getName();
 	}
 
 	@Override
@@ -81,7 +89,15 @@ public class SwornPermissionsVault extends Permission
 	@Override
 	public String getPrimaryGroup(String world, OfflinePlayer player)
 	{
-		return getPlayerGroups(world, player)[0];
+		User user = plugin.getPermissionHandler().getUser(world, player);
+		if (user == null)
+			return "";
+
+		Group group = user.getGroup();
+		if (group == null)
+			return "";
+
+		return group.getName();
 	}
 
 	@Override
@@ -181,7 +197,7 @@ public class SwornPermissionsVault extends Permission
 		if (user == null)
 			return false;
 
-		return user.isInGroup(group);
+		return user.isGroupApplicable(group);
 	}
 
 	@Override

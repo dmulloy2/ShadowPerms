@@ -46,4 +46,12 @@ public abstract class Group extends Permissible
 	{
 		return parentGroups;
 	}
+
+	public List<Group> getAllParentGroups()
+	{
+		List<Group> ret = new ArrayList<>();
+		for (Group group : parentGroups)
+			ret.addAll(group.getAllParentGroups());
+		return ret;
+	}
 }
