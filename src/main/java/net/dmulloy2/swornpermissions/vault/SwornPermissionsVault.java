@@ -13,6 +13,7 @@ import net.dmulloy2.swornpermissions.permissions.WorldGroup;
 import net.milkbowl.vault.permission.Permission;
 
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 
 /**
  * @author dmulloy2
@@ -184,6 +185,16 @@ public class SwornPermissionsVault extends Permission
 	public boolean playerHas(String world, String player, String permission)
 	{
 		User user = plugin.getPermissionHandler().getUser(world, player);
+		if (user == null)
+			return false;
+
+		return user.hasPermission(permission);
+	}
+
+	@Override
+	public boolean playerHas(Player player, String permission)
+	{
+		User user = plugin.getPermissionHandler().getUser(player);
 		if (user == null)
 			return false;
 

@@ -131,6 +131,16 @@ public class PermissionHandler implements Reloadable
 		}
 	}
 
+	public final List<User> getUsers()
+	{
+		List<User> ret = new ArrayList<>();
+
+		for (List<User> list : users.values())
+			ret.addAll(list);
+
+		return ret;
+	}
+
 	public final List<User> getUsers(World world)
 	{
 		return getUsers(world.getName());
@@ -159,17 +169,6 @@ public class PermissionHandler implements Reloadable
 	}
 
 	// ---- User utility methods
-
-	public final void updateUsers()
-	{
-		for (List<User> list : users.values())
-		{
-			for (User user : list)
-			{
-				user.updatePermissions(true);
-			}
-		}
-	}
 
 	public final boolean areUsersDifferent(World oldWorld, World newWorld)
 	{
@@ -370,7 +369,7 @@ public class PermissionHandler implements Reloadable
 		return plugin.getServer().getPluginManager().getPermission(node);
 	}
 
-	public final Set<Permission> getRegisteredPermissions()
+	public final Set<Permission> getPermissions()
 	{
 		return plugin.getServer().getPluginManager().getPermissions();
 	}
@@ -532,8 +531,7 @@ public class PermissionHandler implements Reloadable
 			users.put(world.getName().toLowerCase(), new ArrayList<User>());
 	}
 
-	@Override
-	public void reload()
+	public final void load()
 	{
 		// ---- Initialize maps
 		this.worldGroups = new HashMap<String, Map<String, WorldGroup>>();
@@ -548,5 +546,47 @@ public class PermissionHandler implements Reloadable
 
 		// ---- Update Users
 		this.updateUsers();
+	}
+
+	public final void updateUsers()
+	{
+		for (List<User> list : users.values())
+		{
+			for (User user : list)
+				user.updatePermissions(true);
+		}
+	}
+
+	public final void updateGroups()
+	{
+		for (Map<String, WorldGroup> groups : worldGroups.values())
+		{
+			for (WorldGroup group : groups.values())
+				group.updatePermissions(true);
+		}
+	}
+
+	@Override
+	public void reload()
+	{
+		// ---- Re-initialize maps
+		this.worldGroups = new HashMap<String, Map<String, WorldGroup>>();
+		this.serverGroups = new HashMap<String, ServerGroup>();
+		this.defaultGroups = new HashMap<String, Group>();
+
+		// ---- Reload Groups
+		this.loadGroups();
+
+		// ---- Reload users
+		this.reloadUsers();
+	}
+
+	private final void reloadUsers()
+	{
+		for (List<User> list : users.values())
+		{
+			for (User user : list)
+				user.reload();
+		}
 	}
 }

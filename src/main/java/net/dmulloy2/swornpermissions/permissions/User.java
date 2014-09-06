@@ -16,11 +16,13 @@ import java.util.logging.Level;
 
 import net.dmulloy2.swornpermissions.SwornPermissions;
 import net.dmulloy2.types.MyMaterial;
+import net.dmulloy2.types.Reloadable;
 import net.dmulloy2.util.Util;
 
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.configuration.MemorySection;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachment;
 
@@ -28,7 +30,7 @@ import org.bukkit.permissions.PermissionAttachment;
  * @author dmulloy2
  */
 
-public class User extends Permissible
+public class User extends Permissible implements Reloadable
 {
 	protected Group group;
 	protected String groupName;
@@ -490,6 +492,16 @@ public class User extends Permissible
 
 	public List<Group> getSubGroups()
 	{
+		if (subGroups == null || subGroups.isEmpty())
+		{
+			for (String subGroupName : subGroupNames)
+			{
+				Group subGroup = plugin.getPermissionHandler().getGroup(getWorld(), subGroupName);
+				if (group != null)
+					subGroups.add(subGroup);
+			}
+		}
+
 		return subGroups;
 	}
 
@@ -528,7 +540,7 @@ public class User extends Permissible
 	private final List<String> getGroupNodes()
 	{
 		List<String> ret = new ArrayList<String>();
-		ret.addAll(group.getAllPermissionNodes());
+		ret.addAll(getGroup().getAllPermissionNodes());
 		return ret;
 	}
 
@@ -537,7 +549,7 @@ public class User extends Permissible
 	{
 		List<String> ret = new ArrayList<String>();
 
-		for (Group subGroup : subGroups)
+		for (Group subGroup : getSubGroups())
 			ret.addAll(subGroup.getAllPermissionNodes());
 
 		return ret;
@@ -546,7 +558,7 @@ public class User extends Permissible
 	// Main group permissions
 	private final Map<String, Boolean> getGroupPermissions()
 	{
-		return group.getPermissions();
+		return getGroup().getPermissions();
 	}
 
 	// Subgroup permissions
@@ -554,7 +566,7 @@ public class User extends Permissible
 	{
 		Map<String, Boolean> ret = new LinkedHashMap<String, Boolean>();
 
-		for (Group subGroup : subGroups)
+		for (Group subGroup : getSubGroups())
 			ret.putAll(subGroup.getPermissions());
 
 		return ret;
@@ -679,5 +691,15 @@ public class User extends Permissible
 		hash *= 1 + uniqueId.hashCode();
 		hash *= 1 + worldName.hashCode();
 		return hash;
+	}
+
+	@Override
+	public void reload()
+	{
+		FileConfiguration users = plugin.getDataHandler().getUserConfig(getWorld());
+		if (users.isSet("users." + uniqueId))
+			loadFromDisk((MemorySection) users.get("users." + uniqueId));
+
+		updatePermissions(true);
 	}
 }

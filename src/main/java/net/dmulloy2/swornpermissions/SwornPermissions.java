@@ -53,6 +53,7 @@ import net.milkbowl.vault.permission.Permission;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 /**
  * @author dmulloy2
@@ -119,7 +120,7 @@ public class SwornPermissions extends JavaPlugin implements Reloadable
 		chatHandler = new ChatHandler(this);
 
 		permissionHandler = new PermissionHandler(this);
-		permissionHandler.reload(); // Load
+		permissionHandler.load();
 
 		/** Register Prefixed Commands **/
 		commandHandler.setCommandPrefix("swornperms");
@@ -144,6 +145,17 @@ public class SwornPermissions extends JavaPlugin implements Reloadable
 		pm.registerEvents(new ChatListener(this), this);
 		pm.registerEvents(new PlayerListener(this), this);
 		pm.registerEvents(new WorldListener(this), this);
+
+		new BukkitRunnable()
+		{
+			@Override
+			public void run()
+			{
+				permissionHandler.updateGroups();
+				permissionHandler.updateUsers();
+				logHandler.log("Groups and users updated!");
+			}
+		}.runTaskLater(this, 20L);
 
 		logHandler.log("{0} has been enabled ({1}ms)", getDescription().getFullName(), System.currentTimeMillis() - start);
 	}

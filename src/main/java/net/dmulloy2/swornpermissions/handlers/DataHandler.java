@@ -56,19 +56,19 @@ public class DataHandler implements Reloadable
 
 	public final void scheduleSaveTask()
 	{
-		if (! plugin.getConfig().getBoolean("autoSave.enabled"))
-			return;
-
-		int interval = plugin.getConfig().getInt("autoSave.interval", 15) * 20 * 60;
-
-		new BukkitRunnable()
+		if (plugin.getConfig().getBoolean("autoSave.enabled"))
 		{
-			@Override
-			public void run()
+			int interval = plugin.getConfig().getInt("autoSave.interval", 15) * 20 * 60;
+
+			new BukkitRunnable()
 			{
-				save();
-			}
-		}.runTaskTimerAsynchronously(plugin, interval, interval);
+				@Override
+				public void run()
+				{
+					save();
+				}
+			}.runTaskTimerAsynchronously(plugin, interval, interval);
+		}
 	}
 
 	public final void save()

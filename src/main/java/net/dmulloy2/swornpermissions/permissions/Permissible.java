@@ -325,7 +325,7 @@ public abstract class Permissible implements ConfigurationSerializable
 		if (node.equals("*"))
 		{
 			List<String> ret = new ArrayList<String>();
-			for (Permission permission : plugin.getPermissionHandler().getRegisteredPermissions())
+			for (Permission permission : plugin.getPermissionHandler().getPermissions())
 			{
 				ret.add(permission.getName());
 				List<String> children = getChildren(permission);
