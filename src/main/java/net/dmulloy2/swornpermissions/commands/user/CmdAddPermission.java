@@ -34,6 +34,12 @@ public class CmdAddPermission extends UserCommand
 			return;
 		}
 
+		if (permission.contains("**"))
+		{
+			err("Permission \"&c{0}&4\" contains invalid characters: &cdouble star&4!", permission);
+			return;
+		}
+
 		user.addPermission(permission);
 		user.updatePermissions(true);
 

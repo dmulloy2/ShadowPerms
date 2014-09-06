@@ -248,9 +248,38 @@ public class User extends Permissible
 	public final boolean hasPermission(String permission)
 	{
 		if (isOnline())
-			return getPlayer().hasPermission(permission);
+		{
+			Player player = getPlayer();
+			if (permission.contains("essentials"))
+				return essentialsPermission(player, permission);
+
+			return player.hasPermission(permission);
+		}
 
 		return super.hasPermission(permission);
+	}
+
+	// Special case, since Essentials is special
+	private final boolean essentialsPermission(Player base, String node)
+	{
+		String permCheck = node;
+		int index;
+		while (true)
+		{
+			if (base.isPermissionSet(permCheck))
+			{
+				return base.hasPermission(permCheck);
+			}
+
+			index = node.lastIndexOf('.');
+			if (index < 1)
+			{
+				return base.hasPermission("*");
+			}
+
+			node = node.substring(0, index);
+			permCheck = node + ".*";
+		}
 	}
 
 	public final void reset()
