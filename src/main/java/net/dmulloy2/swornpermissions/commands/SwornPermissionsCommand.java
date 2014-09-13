@@ -21,6 +21,7 @@ import net.dmulloy2.types.CommandVisibility;
 import net.dmulloy2.types.StringJoiner;
 import net.dmulloy2.util.ChatUtil;
 import net.dmulloy2.util.FormatUtil;
+import net.dmulloy2.util.ListUtil;
 import net.dmulloy2.util.NumberUtil;
 import net.dmulloy2.util.Util;
 
@@ -300,7 +301,7 @@ public abstract class SwornPermissionsCommand implements CommandExecutor
 
 	public List<String> getDescription()
 	{
-		return Util.toList(description);
+		return ListUtil.toList(description);
 	}
 
 	// ---- Sub Commands

@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import net.dmulloy2.swornpermissions.SwornPermissions;
-import net.dmulloy2.util.Util;
+import net.dmulloy2.util.ListUtil;
 
 import org.bukkit.World;
 import org.bukkit.configuration.MemorySection;
@@ -258,7 +258,7 @@ public abstract class Permissible implements ConfigurationSerializable
 		}
 
 		// Remove duplicates
-		return Util.removeDuplicates(ret);
+		return ListUtil.removeDuplicates(ret);
 	}
 
 	// Wildcard support
