@@ -1,8 +1,8 @@
 package net.dmulloy2.swornpermissions.commands;
 
 import net.dmulloy2.swornpermissions.SwornPermissions;
-import net.dmulloy2.swornpermissions.permissions.User;
 import net.dmulloy2.swornpermissions.types.Permission;
+import net.dmulloy2.swornpermissions.types.User;
 
 /**
  * @author dmulloy2

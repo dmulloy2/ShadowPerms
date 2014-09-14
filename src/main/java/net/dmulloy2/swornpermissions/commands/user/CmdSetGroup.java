@@ -4,9 +4,9 @@
 package net.dmulloy2.swornpermissions.commands.user;
 
 import net.dmulloy2.swornpermissions.SwornPermissions;
-import net.dmulloy2.swornpermissions.permissions.Group;
-import net.dmulloy2.swornpermissions.permissions.ServerGroup;
+import net.dmulloy2.swornpermissions.types.Group;
 import net.dmulloy2.swornpermissions.types.Permission;
+import net.dmulloy2.swornpermissions.types.ServerGroup;
 
 /**
  * @author dmulloy2

@@ -8,7 +8,7 @@ import java.util.logging.Level;
 import lombok.Getter;
 import net.dmulloy2.swornpermissions.SwornPermissions;
 import net.dmulloy2.swornpermissions.commands.SwornPermissionsCommand;
-import net.dmulloy2.swornpermissions.permissions.Group;
+import net.dmulloy2.swornpermissions.types.Group;
 import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.Util;
 

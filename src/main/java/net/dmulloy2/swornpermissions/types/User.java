@@ -1,7 +1,7 @@
 /**
  * (c) 2014 dmulloy2
  */
-package net.dmulloy2.swornpermissions.permissions;
+package net.dmulloy2.swornpermissions.types;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -662,6 +662,12 @@ public class User extends Permissible implements Reloadable
 		}
 
 		return true;
+	}
+
+	public final boolean matches(String identifier)
+	{
+		return identifier.equalsIgnoreCase(uniqueId) || identifier.equalsIgnoreCase(name)
+				|| identifier.equalsIgnoreCase(getDisplayName());
 	}
 
 	// ---- Generic Methods

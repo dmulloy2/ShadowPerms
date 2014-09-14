@@ -8,8 +8,8 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import net.dmulloy2.swornpermissions.SwornPermissions;
-import net.dmulloy2.swornpermissions.permissions.Group;
-import net.dmulloy2.swornpermissions.permissions.WorldGroup;
+import net.dmulloy2.swornpermissions.types.Group;
+import net.dmulloy2.swornpermissions.types.WorldGroup;
 import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.Util;
 

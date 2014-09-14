@@ -4,8 +4,8 @@
 package net.dmulloy2.swornpermissions.handlers;
 
 import net.dmulloy2.swornpermissions.SwornPermissions;
-import net.dmulloy2.swornpermissions.permissions.User;
 import net.dmulloy2.swornpermissions.types.Permission;
+import net.dmulloy2.swornpermissions.types.User;
 import net.dmulloy2.types.Reloadable;
 import net.dmulloy2.util.FormatUtil;
 

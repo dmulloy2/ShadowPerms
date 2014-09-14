@@ -9,21 +9,27 @@ commands:
     description: SwornPermissions root command
     usage: /<command> <args>
     aliases: [perms, perm, swornpermissions]
+  nick:
+    description: Set a player's nickname
+    usage: /<command> [player] <nick>
   prefix:
     description: Sets your prefix
-    usage: /<command> <args>
+    usage: /<command> <prefix>
     aliases: [pre]
-  suffix:
-    description: Sets your suffix
-    usage: /<command> <args>
-    aliases: [suf]
   prefixreset:
     description: Reset a player's prefix
-    usage: /<command> <player>
+    usage: /<command> [player]
     aliases: [prer]
+  realname:
+    description: Get a player's real name
+    usage: /<command> <player>
+  suffix:
+    description: Sets your suffix
+    usage: /<command> <suffix>
+    aliases: [suf]
   suffixreset:
     description: Reset a player's suffix
-    usage: /<command> <player>
+    usage: /<command> [player]
     aliases: [sufr]
 permissions:
   swornpermissions.admin:
@@ -39,6 +45,10 @@ permissions:
       swornpermissions.cmd.reload: true
       swornpermissions.cmd.save: true
       swornpermissions.cmd.suffix: true
+      swornpermissions.cmd.nick: true
+      swornpermissions.cmd.realname: true
+      swornpermissions.cmd.reload: true
+      swornpermissions.cmd.save: true
       swornpermissions.moderator: true
   swornpermissions.moderator:
     description: Allows access to commands meant for mods
@@ -140,10 +150,6 @@ permissions:
     default: false
   swornpermissions.chat.rainbow:
     default: false
-  swornpermissions.cmd.reload:
-    default: false
-  swornpermissions.cmd.version:
-    default: true
   swornpermissions.cmd.prefix:
     default: false
   swornpermissions.cmd.prefix.reset:
@@ -156,5 +162,13 @@ permissions:
     default: false
   swornpermissions.cmd.suffix.reset.others:
     default: false
+  swornpermissions.cmd.nick:
+    default: false
+  swornpermissions.cmd.realname:
+    default: false
+  swornpermissions.cmd.reload:
+    default: false
   swornpermissions.cmd.save:
     default: false
+  swornpermissions.cmd.version:
+    default: true

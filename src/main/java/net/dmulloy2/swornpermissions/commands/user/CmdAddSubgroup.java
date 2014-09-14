@@ -4,7 +4,7 @@
 package net.dmulloy2.swornpermissions.commands.user;
 
 import net.dmulloy2.swornpermissions.SwornPermissions;
-import net.dmulloy2.swornpermissions.permissions.Group;
+import net.dmulloy2.swornpermissions.types.Group;
 import net.dmulloy2.swornpermissions.types.Permission;
 
 /**

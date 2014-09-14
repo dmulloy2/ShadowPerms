@@ -4,8 +4,8 @@
 package net.dmulloy2.swornpermissions.vault;
 
 import net.dmulloy2.swornpermissions.SwornPermissions;
-import net.dmulloy2.swornpermissions.permissions.Group;
-import net.dmulloy2.swornpermissions.permissions.User;
+import net.dmulloy2.swornpermissions.types.Group;
+import net.dmulloy2.swornpermissions.types.User;
 import net.dmulloy2.util.NumberUtil;
 import net.dmulloy2.util.Util;
 import net.milkbowl.vault.chat.Chat;

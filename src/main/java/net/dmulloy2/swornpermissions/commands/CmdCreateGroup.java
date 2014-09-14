@@ -1,11 +1,10 @@
 /**
  * (c) 2014 dmulloy2
  */
-package net.dmulloy2.swornpermissions.commands.group;
+package net.dmulloy2.swornpermissions.commands;
 
 import net.dmulloy2.swornpermissions.SwornPermissions;
-import net.dmulloy2.swornpermissions.commands.SwornPermissionsCommand;
-import net.dmulloy2.swornpermissions.permissions.Group;
+import net.dmulloy2.swornpermissions.types.Group;
 import net.dmulloy2.swornpermissions.types.Permission;
 
 /**

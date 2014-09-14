@@ -14,9 +14,9 @@ import net.dmulloy2.chat.HoverEvent;
 import net.dmulloy2.chat.HoverEvent.Action;
 import net.dmulloy2.chat.TextComponent;
 import net.dmulloy2.swornpermissions.SwornPermissions;
-import net.dmulloy2.swornpermissions.permissions.Group;
-import net.dmulloy2.swornpermissions.permissions.User;
+import net.dmulloy2.swornpermissions.types.Group;
 import net.dmulloy2.swornpermissions.types.Permission;
+import net.dmulloy2.swornpermissions.types.User;
 import net.dmulloy2.types.CommandVisibility;
 import net.dmulloy2.types.StringJoiner;
 import net.dmulloy2.util.ChatUtil;
@@ -426,6 +426,11 @@ public abstract class SwornPermissionsCommand implements CommandExecutor
 		}
 	}
 
+	protected final User getUser()
+	{
+		return getUser(true);
+	}
+
 	protected final User getUser(boolean msg)
 	{
 		if (! isPlayer())
@@ -438,9 +443,14 @@ public abstract class SwornPermissionsCommand implements CommandExecutor
 		return plugin.getPermissionHandler().getUser(player);
 	}
 
-	protected final User getUser()
+	protected final User getUser(int index)
 	{
-		return getUser(true);
+		return getUser(index, getWorld());
+	}
+
+	protected final User getUser(int index, World world)
+	{
+		return getUser(index, world, true);
 	}
 
 	protected final User getUser(int index, World world, boolean msg)
@@ -448,13 +458,9 @@ public abstract class SwornPermissionsCommand implements CommandExecutor
 		if (args.length > index)
 			return getUser(args[index], world, msg);
 
-		if (msg) err("User not specified!");
+		if (msg)
+			err("User not specified!");
 		return null;
-	}
-
-	protected final User getUser(int index, World world)
-	{
-		return getUser(index, world, true);
 	}
 
 	protected final User getUser(String identifier, World world, boolean msg)
@@ -476,7 +482,8 @@ public abstract class SwornPermissionsCommand implements CommandExecutor
 		if (args.length > arg)
 			return getGroup(args[arg], world, msg);
 
-		if (msg) err("Group not specified!");
+		if (msg)
+			err("Group not specified!");
 		return null;
 	}
 
@@ -506,7 +513,10 @@ public abstract class SwornPermissionsCommand implements CommandExecutor
 			World world = plugin.getServer().getWorld(args[args.length - 1]);
 			if (world != null)
 				return world;
-		} catch (Throwable ex) { }
+		}
+		catch (Throwable ex)
+		{
+		}
 		return getDefaultWorld();
 	}
 

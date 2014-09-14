@@ -20,7 +20,7 @@ import net.dmulloy2.util.FormatUtil;
 
 public class CmdHelp extends SwornPermissionsCommand
 {
-	protected int linesPerPage, pageArgIndex;
+	private int linesPerPage, pageArgIndex;
 
 	public CmdHelp(SwornPermissions plugin)
 	{
@@ -71,7 +71,7 @@ public class CmdHelp extends SwornPermissionsCommand
 		return buildHelpMenu().size();
 	}
 
-	public List<BaseComponent[]> getPage(int index)
+	private List<BaseComponent[]> getPage(int index)
 	{
 		List<BaseComponent[]> lines = new ArrayList<>();
 
@@ -85,7 +85,7 @@ public class CmdHelp extends SwornPermissionsCommand
 		return lines;
 	}
 
-	public List<BaseComponent[]> getHeader(int index)
+	private List<BaseComponent[]> getHeader(int index)
 	{
 		List<String> header = new ArrayList<>();
 
@@ -95,7 +95,7 @@ public class CmdHelp extends SwornPermissionsCommand
 		return TextComponent.fromLegacyList(header);
 	}
 
-	public List<BaseComponent[]> getLines(int startIndex, int endIndex)
+	private List<BaseComponent[]> getLines(int startIndex, int endIndex)
 	{
 		List<BaseComponent[]> lines = new ArrayList<>();
 

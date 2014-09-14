@@ -5,7 +5,7 @@ package net.dmulloy2.swornpermissions.listeners;
 
 import lombok.AllArgsConstructor;
 import net.dmulloy2.swornpermissions.SwornPermissions;
-import net.dmulloy2.swornpermissions.permissions.User;
+import net.dmulloy2.swornpermissions.types.User;
 import net.dmulloy2.util.FormatUtil;
 
 import org.bukkit.entity.Player;

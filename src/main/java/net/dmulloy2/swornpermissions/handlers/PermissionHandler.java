@@ -13,10 +13,10 @@ import java.util.logging.Level;
 
 import lombok.Getter;
 import net.dmulloy2.swornpermissions.SwornPermissions;
-import net.dmulloy2.swornpermissions.permissions.Group;
-import net.dmulloy2.swornpermissions.permissions.ServerGroup;
-import net.dmulloy2.swornpermissions.permissions.User;
-import net.dmulloy2.swornpermissions.permissions.WorldGroup;
+import net.dmulloy2.swornpermissions.types.Group;
+import net.dmulloy2.swornpermissions.types.ServerGroup;
+import net.dmulloy2.swornpermissions.types.User;
+import net.dmulloy2.swornpermissions.types.WorldGroup;
 import net.dmulloy2.types.Reloadable;
 import net.dmulloy2.util.Util;
 
@@ -52,12 +52,7 @@ public class PermissionHandler implements Reloadable
 
 	public final User getUser(String name)
 	{
-		// Attempt to match the player
-		Player player = Util.matchPlayer(name);
-		if (player != null)
-			return getUser(player);
-
-		return getUser(getDefaultWorld(), name);
+		return getUser((String) null, name);
 	}
 
 	public final User getUser(World world, String name)
@@ -70,18 +65,33 @@ public class PermissionHandler implements Reloadable
 
 	public final User getUser(Player player)
 	{
-		return getUser(player.getWorld(), player);
+		return getUser(plugin.getMirrorHandler().getUsersParent(player.getWorld()), player);
 	}
 
-	public final User getUser(World world, Player player)
+	public final User getUser(String world, Player player)
 	{
-		if (! isValidPlayer(player))
+		try
+		{
+			// First, ttempt to grab from online users
+			for (User user : users.get(world))
+			{
+				if (user.getUniqueId().equals(player.getUniqueId().toString()))
+					return user;
+			}
+
+			// Last, attempt to load the user
+			User user = plugin.getDataHandler().loadUser(player);
+			if (user == null)
+				user = new User(plugin, player, world);
+
+			users.get(world).add(user);
+			return user;
+		}
+		catch (Throwable ex)
+		{
+			plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(ex, "getting user for: " + player.getName()));
 			return null;
-
-		if (world == null)
-			world = getDefaultWorld();
-
-		return getUser(world.getName(), player.getUniqueId().toString());
+		}
 	}
 
 	public final User getUser(String world, OfflinePlayer player)
@@ -89,12 +99,6 @@ public class PermissionHandler implements Reloadable
 		return getUser(world, player.getUniqueId().toString());
 	}
 
-	public final User getUser(World world, OfflinePlayer player)
-	{
-		return getUser(world.getName(), player.getUniqueId().toString());
-	}
-
-	// Root get user method... All getUser calls should be directed here
 	public final User getUser(String world, String identifier)
 	{
 		try
@@ -104,19 +108,19 @@ public class PermissionHandler implements Reloadable
 
 			world = plugin.getMirrorHandler().getUsersParent(world);
 
-			// Attempt to match player
+			// First, attempt to match the player
 			Player player = Util.matchPlayer(identifier);
 			if (player != null)
-				identifier = player.getUniqueId().toString();
+				return getUser(world, player);
 
-			// Attempt to grab from online users
+			// Then, attempt to grab from online users
 			for (User user : users.get(world))
 			{
-				if (identifier.equals(user.getUniqueId()) || identifier.equalsIgnoreCase(user.getName()))
+				if (user.matches(identifier))
 					return user;
 			}
 
-			// Attempt to load the user
+			// Finally, attempt to load the user
 			User user = plugin.getDataHandler().loadUser(world, identifier);
 			if (user == null)
 				return null;

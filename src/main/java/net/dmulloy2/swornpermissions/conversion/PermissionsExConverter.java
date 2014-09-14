@@ -17,8 +17,8 @@ import java.util.logging.Level;
 
 import net.dmulloy2.io.UUIDFetcher;
 import net.dmulloy2.swornpermissions.SwornPermissions;
-import net.dmulloy2.swornpermissions.permissions.User;
-import net.dmulloy2.swornpermissions.permissions.WorldGroup;
+import net.dmulloy2.swornpermissions.types.User;
+import net.dmulloy2.swornpermissions.types.WorldGroup;
 import net.dmulloy2.util.Util;
 
 import org.bukkit.configuration.MemorySection;

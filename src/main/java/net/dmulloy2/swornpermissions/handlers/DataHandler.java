@@ -16,9 +16,9 @@ import java.util.logging.Level;
 
 import lombok.Getter;
 import net.dmulloy2.swornpermissions.SwornPermissions;
-import net.dmulloy2.swornpermissions.permissions.Group;
-import net.dmulloy2.swornpermissions.permissions.User;
-import net.dmulloy2.swornpermissions.permissions.WorldGroup;
+import net.dmulloy2.swornpermissions.types.Group;
+import net.dmulloy2.swornpermissions.types.User;
+import net.dmulloy2.swornpermissions.types.WorldGroup;
 import net.dmulloy2.types.Reloadable;
 import net.dmulloy2.util.Util;
 
@@ -54,7 +54,7 @@ public class DataHandler implements Reloadable
 
 	// ---- I/O
 
-	public final void scheduleSaveTask()
+	private final void scheduleSaveTask()
 	{
 		if (plugin.getConfig().getBoolean("autoSave.enabled"))
 		{
@@ -82,7 +82,7 @@ public class DataHandler implements Reloadable
 		plugin.getLogHandler().log("Saved! Took {0} ms!", System.currentTimeMillis() - start);
 	}
 
-	public final void saveUsers()
+	private final void saveUsers()
 	{
 		for (String world : loadedWorlds)
 		{
@@ -136,7 +136,7 @@ public class DataHandler implements Reloadable
 		plugin.getPermissionHandler().cleanupUsers(20L);
 	}
 
-	public final void saveGroups()
+	private final void saveGroups()
 	{
 		for (String world : loadedWorlds)
 		{
@@ -183,6 +183,8 @@ public class DataHandler implements Reloadable
 				}
 			}
 		}
+
+		saveServerGroups();
 	}
 
 	public final FileConfiguration getUserConfig(World world)
@@ -193,7 +195,6 @@ public class DataHandler implements Reloadable
 	public final FileConfiguration getUserConfig(String world)
 	{
 		world = plugin.getMirrorHandler().getUsersParent(world);
-
 		return userConfigs.get(world);
 	}
 
@@ -311,9 +312,7 @@ public class DataHandler implements Reloadable
 		String key = player.getUniqueId().toString();
 		FileConfiguration config = getUserConfig(world);
 		if (! config.isSet("users." + key))
-		{
 			return new User(plugin, player, world);
-		}
 
 		return new User(plugin, player, world, (MemorySection) config.get("users." + key));
 	}

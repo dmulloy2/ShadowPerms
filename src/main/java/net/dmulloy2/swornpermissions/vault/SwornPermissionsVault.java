@@ -6,10 +6,10 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import net.dmulloy2.swornpermissions.SwornPermissions;
-import net.dmulloy2.swornpermissions.permissions.Group;
-import net.dmulloy2.swornpermissions.permissions.ServerGroup;
-import net.dmulloy2.swornpermissions.permissions.User;
-import net.dmulloy2.swornpermissions.permissions.WorldGroup;
+import net.dmulloy2.swornpermissions.types.Group;
+import net.dmulloy2.swornpermissions.types.ServerGroup;
+import net.dmulloy2.swornpermissions.types.User;
+import net.dmulloy2.swornpermissions.types.WorldGroup;
 import net.milkbowl.vault.permission.Permission;
 
 import org.bukkit.OfflinePlayer;

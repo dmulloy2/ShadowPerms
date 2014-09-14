@@ -10,8 +10,8 @@ import java.util.Map.Entry;
 
 import net.dmulloy2.swornpermissions.SwornPermissions;
 import net.dmulloy2.swornpermissions.commands.SwornPermissionsCommand;
-import net.dmulloy2.swornpermissions.permissions.User;
 import net.dmulloy2.swornpermissions.types.Permission;
+import net.dmulloy2.swornpermissions.types.User;
 import net.dmulloy2.types.StringJoiner;
 import net.dmulloy2.util.FormatUtil;
 
