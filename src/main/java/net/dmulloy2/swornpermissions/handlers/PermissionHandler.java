@@ -72,18 +72,16 @@ public class PermissionHandler implements Reloadable
 	{
 		try
 		{
-			// First, ttempt to grab from online users
+			// First, attempt to grab from online users
+			String identifier = player.getUniqueId().toString();
 			for (User user : users.get(world))
 			{
-				if (user.getUniqueId().equals(player.getUniqueId().toString()))
+				if (user.getUniqueId().equals(identifier))
 					return user;
 			}
 
-			// Last, attempt to load the user
+			// Last, load the user
 			User user = plugin.getDataHandler().loadUser(player);
-			if (user == null)
-				user = new User(plugin, player, world);
-
 			users.get(world).add(user);
 			return user;
 		}
