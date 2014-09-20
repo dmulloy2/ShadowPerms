@@ -449,7 +449,8 @@ public class User extends Permissible implements Reloadable
 		if (options.containsKey("name"))
 			return (String) options.get("name");
 
-		return getPlayer().getName();
+		Player player = getPlayer();
+		return player == null ? null : player.getName();
 	}
 
 	public void setDisplayName(String name)
