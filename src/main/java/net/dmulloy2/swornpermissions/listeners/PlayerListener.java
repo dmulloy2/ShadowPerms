@@ -36,6 +36,7 @@ public class PlayerListener implements Listener
 			return;
 		}
 
+		user.updateUniqueID(player);
 		user.updatePermissions(true);
 	}
 
