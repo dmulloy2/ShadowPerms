@@ -134,7 +134,7 @@ public class User extends Permissible implements Reloadable
 	{
 		// Online check
 		Player player = getPlayer();
-		if (player == null || ! player.isOnline())
+		if (player == null)
 			return;
 
 		World newWorld = player.getWorld();
@@ -297,18 +297,13 @@ public class User extends Permissible implements Reloadable
 
 	public final Player getPlayer()
 	{
-		Player player = Util.matchPlayer(uniqueId);
-		if (player == null)
-			return null;
-
-		updateUniqueID(player);
-		return player;
+		return Util.matchPlayer(uniqueId);
 	}
 
 	public final boolean isOnline()
 	{
 		Player player = getPlayer();
-		if (player != null && player.isOnline())
+		if (player != null)
 			return plugin.getMirrorHandler().areUsersLinked(getWorld(), player.getWorld());
 
 		return false;
