@@ -5,6 +5,7 @@ package net.dmulloy2.swornpermissions.types;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -24,6 +25,7 @@ import org.bukkit.World;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionAttachment;
 
 /**
@@ -137,29 +139,16 @@ public class User extends Permissible implements Reloadable
 
 		World newWorld = player.getWorld();
 
-		boolean updatePermissions = false;
-		if (force || group == null || ! plugin.getMirrorHandler().areGroupsLinked(getWorld(), newWorld))
+		boolean updatePermissions = force;
+		if (updatePermissions || group == null || ! plugin.getMirrorHandler().areGroupsLinked(getWorld(), newWorld))
 		{
 			this.group = null;
-			this.subGroups = new ArrayList<>();
-
-			// Default group
-			if (groupName == null || groupName.isEmpty())
-			{
-				this.group = plugin.getPermissionHandler().getDefaultGroup(newWorld);
-				if (group == null)
-				{
-					plugin.getLogHandler().log(Level.SEVERE, "Failed to find a default group! {0} will not have any perms!", name);
-					return;
-				}
-
-				this.groupName = group.getName();
-			}
-
-			// Update group
-			this.group = plugin.getPermissionHandler().getGroup(newWorld, groupName);
+			this.group = getGroup();
 			if (group == null)
 			{
+				plugin.getLogHandler().log(Level.WARNING, "Failed to find group {0} for {1}. Using default group.", groupName, name);
+
+				// Default group
 				this.group = plugin.getPermissionHandler().getDefaultGroup(newWorld);
 				if (group == null)
 				{
@@ -170,13 +159,8 @@ public class User extends Permissible implements Reloadable
 				this.groupName = group.getName();
 			}
 
-			// Update subgroups
-			for (String subGroupName : subGroupNames)
-			{
-				Group subGroup = plugin.getPermissionHandler().getGroup(newWorld, subGroupName);
-				if (group != null)
-					subGroups.add(subGroup);
-			}
+			this.subGroups = new ArrayList<>();
+			this.subGroups = getSubGroups();
 
 			updatePermissions = true;
 		}
@@ -184,7 +168,6 @@ public class User extends Permissible implements Reloadable
 		// Update world
 		this.worldName = newWorld.getName();
 
-		// Do we need to continue?
 		if (! updatePermissions)
 			return;
 
@@ -216,9 +199,12 @@ public class User extends Permissible implements Reloadable
 	@Override
 	protected final List<String> sortPermissions()
 	{
-		Map<String, Boolean> permissions = new LinkedHashMap<String, Boolean>();
+		Map<String, Boolean> permissions = new LinkedHashMap<>();
 
-		// Add subgroup permissions first
+		// Add default permissions first
+		permissions.putAll(getDefaultPermissions());
+
+		// Then subgroup permissions
 		permissions.putAll(getSubgroupPermissions());
 
 		// Then add main group permissions
@@ -226,14 +212,13 @@ public class User extends Permissible implements Reloadable
 
 		// Finally user-specific nodes
 		List<String> userPerms = sort(getPermissionNodes());
-
-		for (String userPerm : new ArrayList<String>(userPerms))
+		for (String userPerm : userPerms)
 		{
 			boolean value = ! userPerm.startsWith("-");
 			permissions.put(value ? userPerm : userPerm.substring(1), value);
 		}
 
-		List<String> ret = new ArrayList<String>();
+		List<String> ret = new ArrayList<>();
 
 		for (Entry<String, Boolean> entry : permissions.entrySet())
 		{
@@ -246,38 +231,41 @@ public class User extends Permissible implements Reloadable
 		return sort(ret);
 	}
 
+	private final Map<String, Boolean> getDefaultPermissions()
+	{
+		Map<String, Boolean> defaultPermissions = new HashMap<>();
+
+		Set<Permission> defaults = plugin.getServer().getPluginManager().getDefaultPermissions(false);
+		for (Permission permission : defaults)
+			defaultPermissions.put(permission.getName(), true);
+
+		return defaultPermissions;
+	}
+
 	@Override
 	public final boolean hasPermission(String permission)
 	{
 		if (isOnline())
 		{
 			Player player = getPlayer();
-			if (permission.contains("essentials"))
-				return essentialsPermission(player, permission);
-
-			return player.hasPermission(permission);
+			return hasPermission(player, permission);
 		}
 
 		return super.hasPermission(permission);
 	}
 
-	// Special case, since Essentials is special
-	private final boolean essentialsPermission(Player base, String node)
+	private final boolean hasPermission(Player base, String node)
 	{
 		String permCheck = node;
 		int index;
 		while (true)
 		{
 			if (base.isPermissionSet(permCheck))
-			{
 				return base.hasPermission(permCheck);
-			}
 
 			index = node.lastIndexOf('.');
 			if (index < 1)
-			{
 				return base.hasPermission("*");
-			}
 
 			node = node.substring(0, index);
 			permCheck = node + ".*";
@@ -324,11 +312,6 @@ public class User extends Permissible implements Reloadable
 			return plugin.getMirrorHandler().areUsersLinked(getWorld(), player.getWorld());
 
 		return false;
-	}
-
-	public final void onQuit()
-	{
-		removeAttachment();
 	}
 
 	// ---- UUID Management
@@ -493,12 +476,15 @@ public class User extends Permissible implements Reloadable
 
 	public List<Group> getSubGroups()
 	{
-		if (subGroups == null || subGroups.isEmpty())
+		if (subGroups == null)
+			subGroups = new ArrayList<>();
+
+		if (subGroups.isEmpty() && ! subGroupNames.isEmpty())
 		{
 			for (String subGroupName : subGroupNames)
 			{
 				Group subGroup = plugin.getPermissionHandler().getGroup(getWorld(), subGroupName);
-				if (group != null)
+				if (subGroup != null)
 					subGroups.add(subGroup);
 			}
 		}

@@ -44,6 +44,7 @@ import net.dmulloy2.swornpermissions.handlers.PermissionHandler;
 import net.dmulloy2.swornpermissions.handlers.WizardHandler;
 import net.dmulloy2.swornpermissions.listeners.ChatListener;
 import net.dmulloy2.swornpermissions.listeners.PlayerListener;
+import net.dmulloy2.swornpermissions.listeners.ServerListener;
 import net.dmulloy2.swornpermissions.listeners.WorldListener;
 import net.dmulloy2.swornpermissions.vault.SwornChatVault;
 import net.dmulloy2.swornpermissions.vault.SwornPermissionsVault;
@@ -73,6 +74,7 @@ public class SwornPermissions extends JavaPlugin implements Reloadable
 	private @Getter LogHandler logHandler;
 
 	private @Getter boolean disabling;
+	private @Getter boolean updated;
 
 	private @Getter String prefix = FormatUtil.format("&3[&eSwornPerms&3]&e ");
 
@@ -148,6 +150,7 @@ public class SwornPermissions extends JavaPlugin implements Reloadable
 		PluginManager pm = getServer().getPluginManager();
 		pm.registerEvents(new ChatListener(this), this);
 		pm.registerEvents(new PlayerListener(this), this);
+		pm.registerEvents(new ServerListener(this), this);
 		pm.registerEvents(new WorldListener(this), this);
 
 		new BukkitRunnable()
@@ -158,6 +161,7 @@ public class SwornPermissions extends JavaPlugin implements Reloadable
 				permissionHandler.updateGroups();
 				permissionHandler.updateUsers();
 				logHandler.log("Groups and users updated!");
+				updated = true;
 			}
 		}.runTaskLater(this, 20L);
 
@@ -170,6 +174,7 @@ public class SwornPermissions extends JavaPlugin implements Reloadable
 		long start = System.currentTimeMillis();
 
 		disabling = true;
+		updated = false;
 
 		getServer().getServicesManager().unregisterAll(this);
 		getServer().getScheduler().cancelTasks(this);

@@ -63,7 +63,7 @@ public abstract class Permissible implements ConfigurationSerializable
 
 	public void loadFromDisk(MemorySection section)
 	{
-		this.permissionNodes = new ArrayList<String>(section.getStringList("permissions"));
+		this.permissionNodes = new ArrayList<>(section.getStringList("permissions"));
 
 		if (section.isSet("options"))
 		{
@@ -158,7 +158,7 @@ public abstract class Permissible implements ConfigurationSerializable
 
 	public final String getMatchingPermission(String node)
 	{
-		List<String> permissions = new ArrayList<String>(sortedPermissions);
+		List<String> permissions = new ArrayList<>(sortedPermissions);
 		if (permissions.contains("*") && ! node.startsWith("-"))
 			return "*";
 
@@ -201,7 +201,7 @@ public abstract class Permissible implements ConfigurationSerializable
 		}
 
 		// Add negative nodes next
-		for (String permission : new ArrayList<String>(permissionNodes))
+		for (String permission : new ArrayList<>(permissionNodes))
 		{
 			if (permission.startsWith("-"))
 			{
@@ -212,7 +212,7 @@ public abstract class Permissible implements ConfigurationSerializable
 		}
 
 		// Add positive nodes last to override any negatives
-		for (String permission : new ArrayList<String>(permissionNodes))
+		for (String permission : new ArrayList<>(permissionNodes))
 		{
 			permissionNodes.remove(permission);
 			permissions.put(permission, true);
@@ -229,7 +229,7 @@ public abstract class Permissible implements ConfigurationSerializable
 	// Order: *, negative, positive
 	protected final List<String> sort(List<String> permissions)
 	{
-		List<String> ret = new ArrayList<String>();
+		List<String> ret = new ArrayList<>();
 
 		// Add * permission first
 		if (permissions.contains("*"))
@@ -239,7 +239,7 @@ public abstract class Permissible implements ConfigurationSerializable
 		}
 
 		// Add negative nodes next
-		for (String permission : new ArrayList<String>(permissions))
+		for (String permission : new ArrayList<>(permissions))
 		{
 			if (permission.startsWith("-"))
 			{
@@ -249,7 +249,7 @@ public abstract class Permissible implements ConfigurationSerializable
 		}
 
 		// Add positive nodes last, overrides negatives
-		for (String permission : new ArrayList<String>(permissions))
+		for (String permission : new ArrayList<>(permissions))
 		{
 			permissions.remove(permission);
 			if (ret.contains("-" + permission))
@@ -264,7 +264,7 @@ public abstract class Permissible implements ConfigurationSerializable
 	// Wildcard support
 	protected final List<String> getMatchingNodes(List<String> permissionNodes)
 	{
-		List<String> ret = new ArrayList<String>();
+		List<String> ret = new ArrayList<>();
 
 		for (String node : permissionNodes)
 		{
@@ -375,7 +375,7 @@ public abstract class Permissible implements ConfigurationSerializable
 		if (permissions.isEmpty())
 			updatePermissionMap();
 
-		return new LinkedHashMap<String, Boolean>(permissions);
+		return new LinkedHashMap<>(permissions);
 	}
 
 	public List<String> getPermissionNodes()
@@ -386,8 +386,11 @@ public abstract class Permissible implements ConfigurationSerializable
 		ret.addAll(permissionNodes);
 
 		// Temp Permissions
-		cleanTempPermissions();
-		ret.addAll(timestamps.keySet());
+		if (! timestamps.isEmpty())
+		{
+			cleanTempPermissions();
+			ret.addAll(timestamps.keySet());
+		}
 
 		return ret;
 	}

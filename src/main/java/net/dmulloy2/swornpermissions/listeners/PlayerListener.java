@@ -36,7 +36,6 @@ public class PlayerListener implements Listener
 			return;
 		}
 
-		user.removeAttachment();
 		user.updatePermissions(true);
 	}
 
@@ -68,6 +67,6 @@ public class PlayerListener implements Listener
 			return;
 		}
 
-		user.onQuit();
+		user.removeAttachment();
 	}
 }
