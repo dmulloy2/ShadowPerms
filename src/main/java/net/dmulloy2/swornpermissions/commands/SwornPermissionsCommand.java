@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import net.dmulloy2.chat.BaseComponent;
+import net.dmulloy2.chat.ChatUtil;
 import net.dmulloy2.chat.ClickEvent;
 import net.dmulloy2.chat.ComponentBuilder;
 import net.dmulloy2.chat.HoverEvent;
@@ -19,7 +20,6 @@ import net.dmulloy2.swornpermissions.types.Permission;
 import net.dmulloy2.swornpermissions.types.User;
 import net.dmulloy2.types.CommandVisibility;
 import net.dmulloy2.types.StringJoiner;
-import net.dmulloy2.util.ChatUtil;
 import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.ListUtil;
 import net.dmulloy2.util.NumberUtil;

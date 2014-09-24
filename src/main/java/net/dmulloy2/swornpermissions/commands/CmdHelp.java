@@ -7,9 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.dmulloy2.chat.BaseComponent;
+import net.dmulloy2.chat.ChatUtil;
 import net.dmulloy2.chat.TextComponent;
 import net.dmulloy2.swornpermissions.SwornPermissions;
-import net.dmulloy2.util.ChatUtil;
 import net.dmulloy2.util.FormatUtil;
 
 /**
