@@ -42,9 +42,8 @@ public class User extends Permissible implements Reloadable
 
 	protected PermissionAttachment attachment;
 
-	// UUID Stuff
-	protected String lastKnownBy;
 	protected String uniqueId;
+	protected String lastKnownBy;
 
 	// Base constructor
 	private User(SwornPermissions plugin, String name, String uniqueId, String world)
@@ -130,10 +129,13 @@ public class User extends Permissible implements Reloadable
 	// ---- Permission Handling
 
 	@Override
-	public void updatePermissions(boolean force)
+	public final void updatePermissions(boolean force)
 	{
-		// Online check
-		Player player = getPlayer();
+		updatePermissions(getPlayer(), force);
+	}
+
+	public final void updatePermissions(Player player, boolean force)
+	{
 		if (player == null)
 			return;
 
@@ -325,6 +327,10 @@ public class User extends Permissible implements Reloadable
 		return uniqueId;
 	}
 
+	/**
+	 * @deprecated Conversion use ONLY!
+	 */
+	@Deprecated
 	public void setUniqueId(UUID uuid)
 	{
 		this.uniqueId = uuid.toString();
@@ -340,6 +346,10 @@ public class User extends Permissible implements Reloadable
 		return lastKnownBy;
 	}
 
+	/**
+	 * @deprecated Conversion use ONLY!
+	 */
+	@Deprecated
 	public void setLastKnownBy(String lastKnownBy)
 	{
 		this.lastKnownBy = lastKnownBy;
@@ -428,7 +438,7 @@ public class User extends Permissible implements Reloadable
 			return (String) options.get("name");
 
 		Player player = getPlayer();
-		return player == null ? null : player.getName();
+		return player == null ? lastKnownBy : player.getName();
 	}
 
 	public void setDisplayName(String name)
@@ -461,7 +471,7 @@ public class User extends Permissible implements Reloadable
 	}
 
 	/**
-	 * @deprecated For conversion use ONLY
+	 * @deprecated Conversion use ONLY!
 	 */
 	@Deprecated
 	public void setGroupName(String groupName)
@@ -493,7 +503,7 @@ public class User extends Permissible implements Reloadable
 	}
 
 	/**
-	 * @deprecated For conversion use ONLY
+	 * @deprecated Conversion use ONLY!
 	 */
 	@Deprecated
 	public void setSubGroupNames(List<String> subGroupNames)

@@ -37,7 +37,7 @@ public class PlayerListener implements Listener
 		}
 
 		user.updateUniqueID(player);
-		user.updatePermissions(true);
+		user.updatePermissions(player, true);
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST)
@@ -54,7 +54,7 @@ public class PlayerListener implements Listener
 		if (plugin.getPermissionHandler().areUsersDifferent(event.getFrom(), player.getWorld()))
 			user = plugin.getPermissionHandler().moveWorld(player, event.getFrom(), player.getWorld());
 
-		user.updatePermissions(false);
+		user.updatePermissions(player, false);
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)
