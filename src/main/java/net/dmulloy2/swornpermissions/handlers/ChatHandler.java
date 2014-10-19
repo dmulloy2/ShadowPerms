@@ -57,6 +57,10 @@ public class ChatHandler implements Reloadable
 		format = format.replace("{name}", name);
 		format = format.replace("{suffix}", suffix);
 
+		// Chat color
+		if (user.hasOption("chatColor"))
+			format = format.replace(":", user.getOption("chatColor") + ":");
+
 		// Permissions
 		if (! plugin.getPermissionHandler().hasPermission(player, Permission.CHAT_COLOR))
 			message = message.replaceAll("(&([a-fA-F0-9]))", "");
