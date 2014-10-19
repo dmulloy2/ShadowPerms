@@ -631,6 +631,12 @@ public class User extends Permissible implements Reloadable
 		return super.hasOption(key) || (group != null && group.hasOption(key));
 	}
 
+	@Override
+	public Object getOption(String key)
+	{
+		return super.hasOption(key) ? super.getOption(key) : (group != null ? group.getOption(key) : null);
+	}
+
 	// ---- AntiItem
 
 	public final boolean canUse(String regexPrefix, MyMaterial material)
