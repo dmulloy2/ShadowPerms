@@ -139,10 +139,12 @@ public class User extends Permissible implements Reloadable
 		if (player == null)
 			return;
 
+		World oldWorld = getWorld();
 		World newWorld = player.getWorld();
+		this.worldName = newWorld.getName();
 
 		boolean updatePermissions = force;
-		if (updatePermissions || group == null || ! plugin.getMirrorHandler().areGroupsLinked(getWorld(), newWorld))
+		if (updatePermissions || group == null || ! plugin.getMirrorHandler().areGroupsLinked(oldWorld, newWorld))
 		{
 			this.group = null;
 			this.group = getGroup();
@@ -166,9 +168,6 @@ public class User extends Permissible implements Reloadable
 
 			updatePermissions = true;
 		}
-
-		// Update world
-		this.worldName = newWorld.getName();
 
 		if (! updatePermissions)
 			return;
