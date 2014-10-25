@@ -138,7 +138,7 @@ public class User extends Permissible implements Reloadable
 	{
 		if (player == null)
 		{
-			plugin.getLogHandler().log(Level.WARNING, "{0} does not have a valid player instance!", name);
+			plugin.getLogHandler().debug(Level.WARNING, "{0} does not have a valid player instance!", name);
 			return;
 		}
 
