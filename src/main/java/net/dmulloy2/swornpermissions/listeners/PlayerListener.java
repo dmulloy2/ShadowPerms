@@ -51,10 +51,10 @@ public class PlayerListener implements Listener
 			return;
 		}
 
-		if (plugin.getPermissionHandler().areUsersDifferent(event.getFrom(), player.getWorld()))
-			user = plugin.getPermissionHandler().moveWorld(player, event.getFrom(), player.getWorld());
+		user = plugin.getPermissionHandler().moveWorld(player, event.getFrom(), player.getWorld());
 
-		user.updatePermissions(player, false);
+		boolean force = plugin.getConfig().getBoolean("forceUpdate.worldChange", false);
+		user.updatePermissions(player, force);
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)

@@ -35,6 +35,11 @@ allowCommandBlocks: false
 # input - boolean
 debug: false
 
+# Whether or not to force permission updates
+# worldChange - when a player changes worlds
+forceUpdate:
+  worldChange: false
+
 ##############################################
 #+------------------------------------------+#
 #|                 Mirrors                  |#

@@ -137,15 +137,19 @@ public class User extends Permissible implements Reloadable
 	public final void updatePermissions(Player player, boolean force)
 	{
 		if (player == null)
+		{
+			plugin.getLogHandler().log(Level.WARNING, "{0} does not have a valid player instance!", name);
 			return;
+		}
 
 		World oldWorld = getWorld();
 		World newWorld = player.getWorld();
 		this.worldName = newWorld.getName();
 
-		boolean updatePermissions = force;
-		if (updatePermissions || group == null || ! plugin.getMirrorHandler().areGroupsLinked(oldWorld, newWorld))
+		// Specific conditions
+		if (force || oldWorld == null || group == null || ! plugin.getMirrorHandler().areGroupsLinked(oldWorld, newWorld))
 		{
+			// Update group
 			this.group = null;
 			this.group = getGroup();
 			if (group == null)
@@ -163,37 +167,33 @@ public class User extends Permissible implements Reloadable
 				this.groupName = group.getName();
 			}
 
+			// Update subgroups
 			this.subGroups = new ArrayList<>();
 			this.subGroups = getSubGroups();
 
-			updatePermissions = true;
-		}
+			// Update prefix
+			this.prefix = findPrefix();
 
-		if (! updatePermissions)
-			return;
+			// Update permission map
+			updatePermissionMap();
 
-		// Update prefix
-		this.prefix = findPrefix();
+			// Apply our permissions
 
-		// Update permission map
-		updatePermissionMap();
+			try
+			{
+				// Reset attachment
+				resetAttachment();
 
-		// Apply our permissions
+				// Apply the new permissions
+				attachmentPermissions.set(attachment, new LinkedHashMap<String, Boolean>(permissions));
 
-		try
-		{
-			// Reset attachment
-			resetAttachment();
-
-			// Apply the new permissions
-			attachmentPermissions.set(attachment, new LinkedHashMap<String, Boolean>(permissions));
-
-			// Recalculate permissions
-			getPlayer().recalculatePermissions();
-		}
-		catch (Throwable ex)
-		{
-			plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(ex, "applying permissions for " + name));
+				// Recalculate permissions
+				getPlayer().recalculatePermissions();
+			}
+			catch (Throwable ex)
+			{
+				plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(ex, "applying permissions for " + name));
+			}
 		}
 	}
 
