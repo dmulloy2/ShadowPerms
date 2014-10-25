@@ -355,7 +355,7 @@ public class PermissionHandler implements Reloadable
 
 	public final Group getDefaultGroup(String world)
 	{
-		world = plugin.getMirrorHandler().getUsersParent(world);
+		world = plugin.getMirrorHandler().getGroupsParent(world);
 		return defaultGroups.get(world);
 	}
 

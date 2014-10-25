@@ -449,10 +449,11 @@ public class User extends Permissible implements Reloadable
 	{
 		if (group == null)
 		{
+			// Default group
 			if (groupName == null || groupName.isEmpty())
-				group = plugin.getPermissionHandler().getDefaultGroup(getWorld());
+				group = plugin.getPermissionHandler().getDefaultGroup(worldName);
 			else
-				group = plugin.getPermissionHandler().getGroup(groupName);
+				group = plugin.getPermissionHandler().getGroup(worldName, groupName);
 		}
 
 		return group;
