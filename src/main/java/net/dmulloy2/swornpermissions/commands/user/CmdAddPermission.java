@@ -26,17 +26,28 @@ public class CmdAddPermission extends UserCommand
 	@Override
 	public void perform()
 	{
-		String permission = args[0];
-		if (user.hasPermission(permission))
+		String node = args[0];
+		if (node.contains("**"))
 		{
-			sendpMessage("User &b{0} &ealready has access to this permission.", user.getName());
-			sendpMessage("Node: &b{0}", user.getMatchingPermission(permission));
+			err("Permission \"&c{0}&4\" contains invalid characters: &cdouble star&4!", permission);
 			return;
 		}
 
-		if (permission.contains("**"))
+		boolean negative = node.startsWith("-");
+		String permission = negative ? node.substring(1) : node;
+
+		if (user.hasPermission(permission) && ! negative)
 		{
-			err("Permission \"&c{0}&4\" contains invalid characters: &cdouble star&4!", permission);
+			sendpMessage("User &b{0} &ealready has access to this permission.", user.getName());
+			String matchingPerm = user.getMatchingPermission(permission);
+			if (matchingPerm != null)
+				sendpMessage("Node: &b{0}", user.getMatchingPermission(permission));
+			return;
+		}
+
+		if (user.hasPermissionNode(node))
+		{
+			sendpMessage("User &b{0} &ealready has this node.", user.getName());
 			return;
 		}
 

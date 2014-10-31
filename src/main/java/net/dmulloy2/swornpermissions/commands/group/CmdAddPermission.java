@@ -26,11 +26,28 @@ public class CmdAddPermission extends GroupCommand
 	@Override
 	public void perform()
 	{
-		String permission = args[0];
-		if (group.hasPermission(permission))
+		String node = args[0];
+		if (node.contains("**"))
 		{
-			sendpMessage("Group &b{0} &ealready has this permission.", group.getName());
-			sendpMessage("Node: &b{0}", group.getMatchingPermission(permission));
+			err("Permission \"&c{0}&4\" contains invalid characters: &cdouble star&4!", permission);
+			return;
+		}
+
+		boolean negative = node.startsWith("-");
+		String permission = negative ? node.substring(1) : node;
+
+		if (group.hasPermission(permission) && ! negative)
+		{
+			sendpMessage("Group &b{0} &ealready has access to this permission.", group.getName());
+			String matchingPerm = group.getMatchingPermission(permission);
+			if (matchingPerm != null)
+				sendpMessage("Node: &b{0}", group.getMatchingPermission(permission));
+			return;
+		}
+
+		if (group.hasPermissionNode(node))
+		{
+			sendpMessage("Group &b{0} &ealready has this node.", group.getName());
 			return;
 		}
 
