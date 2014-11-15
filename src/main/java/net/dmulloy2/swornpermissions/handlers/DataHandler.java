@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import lombok.Getter;
+import net.dmulloy2.io.Closer;
 import net.dmulloy2.swornpermissions.SwornPermissions;
 import net.dmulloy2.swornpermissions.types.Group;
 import net.dmulloy2.swornpermissions.types.User;
@@ -58,16 +59,17 @@ public class DataHandler implements Reloadable
 	{
 		if (plugin.getConfig().getBoolean("autoSave.enabled"))
 		{
-			int interval = plugin.getConfig().getInt("autoSave.interval", 15) * 20 * 60;
-
-			new BukkitRunnable()
+			class AutoSaveTask extends BukkitRunnable
 			{
 				@Override
 				public void run()
 				{
 					save();
 				}
-			}.runTaskTimerAsynchronously(plugin, interval, interval);
+			}
+
+			int interval = plugin.getConfig().getInt("autoSave.interval", 15) * 20 * 60;
+			new AutoSaveTask().runTaskTimerAsynchronously(plugin, interval, interval);
 		}
 	}
 
@@ -375,7 +377,10 @@ public class DataHandler implements Reloadable
 		if (! destination.exists())
 			destination.createNewFile();
 
-		OutputStream out = new FileOutputStream(destination);
+		Closer closer = new Closer();
+		closer.register(stream);
+
+		OutputStream out = closer.register(new FileOutputStream(destination));
 
 		int len;
 		byte[] buf = new byte[1024];
@@ -385,11 +390,7 @@ public class DataHandler implements Reloadable
 			out.write(buf, 0, len);
 		}
 
-		try
-		{
-			out.close();
-			stream.close();
-		} catch (Throwable ex) { }
+		closer.close();
 	}
 
 	@Override

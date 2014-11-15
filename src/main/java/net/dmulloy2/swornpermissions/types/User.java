@@ -20,6 +20,7 @@ import net.dmulloy2.types.MyMaterial;
 import net.dmulloy2.types.Reloadable;
 import net.dmulloy2.util.Util;
 
+import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.configuration.MemorySection;
@@ -671,7 +672,7 @@ public class User extends Permissible implements Reloadable
 	public final boolean matches(String identifier)
 	{
 		return identifier.equalsIgnoreCase(uniqueId) || identifier.equalsIgnoreCase(name)
-				|| identifier.equalsIgnoreCase(getDisplayName());
+				|| identifier.equalsIgnoreCase(ChatColor.stripColor(getDisplayName()));
 	}
 
 	// ---- Generic Methods
