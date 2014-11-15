@@ -18,6 +18,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -133,6 +134,28 @@ public class AntiItemHandler implements Listener, Reloadable
 		{
 			MyMaterial mat = new MyMaterial(placed.getType(), placed.getState().getData());
 			if (enabled && ! user.canUse("-antiitem.place.", mat))
+			{
+				event.setCancelled(true);
+			}
+		}
+	}
+
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+	public void onBlockBreak(BlockBreakEvent event)
+	{
+		Player player = event.getPlayer();
+		if (player == null)
+			return;
+
+		User user = plugin.getPermissionHandler().getUser(player);
+		if (user == null)
+			return;
+
+		Block placed = event.getBlock();
+		if (placed != null)
+		{
+			MyMaterial mat = new MyMaterial(placed.getType(), placed.getState().getData());
+			if (enabled && ! user.canUse("-antiitem.break.", mat))
 			{
 				event.setCancelled(true);
 			}
