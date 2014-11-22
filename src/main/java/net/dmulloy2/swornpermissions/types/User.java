@@ -164,9 +164,9 @@ public class User extends Permissible implements Reloadable
 					plugin.getLogHandler().log(Level.SEVERE, "Failed to find a default group! {0} will not have any perms!", name);
 					return;
 				}
-
-				this.groupName = group.getName();
 			}
+
+			this.groupName = group.getName();
 
 			// Update subgroups
 			this.subGroups = new ArrayList<>();
@@ -377,7 +377,7 @@ public class User extends Permissible implements Reloadable
 	public final List<String> getGroups()
 	{
 		List<String> ret = new ArrayList<String>();
-		ret.add(groupName);
+		ret.add(getGroupName());
 		ret.addAll(subGroupNames);
 
 		if (ret.isEmpty())
@@ -468,6 +468,9 @@ public class User extends Permissible implements Reloadable
 
 	public String getGroupName()
 	{
+		if (groupName == null && getGroup() != null)
+			groupName = getGroup().getName();
+
 		return groupName;
 	}
 
