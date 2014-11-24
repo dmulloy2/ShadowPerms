@@ -27,7 +27,7 @@ public class CmdRemovePermission extends UserCommand
 	public void perform()
 	{
 		String permission = args[0];
-		if (! user.hasPermission(permission))
+		if (! user.hasPermissionNode(permission))
 		{
 			sendpMessage("User &b{0} &edoes not have permission ''&b{1}&e.''", user.getName(), permission);
 			return;

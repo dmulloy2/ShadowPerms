@@ -27,7 +27,7 @@ public class CmdRemovePermission extends GroupCommand
 	public void perform()
 	{
 		String permission = args[0];
-		if (! group.hasPermission(permission))
+		if (! group.hasPermissionNode(permission))
 		{
 			sendpMessage("Group &b{0} &edoes not have permission ''&b{1}&e.''", group.getName(), permission);
 			return;
