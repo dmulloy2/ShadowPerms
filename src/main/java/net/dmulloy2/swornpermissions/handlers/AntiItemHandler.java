@@ -264,16 +264,16 @@ public class AntiItemHandler implements Listener, Reloadable
 
 	private final void regulatedEnchantment(Player player, Enchantment ench, int level, Material mat, String why)
 	{
-		player.sendMessage(plugin.getPrefix() +
-				FormatUtil.format("&4Enchantment &f{0}&4:&f{1} &4has been removed from &f{2} &4because it was too &f{3}&4.",
-						FormatUtil.getFriendlyName(ench), level, FormatUtil.getFriendlyName(mat), why));
+		player.sendMessage(plugin.getPrefix() + FormatUtil.format(
+				"&4Enchantment &c{0}&4:&c{1} &4has been removed from your &c{2} &4because it was too &c{3}&4.",
+				FormatUtil.getFriendlyName(ench.getName()), level, FormatUtil.getFriendlyName(mat), why));
 	}
 
 	private final void blockedItem(Player player, Material mat)
 	{
-		player.sendMessage(plugin.getPrefix() +
-				FormatUtil.format("&4Item &f{0} &4is not allowed and has been removed from your inventory.",
-						FormatUtil.getFriendlyName(mat)));
+		player.sendMessage(plugin.getPrefix() + FormatUtil.format(
+				"&4Item &c{0} &4is not allowed and has been removed from your inventory.",
+				FormatUtil.getFriendlyName(mat)));
 	}
 
 	@Override
