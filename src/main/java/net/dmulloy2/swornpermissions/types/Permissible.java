@@ -97,11 +97,6 @@ public abstract class Permissible implements ConfigurationSerializable
 
 	// ---- Permission Management
 
-	public final void addPermission(Permission permission)
-	{
-		addPermission(permission.getName());
-	}
-
 	public final void addPermission(String node)
 	{
 		permissionNodes.add(node);
@@ -110,11 +105,6 @@ public abstract class Permissible implements ConfigurationSerializable
 	public final void addTempPermission(String node, long expires)
 	{
 		timestamps.put(node, expires);
-	}
-
-	public final void removePermission(Permission permission)
-	{
-		removePermission(permission.getName());
 	}
 
 	public final void removePermission(String node)
@@ -445,11 +435,6 @@ public abstract class Permissible implements ConfigurationSerializable
 		this.prefix = prefix;
 	}
 
-	public boolean hasPrefix()
-	{
-		return prefix != "";
-	}
-
 	public String getSuffix()
 	{
 		return suffix;
@@ -459,11 +444,6 @@ public abstract class Permissible implements ConfigurationSerializable
 	{
 		options.put("suffix", suffix);
 		this.suffix = suffix;
-	}
-
-	public boolean hasSuffix()
-	{
-		return suffix != "";
 	}
 
 	public final World getWorld()

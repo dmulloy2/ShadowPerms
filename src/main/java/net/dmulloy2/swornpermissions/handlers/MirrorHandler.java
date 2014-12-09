@@ -39,11 +39,6 @@ public class MirrorHandler implements Reloadable
 
 	// ---- User Mirrors
 
-	public final boolean areUsersMirrored(World world)
-	{
-		return areUsersMirrored(world.getName());
-	}
-
 	public final boolean areUsersMirrored(String world)
 	{
 		return ! world.equalsIgnoreCase(getUsersParent(world));
@@ -111,11 +106,6 @@ public class MirrorHandler implements Reloadable
 	}
 
 	// ---- Group Mirrors
-
-	public final boolean areGroupsMirrored(World world)
-	{
-		return areGroupsMirrored(world.getName());
-	}
 
 	public final boolean areGroupsMirrored(String world)
 	{

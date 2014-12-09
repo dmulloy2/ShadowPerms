@@ -50,19 +50,6 @@ public class PermissionHandler implements Reloadable
 
 	// ---- User Getters
 
-	public final User getUser(String name)
-	{
-		return getUser((String) null, name);
-	}
-
-	public final User getUser(World world, String name)
-	{
-		if (world == null)
-			world = getDefaultWorld();
-
-		return getUser(world.getName(), name);
-	}
-
 	public final User getUser(Player player)
 	{
 		return getUser(plugin.getMirrorHandler().getUsersParent(player.getWorld()), player);
@@ -143,11 +130,6 @@ public class PermissionHandler implements Reloadable
 		return ret;
 	}
 
-	public final List<User> getUsers(World world)
-	{
-		return getUsers(world.getName());
-	}
-
 	public final List<User> getUsers(String world)
 	{
 		return users.get(world.toLowerCase());
@@ -171,11 +153,6 @@ public class PermissionHandler implements Reloadable
 	}
 
 	// ---- User utility methods
-
-	public final boolean areUsersDifferent(World oldWorld, World newWorld)
-	{
-		return areUsersDifferent(oldWorld.getName(), newWorld.getName());
-	}
 
 	public final boolean areUsersDifferent(String oldWorld, String newWorld)
 	{
@@ -209,6 +186,7 @@ public class PermissionHandler implements Reloadable
 		return newUser;
 	}
 
+	/* TODO: Figure out if this is needed
 	public final boolean isValidPlayer(Player player)
 	{
 		try
@@ -229,12 +207,7 @@ public class PermissionHandler implements Reloadable
 			plugin.getLogHandler().log(Level.WARNING, Util.getUsefulStack(ex, "validating player " + player.getName()));
 			return true;
 		}
-	}
-
-	public final boolean isRegistered(String id)
-	{
-		return isRegistered(id, getDefaultWorld());
-	}
+	}*/
 
 	public final boolean isRegistered(String id, World world)
 	{
@@ -256,11 +229,6 @@ public class PermissionHandler implements Reloadable
 	}
 
 	// ---- Group Getters
-
-	public final Group getGroup(String name)
-	{
-		return getGroup(getDefaultWorld(), name);
-	}
 
 	public final Group getGroup(World world, String name)
 	{
@@ -408,11 +376,6 @@ public class PermissionHandler implements Reloadable
 	}
 
 	// ---- Cleanup
-
-	public final void cleanupUsers()
-	{
-		cleanupUsers(0L);
-	}
 
 	public final void cleanupUsers(long delay)
 	{

@@ -1,3 +1,6 @@
+/**
+ * (c) 2014 dmulloy2
+ */
 package net.dmulloy2.swornpermissions.vault;
 
 import java.util.HashSet;
@@ -21,8 +24,8 @@ import org.bukkit.entity.Player;
 
 public class SwornPermissionsVault extends Permission
 {
-	private String name;
-	private SwornPermissions plugin;
+	private final String name;
+	private final SwornPermissions plugin;
 
 	public SwornPermissionsVault(SwornPermissions plugin)
 	{
@@ -226,11 +229,11 @@ public class SwornPermissionsVault extends Permission
 	@Override
 	public boolean playerRemoveGroup(String world, String player, String group)
 	{
-		if (! playerInGroup(world, player, group))
-			return false;
-
 		User user = plugin.getPermissionHandler().getUser(world, player);
 		if (user == null)
+			return false;
+
+		if (! user.isInSubGroup(group))
 			return false;
 
 		user.removeSubGroup(group);
@@ -301,11 +304,11 @@ public class SwornPermissionsVault extends Permission
 	@Override
 	public boolean playerRemoveGroup(String world, OfflinePlayer player, String group)
 	{
-		if (! playerInGroup(world, player, group))
-			return false;
-
 		User user = plugin.getPermissionHandler().getUser(world, player);
 		if (user == null)
+			return false;
+
+		if (! user.isInSubGroup(group))
 			return false;
 
 		user.removeSubGroup(group);

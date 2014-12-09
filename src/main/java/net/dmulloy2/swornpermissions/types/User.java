@@ -36,16 +36,16 @@ import org.bukkit.permissions.PermissionAttachment;
 
 public class User extends Permissible implements Reloadable
 {
-	protected Group group;
-	protected String groupName;
+	private Group group;
+	private String groupName;
 
-	protected List<Group> subGroups;
-	protected List<String> subGroupNames;
+	private List<Group> subGroups;
+	private List<String> subGroupNames;
 
-	protected PermissionAttachment attachment;
+	private PermissionAttachment attachment;
 
-	protected String uniqueId;
-	protected String lastKnownBy;
+	private String uniqueId;
+	private String lastKnownBy;
 
 	// Base constructor
 	private User(SwornPermissions plugin, String name, String uniqueId, String world)
@@ -358,7 +358,7 @@ public class User extends Permissible implements Reloadable
 
 	// ---- Attachment
 
-	public final void resetAttachment()
+	private final void resetAttachment()
 	{
 		removeAttachment();
 		attachment = getPlayer().addAttachment(plugin);
@@ -584,11 +584,6 @@ public class User extends Permissible implements Reloadable
 			if (subGroup.getName().equalsIgnoreCase(groupName))
 				subGroups.remove(subGroup);
 		}
-	}
-
-	public final void removeSubGroup(Group group)
-	{
-		removeSubGroup(group.getName());
 	}
 
 	@Override

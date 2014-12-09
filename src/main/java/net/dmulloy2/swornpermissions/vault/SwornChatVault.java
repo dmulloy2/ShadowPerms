@@ -19,8 +19,8 @@ import org.bukkit.OfflinePlayer;
 
 public class SwornChatVault extends Chat
 {
-	private String name;
-	private SwornPermissions plugin;
+	private final String name;
+	private final SwornPermissions plugin;
 
 	public SwornChatVault(SwornPermissions plugin, Permission perms)
 	{
@@ -161,7 +161,7 @@ public class SwornChatVault extends Chat
 		group.setSuffix(suffix);
 	}
 
-	// I'm going to assume these are referring to options...
+	// ---- Options
 
 	private Object getPlayerInfo(String world, String player, String node, Object def)
 	{

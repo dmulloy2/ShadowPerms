@@ -45,7 +45,7 @@ public class CmdListGroups extends SwornPermissionsCommand
 		line.append("&bWorld Groups&e: ");
 
 		joiner.newString();
-		joiner.appendAll(plugin.getPermissionHandler().getGroupNames(getWorld().getName()));
+		joiner.appendAll(plugin.getPermissionHandler().getGroupNames(getName()));
 		line.append(joiner.toString());
 		lines.add(line.toString());
 

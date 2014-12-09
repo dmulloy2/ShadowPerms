@@ -25,7 +25,7 @@ public class CmdSetOption extends GroupCommand
 		this.requiredArgs.add("option");
 		this.requiredArgs.add("value");
 		this.description = "Set an option for a group";
-		this.permission = Permission.USER_SET_OPTION;
+		this.permission = Permission.GROUP_SET_OPTION;
 	}
 
 	@Override

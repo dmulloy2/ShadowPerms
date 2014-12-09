@@ -81,7 +81,7 @@ public class SwornPermissions extends JavaPlugin implements Reloadable
 	@Override
 	public void onLoad()
 	{
-		/** Vault Integration **/
+		// Vault Integration
 		PluginManager pm = getServer().getPluginManager();
 		if (pm.getPlugin("Vault") != null)
 		{
@@ -100,22 +100,21 @@ public class SwornPermissions extends JavaPlugin implements Reloadable
 
 		disabling = false;
 
-		/** Register Required Handlers **/
+		// Register log handler
 		logHandler = new LogHandler(this);
 
-		/** Conversion **/
+		// If the data folder doesn't exist,
+		// attempt to convert from other systems
 		if (! getDataFolder().exists())
 		{
-			// If the data folder doesn't exist, this is the first run.
-			// Attempt to convert from other permission systems.
 			new ConversionHandler(this).attemptConversion();
 		}
 
-		/** Configuration **/
+		// Configuration
 		saveDefaultConfig();
 		reloadConfig();
 
-		/** Define Other Handlers **/
+		// Register other handlers
 		antiItemHandler = new AntiItemHandler(this);
 		commandHandler = new CommandHandler(this);
 		mirrorHandler = new MirrorHandler(this);
@@ -126,7 +125,7 @@ public class SwornPermissions extends JavaPlugin implements Reloadable
 		permissionHandler = new PermissionHandler(this);
 		permissionHandler.load();
 
-		/** Register Prefixed Commands **/
+		// Register prefixed commands
 		commandHandler.setCommandPrefix("swornperms");
 		commandHandler.registerPrefixedCommand(new CmdCreateGroup(this));
 		commandHandler.registerPrefixedCommand(new CmdGroup(this));
@@ -138,7 +137,7 @@ public class SwornPermissions extends JavaPlugin implements Reloadable
 		commandHandler.registerPrefixedCommand(new CmdVersion(this));
 		commandHandler.registerPrefixedCommand(new CmdWizard(this));
 
-		/** Register Non-Prefixed Commands **/
+		// Register non-prefixed commands
 		commandHandler.registerCommand(new CmdNick(this));
 		commandHandler.registerCommand(new CmdPrefix(this));
 		commandHandler.registerCommand(new CmdPrefixReset(this));
@@ -146,13 +145,14 @@ public class SwornPermissions extends JavaPlugin implements Reloadable
 		commandHandler.registerCommand(new CmdSuffix(this));
 		commandHandler.registerCommand(new CmdSuffixReset(this));
 
-		/** Register Listeners **/
+		// Register listeners
 		PluginManager pm = getServer().getPluginManager();
 		pm.registerEvents(new ChatListener(this), this);
 		pm.registerEvents(new PlayerListener(this), this);
 		pm.registerEvents(new ServerListener(this), this);
 		pm.registerEvents(new WorldListener(this), this);
 
+		// Initial update
 		new BukkitRunnable()
 		{
 			@Override
@@ -165,7 +165,7 @@ public class SwornPermissions extends JavaPlugin implements Reloadable
 			}
 		}.runTaskLater(this, 20L);
 
-		logHandler.log("{0} has been enabled ({1}ms)", getDescription().getFullName(), System.currentTimeMillis() - start);
+		logHandler.log("{0} has been enabled. Took {1} ms.", getDescription().getFullName(), System.currentTimeMillis() - start);
 	}
 
 	@Override
@@ -181,7 +181,7 @@ public class SwornPermissions extends JavaPlugin implements Reloadable
 
 		dataHandler.save();
 
-		logHandler.log("{0} has been disabled ({1}ms)", getDescription().getFullName(), System.currentTimeMillis() - start);
+		logHandler.log("{0} has been disabled. Took {1} ms.", getDescription().getFullName(), System.currentTimeMillis() - start);
 	}
 
 	@Override
