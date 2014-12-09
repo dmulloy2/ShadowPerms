@@ -298,8 +298,18 @@ public class PermissionHandler implements Reloadable
 		if (groups != null)
 			return new ArrayList<>(groups.values());
 
-		return null;
+		return new ArrayList<>();
 	}
+
+	public List<String> getGroupNames(String world)
+	{
+		Map<String, WorldGroup> groups = worldGroups.get(world.toLowerCase());
+		if (groups != null)
+			return new ArrayList<>(groups.keySet());
+
+		return new ArrayList<>();
+	}
+
 
 	public List<Group> getAllGroups()
 	{
