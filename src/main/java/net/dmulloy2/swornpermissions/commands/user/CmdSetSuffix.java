@@ -29,8 +29,15 @@ public class CmdSetSuffix extends UserCommand
 		String suffix = FormatUtil.join(" ", args);
 		suffix = suffix.replaceAll("\"", "");
 
+		if (suffix.equalsIgnoreCase("null") || suffix.equalsIgnoreCase("remove"))
+		{
+			user.resetPrefix();
+			sendpMessage("&b{0} &esuffix has been reset.", user.describeTo(sender, true));
+			return;
+		}
+
 		user.setSuffix(suffix);
 
-		sendpMessage("Set user &b{0}&e''s suffix to \"&f{1}&e\"", user.getName(), suffix);
+		sendpMessage("&eb{0} &esuffix is now \"&r{0}&e\"", user.describeTo(sender, true), suffix);
 	}
 }

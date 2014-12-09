@@ -30,8 +30,15 @@ public class CmdSetPrefix extends UserCommand
 		String prefix = FormatUtil.join(" ", args);
 		prefix = prefix.replaceAll("\"", "");
 
+		if (prefix.equalsIgnoreCase("null") || prefix.equalsIgnoreCase("remove"))
+		{
+			user.resetPrefix();
+			sendpMessage("&b{0} &eprefix has been reset.", user.describeTo(sender, true));
+			return;
+		}
+
 		user.setPrefix(prefix);
 
-		sendpMessage("Set user &b{0}&e''s prefix to \"&f{1}&e\"", user.getName(), prefix);
+		sendpMessage("&b{0} &eprefix is now \"&r{0}&e\"", user.describeTo(sender, true), prefix);
 	}
 }

@@ -23,6 +23,7 @@ import net.dmulloy2.util.Util;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -676,6 +677,23 @@ public class User extends Permissible implements Reloadable
 	{
 		return identifier.equalsIgnoreCase(uniqueId) || identifier.equalsIgnoreCase(name)
 				|| identifier.equalsIgnoreCase(ChatColor.stripColor(getDisplayName()));
+	}
+
+	public final String describeTo(CommandSender sender)
+	{
+		return describeTo(sender, false);
+	}
+
+	public final String describeTo(CommandSender sender, boolean possession)
+	{
+		if (sender instanceof Player)
+		{
+			Player player = (Player) sender;
+			if (player.getUniqueId().toString().equals(uniqueId))
+				return "You" + (possession ? "r" : "");
+		}
+
+		return getName() + (possession ? "''s" : "");
 	}
 
 	// ---- Generic Methods
