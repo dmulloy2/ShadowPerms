@@ -38,6 +38,6 @@ public class CmdSetSuffix extends UserCommand
 
 		user.setSuffix(suffix);
 
-		sendpMessage("&eb{0} &esuffix is now \"&r{0}&e\"", user.describeTo(sender, true), suffix);
+		sendpMessage("&b{0} &esuffix is now \"&r{1}&e\"", user.describeTo(sender, true), suffix);
 	}
 }

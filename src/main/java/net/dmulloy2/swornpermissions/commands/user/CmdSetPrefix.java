@@ -13,7 +13,6 @@ import net.dmulloy2.util.FormatUtil;
 
 public class CmdSetPrefix extends UserCommand
 {
-
 	public CmdSetPrefix(SwornPermissions plugin)
 	{
 		super(plugin);
@@ -39,6 +38,6 @@ public class CmdSetPrefix extends UserCommand
 
 		user.setPrefix(prefix);
 
-		sendpMessage("&b{0} &eprefix is now \"&r{0}&e\"", user.describeTo(sender, true), prefix);
+		sendpMessage("&b{0} &eprefix is now \"&r{1}&e\"", user.describeTo(sender, true), prefix);
 	}
 }

@@ -688,7 +688,7 @@ public class User extends Permissible implements Reloadable
 				return "You" + (possession ? "r" : "");
 		}
 
-		return getName() + (possession ? "''s" : "");
+		return getName() + (possession ? "'s" : "");
 	}
 
 	// ---- Generic Methods
