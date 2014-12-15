@@ -51,7 +51,7 @@ public class CmdAddPermission extends GroupCommand
 			return;
 		}
 
-		group.addPermission(permission);
+		group.addPermission(node);
 		group.updatePermissions(true);
 
 		sendpMessage("Permission ''&b{0}&e'' added to group &b{1}&e''s permissions.", permission, group.getName());
