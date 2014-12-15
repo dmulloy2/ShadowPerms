@@ -54,6 +54,6 @@ public class CmdAddPermission extends UserCommand
 		user.addPermission(node);
 		user.updatePermissions(true);
 
-		sendpMessage("Permission ''&b{0}&e'' added to user &b{1}&e''s permissions.", permission, user.getName());
+		sendpMessage("Permission ''&b{0}&e'' added to user &b{1}&e''s permissions.", node, user.getName());
 	}
 }
