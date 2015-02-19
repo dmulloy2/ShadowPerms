@@ -4,6 +4,7 @@
 package net.dmulloy2.swornpermissions.commands;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -21,7 +22,6 @@ import net.dmulloy2.swornpermissions.types.User;
 import net.dmulloy2.types.CommandVisibility;
 import net.dmulloy2.types.StringJoiner;
 import net.dmulloy2.util.FormatUtil;
-import net.dmulloy2.util.ListUtil;
 import net.dmulloy2.util.NumberUtil;
 import net.dmulloy2.util.Util;
 
@@ -301,7 +301,7 @@ public abstract class SwornPermissionsCommand implements CommandExecutor
 
 	public List<String> getDescription()
 	{
-		return ListUtil.toList(description);
+		return Arrays.asList(description);
 	}
 
 	// ---- Sub Commands
