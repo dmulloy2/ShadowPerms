@@ -26,7 +26,6 @@ import net.dmulloy2.util.Util;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.configuration.MemorySection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -40,10 +39,10 @@ public class DataHandler implements Reloadable
 {
 	private List<String> loadedWorlds;
 
-	private Map<String, FileConfiguration> groupConfigs;
-	private Map<String, FileConfiguration> userConfigs;
+	private Map<String, YamlConfiguration> groupConfigs;
+	private Map<String, YamlConfiguration> userConfigs;
 
-	private FileConfiguration serverGroups;
+	private YamlConfiguration serverGroups;
 
 	private final SwornPermissions plugin;
 	public DataHandler(SwornPermissions plugin)
@@ -104,19 +103,21 @@ public class DataHandler implements Reloadable
 					if (! file.exists())
 						file.createNewFile();
 
-					FileConfiguration fc = YamlConfiguration.loadConfiguration(file);
+					YamlConfiguration config = new YamlConfiguration();
+					config.load(file);
+
 					for (User user : plugin.getPermissionHandler().getUsers(world))
 					{
 						try
 						{
 							if (user.shouldBeSaved())
 							{
-								fc.createSection("users." + user.getSaveName(), user.serialize());
+								config.createSection("users." + user.getSaveName(), user.serialize());
 							}
 							else
 							{
-								if (fc.isSet("users." + user.getSaveName()))
-									fc.set("users." + user.getSaveName(), null);
+								if (config.isSet("users." + user.getSaveName()))
+									config.set("users." + user.getSaveName(), null);
 							}
 						}
 						catch (Throwable ex)
@@ -125,8 +126,8 @@ public class DataHandler implements Reloadable
 						}
 					}
 
-					fc.save(file);
-					userConfigs.put(world, fc);
+					config.save(file);
+					userConfigs.put(world, config);
 				}
 				catch (Throwable ex)
 				{
@@ -158,7 +159,9 @@ public class DataHandler implements Reloadable
 					if (! file.exists())
 						file.createNewFile();
 
-					FileConfiguration fc = YamlConfiguration.loadConfiguration(file);
+					YamlConfiguration config = new YamlConfiguration();
+					config.load(file);
+
 					List<WorldGroup> groups = plugin.getPermissionHandler().getGroups(world);
 					if (groups != null)
 					{
@@ -166,7 +169,7 @@ public class DataHandler implements Reloadable
 						{
 							try
 							{
-								fc.createSection("groups." + group.getSaveName(), group.serialize());
+								config.createSection("groups." + group.getSaveName(), group.serialize());
 							}
 							catch (Throwable ex)
 							{
@@ -174,10 +177,10 @@ public class DataHandler implements Reloadable
 							}
 						}
 
-						fc.save(file);
+						config.save(file);
 					}
 
-					groupConfigs.put(world, fc);
+					groupConfigs.put(world, config);
 				}
 				catch (Throwable ex)
 				{
@@ -189,23 +192,23 @@ public class DataHandler implements Reloadable
 		saveServerGroups();
 	}
 
-	public final FileConfiguration getUserConfig(World world)
+	public final YamlConfiguration getUserConfig(World world)
 	{
 		return getUserConfig(world.getName());
 	}
 
-	public final FileConfiguration getUserConfig(String world)
+	public final YamlConfiguration getUserConfig(String world)
 	{
 		world = plugin.getMirrorHandler().getUsersParent(world);
 		return userConfigs.get(world);
 	}
 
-	public final FileConfiguration getGroupConfig(World world)
+	public final YamlConfiguration getGroupConfig(World world)
 	{
 		return getGroupConfig(world.getName());
 	}
 
-	public final FileConfiguration getGroupConfig(String world)
+	public final YamlConfiguration getGroupConfig(String world)
 	{
 		world = plugin.getMirrorHandler().getGroupsParent(world);
 		return groupConfigs.get(world);
@@ -242,8 +245,10 @@ public class DataHandler implements Reloadable
 
 			if (groups.exists())
 			{
-				FileConfiguration fc = YamlConfiguration.loadConfiguration(groups);
-				groupConfigs.put(name, fc);
+				YamlConfiguration config = new YamlConfiguration();
+				config.load(groups);
+
+				groupConfigs.put(name, config);
 			}
 
 			File users = new File(folder, "users.yml");
@@ -257,8 +262,10 @@ public class DataHandler implements Reloadable
 
 			if (users.exists())
 			{
-				FileConfiguration fc = YamlConfiguration.loadConfiguration(users);
-				userConfigs.put(name, fc);
+				YamlConfiguration config = new YamlConfiguration();
+				config.load(users);
+
+				userConfigs.put(name, config);
 			}
 
 			loadedWorlds.add(name);
@@ -290,7 +297,7 @@ public class DataHandler implements Reloadable
 			world = plugin.getMirrorHandler().getUsersParent(world);
 
 			String key = player.getUniqueId().toString();
-			FileConfiguration config = getUserConfig(world);
+			YamlConfiguration config = getUserConfig(world);
 			if (! config.isSet("users." + key))
 			{
 				// New user
@@ -312,7 +319,7 @@ public class DataHandler implements Reloadable
 		world = plugin.getMirrorHandler().getUsersParent(world);
 
 		String key = player.getUniqueId().toString();
-		FileConfiguration config = getUserConfig(world);
+		YamlConfiguration config = getUserConfig(world);
 		if (! config.isSet("users." + key))
 			return new User(plugin, player, world);
 
@@ -325,7 +332,7 @@ public class DataHandler implements Reloadable
 
 		List<User> ret = new ArrayList<User>();
 
-		FileConfiguration config = getUserConfig(world);
+		YamlConfiguration config = getUserConfig(world);
 		Map<String, Object> values = config.getConfigurationSection("users").getValues(false);
 		for (String id : values.keySet())
 		{
@@ -348,7 +355,10 @@ public class DataHandler implements Reloadable
 			if (! file.exists())
 				file.createNewFile();
 
-			this.serverGroups = YamlConfiguration.loadConfiguration(file);
+			YamlConfiguration config = new YamlConfiguration();
+			config.load(file);
+
+			this.serverGroups = config;
 		}
 		catch (Throwable ex)
 		{
@@ -374,34 +384,34 @@ public class DataHandler implements Reloadable
 
 	private final void copy(InputStream stream, File destination) throws IOException
 	{
-		if (! destination.exists())
-			destination.createNewFile();
-
-		Closer closer = new Closer();
-		closer.register(stream);
-
-		OutputStream out = closer.register(new FileOutputStream(destination));
-
-		int len;
-		byte[] buf = new byte[1024];
-
-		while ((len = stream.read(buf)) > 0)
+		try (Closer closer = new Closer())
 		{
-			out.write(buf, 0, len);
-		}
+			if (! destination.exists())
+				destination.createNewFile();
 
-		closer.close();
+			closer.register(stream);
+
+			OutputStream out = closer.register(new FileOutputStream(destination));
+
+			int len;
+			byte[] buf = new byte[1024];
+
+			while ((len = stream.read(buf)) > 0)
+			{
+				out.write(buf, 0, len);
+			}
+		}
 	}
 
 	@Override
 	public void reload()
 	{
 		// ---- Initialize Maps
-		this.groupConfigs = new HashMap<String, FileConfiguration>();
-		this.userConfigs = new HashMap<String, FileConfiguration>();
+		this.groupConfigs = new HashMap<>();
+		this.userConfigs = new HashMap<>();
 
 		// ---- Load Worlds
-		this.loadedWorlds = new ArrayList<String>();
+		this.loadedWorlds = new ArrayList<>();
 		for (World world : plugin.getServer().getWorlds())
 			loadWorld(world);
 

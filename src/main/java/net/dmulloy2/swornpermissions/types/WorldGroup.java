@@ -231,7 +231,7 @@ public class WorldGroup extends Group
 	@Override
 	public String toString()
 	{
-		return "WorldGroup { name = " + name + ", world = " + worldName + " }";
+		return "WorldGroup[name=" + name + ", world=" + worldName + "]";
 	}
 
 	@Override

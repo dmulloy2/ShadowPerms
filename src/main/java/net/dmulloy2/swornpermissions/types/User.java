@@ -696,7 +696,7 @@ public class User extends Permissible implements Reloadable
 	@Override
 	public String toString()
 	{
-		return "User { name = " + name + ", world = " + worldName + " }";
+		return "User[name=" + name + ", world=" + worldName + "]";
 	}
 
 	@Override

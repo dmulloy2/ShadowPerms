@@ -24,7 +24,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.MemorySection;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -427,10 +427,10 @@ public class PermissionHandler implements Reloadable
 		DataHandler data = plugin.getDataHandler();
 
 		// Load server groups first
-		FileConfiguration fc = data.getServerGroups();
-		if (fc.isSet("groups"))
+		YamlConfiguration config = data.getServerGroups();
+		if (config.isSet("groups"))
 		{
-			Map<String, Object> values = fc.getConfigurationSection("groups").getValues(false);
+			Map<String, Object> values = config.getConfigurationSection("groups").getValues(false);
 			for (Entry<String, Object> entry : values.entrySet())
 			{
 				String groupName = entry.getKey();
@@ -451,7 +451,7 @@ public class PermissionHandler implements Reloadable
 			}
 		}
 
-		for (Entry<String, FileConfiguration> entry : data.getGroupConfigs().entrySet())
+		for (Entry<String, YamlConfiguration> entry : data.getGroupConfigs().entrySet())
 		{
 			String world = entry.getKey().toLowerCase();
 
@@ -460,15 +460,15 @@ public class PermissionHandler implements Reloadable
 				worldGroups.put(world, new HashMap<String, WorldGroup>());
 			}
 
-			fc = entry.getValue();
-			if (! fc.isSet("groups"))
+			config = entry.getValue();
+			if (! config.isSet("groups"))
 			{
 				plugin.getLogHandler().debug("Found 0 groups to load from world {0}!", world);
 				continue;
 			}
 
 			// Load groups
-			Map<String, Object> values = fc.getConfigurationSection("groups").getValues(false);
+			Map<String, Object> values = config.getConfigurationSection("groups").getValues(false);
 			for (Entry<String, Object> entry1 : values.entrySet())
 			{
 				String groupName = entry1.getKey();
@@ -509,9 +509,9 @@ public class PermissionHandler implements Reloadable
 	public final void load()
 	{
 		// ---- Initialize maps
-		this.worldGroups = new HashMap<String, Map<String, WorldGroup>>();
-		this.serverGroups = new HashMap<String, ServerGroup>();
-		this.defaultGroups = new HashMap<String, Group>();
+		this.worldGroups = new HashMap<>();
+		this.serverGroups = new HashMap<>();
+		this.defaultGroups = new HashMap<>();
 
 		// ---- Register Worlds
 		this.registerWorlds();
@@ -545,9 +545,9 @@ public class PermissionHandler implements Reloadable
 	public void reload()
 	{
 		// ---- Re-initialize maps
-		this.worldGroups = new HashMap<String, Map<String, WorldGroup>>();
-		this.serverGroups = new HashMap<String, ServerGroup>();
-		this.defaultGroups = new HashMap<String, Group>();
+		this.worldGroups = new HashMap<>();
+		this.serverGroups = new HashMap<>();
+		this.defaultGroups = new HashMap<>();
 
 		// ---- Reload Groups
 		this.loadGroups();

@@ -43,25 +43,21 @@ public class ChatHandler implements Reloadable
 		if (user == null)
 			return message;
 
-		// Characters that mess with chat
-		message = message.replace("%", "%%");
-
-		// Define Available Variables
-		String prefix = user.getPrefix();
-		String suffix = user.getSuffix();
-		String name = "&f" + user.getDisplayName();
-
 		// Replace Variables
-		String format = getChatFormat(user);
-		format = format.replace("{prefix}", prefix);
-		format = format.replace("{name}", name);
-		format = format.replace("{suffix}", suffix);
+		String format = getChatFormat(user)
+				.replace("{prefix}", user.getPrefix())
+				.replace("{name}", "&f" + user.getDisplayName())
+				.replace("{suffix}", user.getSuffix())
+				.replace("{world}", player.getWorld().getName());
 
 		// Chat color
 		if (user.hasOption("chatColor"))
 			format = format.replace(":", user.getOption("chatColor") + ":");
 
-		// Permissions
+		// Escape pesky % characters
+		message = message.replace("%", "%%");
+
+		// Disallow fancy chat formatting if they don't have permission
 		if (! plugin.getPermissionHandler().hasPermission(player, Permission.CHAT_COLOR))
 			message = message.replaceAll("(&([a-fA-F0-9]))", "");
 		if (! plugin.getPermissionHandler().hasPermission(player, Permission.CHAT_FORMATTING))
@@ -69,12 +65,8 @@ public class ChatHandler implements Reloadable
 		if (! plugin.getPermissionHandler().hasPermission(player, Permission.CHAT_RAINBOW))
 			message = message.replaceAll("(&([zZ]))", "");
 
-		// Replace message variable
-		format = format.replace("{message}", message);
-
-		// Format colors
-		format = FormatUtil.replaceColors(format);
-		return format;
+		// Insert message, format colors
+		return FormatUtil.replaceColors(format.replace("{message}", message));
 	}
 
 	// Personal chat format #EasterEgg

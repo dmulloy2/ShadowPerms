@@ -103,7 +103,7 @@ public class ServerGroup extends Group
 	@Override
 	public String toString()
 	{
-		return "ServerGroup { name = " + name + " }";
+		return "ServerGroup[name=" + name + "]";
 	}
 
 	@Override

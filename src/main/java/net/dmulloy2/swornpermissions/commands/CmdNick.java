@@ -54,13 +54,13 @@ public class CmdNick extends SwornPermissionsCommand
 			{
 				user.setOption("name", null);
 				sendpMessage(player, "Your nickname has been removed.");
-				sendpMessage("You have removed &b{0}&e''s nickname.", player.getName());
+				sendpMessage("You have removed &b{0}&e''s nickname.", user.getName());
 				return;
 			}
 
 			user.setOption("name", args[1]);
 			sendpMessage(player, "Your nickname is now \"&r{0}&e\"", args[1]);
-			sendpMessage("You have set &b{0}&e''s nickname to \"&r{0}&e\"", player.getName(), args[1]);
+			sendpMessage("You have set &b{0}&e''s nickname to \"&r{0}&e\"", user.getName(), args[1]);
 		}
 	}
 }
