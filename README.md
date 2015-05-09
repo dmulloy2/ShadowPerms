@@ -1,9 +1,9 @@
 # SwornPermissions
 
 ### Useful Links
-  - Download: http://ci.shadowvolt.com/job/SwornPermissions
-  - Issues: https://github.com/dmulloy2/SwornPermissions/issues/
-  - Permissions: https://github.com/dmulloy2/SwornPermissions/blob/master/src/main/resources/plugin.yml
+  - [Download](http://ci.shadowvolt.com/job/SwornPermissions)
+  - [Issues](https://github.com/dmulloy2/SwornPermissions/issues/)
+  - [Permissions](https://github.com/dmulloy2/SwornPermissions/blob/master/src/main/resources/plugin.yml)
 
 ### Installation
 1. Remove any other permission or chat systems
@@ -14,11 +14,11 @@
 ### Integration
 1. Essentials
   - Essentials doesn't currently support SwornPerms (although drtshock's [EssentialsX](https://ci.drtshock.net/job/EssentialsX/) does)
-  - Remove the 'player-commands' section of the Essentials config.yml
+  - Remove the ````player-commands```` section of the Essentials config.yml
   - Remove EssentialsChat (if installed)
 2. SwornNations / Factions
-  - For chat formatting, append '[FACTION]' to the front of 'chat-format' of SwornPermissions config.yml
-  - Make sure 'SwornPermissions' is in the 'softdepends' section of the SwornNations / Factions plugin.yml
+  - For chat formatting, append ````[FACTION]```` to the front of ````chatFormat```` of SwornPermissions config.yml
+  - Make sure ````SwornPermissions```` is in the ````softdepend```` section of the Factions plugin.yml
 
 ### Command Structure
 1. Information
