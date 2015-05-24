@@ -523,21 +523,31 @@ public class PermissionHandler implements Reloadable
 		this.updateUsers();
 	}
 
-	public final void updateUsers()
+	public final void update()
+	{
+		// Update server groups
+		for (ServerGroup group : serverGroups.values())
+		{
+			group.updatePermissions(true, false);
+		}
+
+		// Update world groups
+		for (Map<String, WorldGroup> groups : worldGroups.values())
+		{
+			for (WorldGroup group : groups.values())
+				group.updatePermissions(true, false);
+		}
+
+		// Update users
+		updateUsers();
+	}
+
+	private final void updateUsers()
 	{
 		for (List<User> list : users.values())
 		{
 			for (User user : list)
 				user.updatePermissions(true);
-		}
-	}
-
-	public final void updateGroups()
-	{
-		for (Map<String, WorldGroup> groups : worldGroups.values())
-		{
-			for (WorldGroup group : groups.values())
-				group.updatePermissions(true);
 		}
 	}
 

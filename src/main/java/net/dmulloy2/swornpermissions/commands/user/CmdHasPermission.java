@@ -31,7 +31,7 @@ public class CmdHasPermission extends UserCommand
 			sendpMessage("User &b{0} &ehas access to permission &b{1}&e.", user.getName(), permission);
 
 			String node = user.getMatchingPermission(permission);
-			if (! node.equalsIgnoreCase(permission))
+			if (node != null && ! node.equalsIgnoreCase(permission))
 			{
 				sendpMessage("Matching node: &b{0}", node);
 			}

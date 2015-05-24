@@ -28,8 +28,7 @@ public class ServerListener implements Listener
 			long start = System.currentTimeMillis();
 			plugin.getLogHandler().log("Plugin {0} enabled. Performing permission update.", event.getPlugin());
 
-			plugin.getPermissionHandler().updateGroups();
-			plugin.getPermissionHandler().updateUsers();
+			plugin.getPermissionHandler().update();
 
 			plugin.getLogHandler().log("Permissions updated. Took {0} ms.", System.currentTimeMillis() - start);
 		}

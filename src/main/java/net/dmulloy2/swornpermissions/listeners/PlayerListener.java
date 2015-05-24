@@ -29,6 +29,7 @@ public class PlayerListener implements Listener
 	public void onPlayerJoin(PlayerJoinEvent event)
 	{
 		Player player = event.getPlayer();
+
 		User user = plugin.getPermissionHandler().getUser(player);
 		if (user == null)
 		{

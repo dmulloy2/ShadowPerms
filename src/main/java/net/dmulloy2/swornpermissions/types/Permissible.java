@@ -133,11 +133,16 @@ public abstract class Permissible implements ConfigurationSerializable
 		return false;
 	}
 
-	// Whether or not this permissible has a node
-	// Does not take into account wildcards or children
+	/**
+	 * Whether or not this permissible has a permission node. Does not take into
+	 * account wildcards, children, or group permissions.
+	 * 
+	 * @param node Permission node to check for
+	 * @return True if they have it, false if not
+	 */
 	public final boolean hasPermissionNode(String node)
 	{
-		return sortedPermissions.contains(node);
+		return permissionNodes.contains(node);
 	}
 
 	public final boolean hasTempPermission(String node)
@@ -175,11 +180,13 @@ public abstract class Permissible implements ConfigurationSerializable
 		// Update sorted permissions list
 		this.sortedPermissions = permissionNodes;
 
+		// Moved to individual permissible instances
+
 		// Get matching permissions
-		permissionNodes = getMatchingNodes(permissionNodes);
+		// permissionNodes = getMatchingNodes(permissionNodes);
 
 		// Get children
-		permissionNodes = getAllChildren(permissionNodes);
+		// permissionNodes = getAllChildren(permissionNodes);
 
 		Map<String, Boolean> permissions = new LinkedHashMap<>();
 
@@ -365,7 +372,7 @@ public abstract class Permissible implements ConfigurationSerializable
 		if (permissions.isEmpty())
 			updatePermissionMap();
 
-		return new LinkedHashMap<>(permissions);
+		return permissions;
 	}
 
 	public List<String> getPermissionNodes()

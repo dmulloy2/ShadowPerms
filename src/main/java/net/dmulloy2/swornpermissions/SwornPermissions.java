@@ -62,21 +62,22 @@ import org.bukkit.scheduler.BukkitRunnable;
  * @author dmulloy2
  */
 
+@Getter
 public class SwornPermissions extends JavaPlugin implements Reloadable
 {
-	private @Getter PermissionHandler permissionHandler;
-	private @Getter AntiItemHandler antiItemHandler;
-	private @Getter CommandHandler commandHandler;
-	private @Getter MirrorHandler mirrorHandler;
-	private @Getter WizardHandler wizardHandler;
-	private @Getter ChatHandler chatHandler;
-	private @Getter DataHandler dataHandler;
-	private @Getter LogHandler logHandler;
+	private PermissionHandler permissionHandler;
+	private AntiItemHandler antiItemHandler;
+	private CommandHandler commandHandler;
+	private MirrorHandler mirrorHandler;
+	private WizardHandler wizardHandler;
+	private ChatHandler chatHandler;
+	private DataHandler dataHandler;
+	private LogHandler logHandler;
 
-	private @Getter boolean disabling;
-	private @Getter boolean updated;
+	private boolean disabling;
+	private boolean updated;
 
-	private @Getter String prefix = FormatUtil.format("&3[&eSwornPerms&3]&e ");
+	private String prefix = FormatUtil.format("&3[&eSwornPerms&3]&e ");
 
 	@Override
 	public void onLoad()
@@ -158,8 +159,7 @@ public class SwornPermissions extends JavaPlugin implements Reloadable
 			@Override
 			public void run()
 			{
-				permissionHandler.updateGroups();
-				permissionHandler.updateUsers();
+				permissionHandler.update();
 				logHandler.log("Groups and users updated!");
 				updated = true;
 			}

@@ -25,7 +25,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.MemorySection;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionAttachment;
@@ -140,7 +140,7 @@ public class User extends Permissible implements Reloadable
 	{
 		if (player == null)
 		{
-			plugin.getLogHandler().debug(Level.WARNING, "{0} does not have a valid player instance!", name);
+			plugin.getLogHandler().log(Level.WARNING, "{0} does not have a valid player instance!", name);
 			return;
 		}
 
@@ -205,7 +205,7 @@ public class User extends Permissible implements Reloadable
 		Map<String, Boolean> permissions = new LinkedHashMap<>();
 
 		// Add default permissions first
-		permissions.putAll(getDefaultPermissions());
+		permissions.putAll(getDefaultPermissions(getPlayer()));
 
 		// Then subgroup permissions
 		permissions.putAll(getSubgroupPermissions());
@@ -214,11 +214,14 @@ public class User extends Permissible implements Reloadable
 		permissions.putAll(getGroupPermissions());
 
 		// Finally user-specific nodes
-		List<String> userPerms = sort(getPermissionNodes());
-		for (String userPerm : userPerms)
+		List<String> userNodes = getPermissionNodes();
+		userNodes = getAllChildren(userNodes);
+		userNodes = getMatchingNodes(userNodes);
+
+		for (String node : userNodes)
 		{
-			boolean value = ! userPerm.startsWith("-");
-			permissions.put(value ? userPerm : userPerm.substring(1), value);
+			boolean value = ! node.startsWith("-");
+			permissions.put(value ? node : node.substring(1), value);
 		}
 
 		List<String> ret = new ArrayList<>();
@@ -234,11 +237,11 @@ public class User extends Permissible implements Reloadable
 		return sort(ret);
 	}
 
-	private final Map<String, Boolean> getDefaultPermissions()
+	private final Map<String, Boolean> getDefaultPermissions(Player player)
 	{
 		Map<String, Boolean> defaultPermissions = new HashMap<>();
 
-		Set<Permission> defaults = plugin.getServer().getPluginManager().getDefaultPermissions(false);
+		Set<Permission> defaults = plugin.getServer().getPluginManager().getDefaultPermissions(player.isOp());
 		for (Permission permission : defaults)
 			defaultPermissions.put(permission.getName(), true);
 
@@ -579,7 +582,7 @@ public class User extends Permissible implements Reloadable
 	{
 		subGroupNames.remove(groupName);
 
-		for (Group subGroup : new ArrayList<Group>(subGroups))
+		for (Group subGroup : subGroups.toArray(new Group[subGroups.size()]))
 		{
 			if (subGroup.getName().equalsIgnoreCase(groupName))
 				subGroups.remove(subGroup);
@@ -723,7 +726,7 @@ public class User extends Permissible implements Reloadable
 	@Override
 	public void reload()
 	{
-		FileConfiguration users = plugin.getDataHandler().getUserConfig(getWorld());
+		YamlConfiguration users = plugin.getDataHandler().getUserConfig(getWorld());
 		if (users.isSet("users." + uniqueId))
 			loadFromDisk((MemorySection) users.get("users." + uniqueId));
 

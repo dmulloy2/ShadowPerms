@@ -3,6 +3,7 @@
  */
 package net.dmulloy2.swornpermissions.commands.user;
 
+import net.dmulloy2.exception.BadTimeException;
 import net.dmulloy2.swornpermissions.SwornPermissions;
 import net.dmulloy2.swornpermissions.types.Permission;
 import net.dmulloy2.util.TimeUtil;
@@ -41,11 +42,11 @@ public class CmdAddTemp extends UserCommand
 		{
 			time = TimeUtil.parseTime(args[1]);
 			if (time <= 0)
-				throw new Exception();
+				throw new BadTimeException("Time must be greater than 0");
 		}
-		catch (Throwable ex)
+		catch (BadTimeException ex)
 		{
-			err("Please specify a valid time!");
+			err("Failed to parse time \"{0}\": {1}", args[1], ex);
 			return;
 		}
 

@@ -513,10 +513,11 @@ public abstract class SwornPermissionsCommand implements CommandExecutor
 			World world = plugin.getServer().getWorld(args[args.length - 1]);
 			if (world != null)
 				return world;
-		}
-		catch (Throwable ex)
-		{
-		}
+		} catch (Throwable ex) { }
+
+		if (player != null)
+			return player.getWorld();
+
 		return getDefaultWorld();
 	}
 

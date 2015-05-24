@@ -8,13 +8,13 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.build.number>LOCAL</project.build.number>
+    <project.build.number></project.build.number>
   </properties>
 
   <repositories>
     <repository>
-      <id>shadowvolt-repo</id>
-      <url>http://ci.shadowvolt.com/plugin/repository/everything/</url>
+      <id>dmulloy2-repo</id>
+      <url>http://repo.dmulloy2.net/content/groups/public/</url>
     </repository>
     <repository>
       <id>vault-repo</id>
@@ -31,7 +31,7 @@
         </property>
       </activation>
       <properties>
-        <project.build.number>${env.BUILD_NUMBER}</project.build.number>
+        <project.build.number>-b${env.BUILD_NUMBER}</project.build.number>
       </properties>
     </profile>
   </profiles>

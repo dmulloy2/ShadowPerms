@@ -130,9 +130,11 @@ public class WorldGroup extends Group
 		permissions.putAll(getParentPermissions());
 
 		// Add group-specific nodes last
-		List<String> groupNodes = sort(getPermissionNodes());
+		List<String> groupNodes = getPermissionNodes();
+		groupNodes = getAllChildren(groupNodes);
+		groupNodes = getMatchingNodes(groupNodes);
 
-		for (String groupNode : new ArrayList<String>(groupNodes))
+		for (String groupNode : groupNodes)
 		{
 			boolean value = ! groupNode.startsWith("-");
 			permissions.put(value ? groupNode : groupNode.substring(1), value);
@@ -205,10 +207,15 @@ public class WorldGroup extends Group
 	@Override
 	public void updatePermissions(boolean force)
 	{
-		if (! permissions.isEmpty() || force)
+		updatePermissions(force, true);
+	}
+
+	public void updatePermissions(boolean force, boolean users)
+	{
+		if (! permissions.isEmpty() && ! force)
 			return;
 
-		// Update permission map
+		// Update our permissions
 		updatePermissionMap();
 
 		// Update child groups
@@ -217,6 +224,9 @@ public class WorldGroup extends Group
 			if (group.getParentGroups() != null && group.getParentGroups().contains(this))
 				group.updatePermissions(force);
 		}
+
+		if (! users)
+			return;
 
 		// Update users with this group
 		for (User user : plugin.getPermissionHandler().getUsers(worldName))
