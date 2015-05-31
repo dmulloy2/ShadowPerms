@@ -92,6 +92,7 @@ public class ServerGroup extends Group
 		updatePermissions(force, true);
 	}
 
+	@Override
 	public void updatePermissions(boolean force, boolean children)
 	{
 		if (! permissions.isEmpty() && ! force)
@@ -107,7 +108,7 @@ public class ServerGroup extends Group
 		for (Group group : plugin.getPermissionHandler().getAllGroups())
 		{
 			if (group.getParentGroups() != null && group.getParentGroups().contains(this))
-				group.updatePermissions(force);
+				group.updatePermissions(force, children);
 		}
 	}
 

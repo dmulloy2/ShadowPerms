@@ -210,6 +210,7 @@ public class WorldGroup extends Group
 		updatePermissions(force, true);
 	}
 
+	@Override
 	public void updatePermissions(boolean force, boolean users)
 	{
 		if (! permissions.isEmpty() && ! force)
@@ -222,7 +223,7 @@ public class WorldGroup extends Group
 		for (Group group : plugin.getPermissionHandler().getGroups(worldName))
 		{
 			if (group.getParentGroups() != null && group.getParentGroups().contains(this))
-				group.updatePermissions(force);
+				group.updatePermissions(force, users);
 		}
 
 		if (! users)

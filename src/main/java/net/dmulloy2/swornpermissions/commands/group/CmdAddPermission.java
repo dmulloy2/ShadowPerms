@@ -52,7 +52,7 @@ public class CmdAddPermission extends GroupCommand
 		}
 
 		group.addPermission(node);
-		group.updatePermissions(true);
+		group.updatePermissions(true, true);
 
 		sendpMessage("Permission ''&b{0}&e'' added to group &b{1}&e''s permissions.", node, group.getName());
 	}

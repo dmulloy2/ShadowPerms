@@ -34,7 +34,7 @@ public class CmdRemovePermission extends GroupCommand
 		}
 
 		group.removePermission(permission);
-		group.updatePermissions(true);
+		group.updatePermissions(true, true);
 
 		sendpMessage("Permission ''&b{0}&e'' removed from group &b{1}&e''s permissions.", permission, group.getName());
 	}

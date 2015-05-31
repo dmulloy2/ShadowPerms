@@ -32,6 +32,8 @@ public abstract class Group extends Permissible
 		this.loadFromDisk(section);
 	}
 
+	public abstract void updatePermissions(boolean force, boolean users);
+
 	// ---- Parents
 
 	public abstract boolean hasParentGroup();
