@@ -23,6 +23,7 @@ import net.dmulloy2.swornpermissions.types.WorldGroup;
 import net.dmulloy2.types.Reloadable;
 import net.dmulloy2.util.Util;
 
+import org.apache.commons.lang.Validate;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.configuration.MemorySection;
@@ -200,7 +201,8 @@ public class DataHandler implements Reloadable
 	public final YamlConfiguration getUserConfig(String world)
 	{
 		world = plugin.getMirrorHandler().getUsersParent(world);
-		return userConfigs.get(world);
+		YamlConfiguration config = userConfigs.get(world);
+		return config;
 	}
 
 	public final YamlConfiguration getGroupConfig(World world)
@@ -237,7 +239,8 @@ public class DataHandler implements Reloadable
 			File groups = new File(folder, "groups.yml");
 			if (! groups.exists())
 			{
-				if (mirrors.areGroupsMirroredByDefault())
+				String defaultGroupWorld = mirrors.getDefaultGroupWorld();
+				if (defaultGroupWorld != null && ! name.equals(defaultGroupWorld))
 					mirrors.addGroupMirror(name);
 				else
 					copy(plugin.getResource("groups.yml"), groups);
@@ -254,10 +257,12 @@ public class DataHandler implements Reloadable
 			File users = new File(folder, "users.yml");
 			if (! users.exists())
 			{
-				if (mirrors.areUsersMirroredByDefault())
+				String defaultUserWorld = mirrors.getDefaultUserWorld();
+				if (defaultUserWorld != null && ! name.equals(defaultUserWorld))
 					mirrors.addUserMirror(name);
 				else
-					copy(plugin.getResource("users.yml"), users);
+					users.createNewFile();
+//					copy(plugin.getResource("users.yml"), users);
 			}
 
 			if (users.exists())
@@ -382,8 +387,11 @@ public class DataHandler implements Reloadable
 		}
 	}
 
-	private final void copy(InputStream stream, File destination) throws IOException
+	private void copy(InputStream stream, File destination) throws IOException
 	{
+		Validate.notNull(stream, "stream cannot be null!");
+		Validate.notNull(destination, "destination cannot be null!");
+
 		try (Closer closer = new Closer())
 		{
 			if (! destination.exists())

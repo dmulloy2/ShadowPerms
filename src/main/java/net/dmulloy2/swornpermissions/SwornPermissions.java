@@ -1,6 +1,6 @@
 /**
  * SwornPermissions - comprehensive permission, chat, and world management system
- * Copyright (C) 2014 dmulloy2
+ * Copyright (C) 2014 - 2015 dmulloy2
  *
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -46,15 +46,11 @@ import net.dmulloy2.swornpermissions.listeners.ChatListener;
 import net.dmulloy2.swornpermissions.listeners.PlayerListener;
 import net.dmulloy2.swornpermissions.listeners.ServerListener;
 import net.dmulloy2.swornpermissions.listeners.WorldListener;
-import net.dmulloy2.swornpermissions.vault.SwornChatVault;
-import net.dmulloy2.swornpermissions.vault.SwornPermissionsVault;
+import net.dmulloy2.swornpermissions.vault.VaultHandler;
 import net.dmulloy2.types.Reloadable;
 import net.dmulloy2.util.FormatUtil;
-import net.milkbowl.vault.chat.Chat;
-import net.milkbowl.vault.permission.Permission;
 
 import org.bukkit.plugin.PluginManager;
-import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -86,11 +82,10 @@ public class SwornPermissions extends JavaPlugin implements Reloadable
 		PluginManager pm = getServer().getPluginManager();
 		if (pm.getPlugin("Vault") != null)
 		{
-			SwornPermissionsVault perms = new SwornPermissionsVault(this);
-			getServer().getServicesManager().register(Permission.class, perms, this, ServicePriority.Highest);
-
-			SwornChatVault chat = new SwornChatVault(this, perms);
-			getServer().getServicesManager().register(Chat.class, chat, this, ServicePriority.Highest);
+			try
+			{
+				VaultHandler.setupIntegration(this);
+			} catch (Throwable ex) { }
 		}
 	}
 
@@ -104,12 +99,10 @@ public class SwornPermissions extends JavaPlugin implements Reloadable
 		// Register log handler
 		logHandler = new LogHandler(this);
 
-		// If the data folder doesn't exist,
+		// If this is the first time we've run,
 		// attempt to convert from other systems
 		if (! getDataFolder().exists())
-		{
-			new ConversionHandler(this).attemptConversion();
-		}
+			ConversionHandler.convert(this);
 
 		// Configuration
 		saveDefaultConfig();

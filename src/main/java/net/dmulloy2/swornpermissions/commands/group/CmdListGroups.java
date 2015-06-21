@@ -5,6 +5,7 @@ package net.dmulloy2.swornpermissions.commands.group;
 
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import net.dmulloy2.swornpermissions.SwornPermissions;
 import net.dmulloy2.swornpermissions.commands.SwornPermissionsCommand;
@@ -33,7 +34,12 @@ public class CmdListGroups extends SwornPermissionsCommand
 		StringJoiner joiner = new StringJoiner("&b, &e");
 		
 		sendMessage("&3[ &eServer Groups &3]");
-		sendMessage("  &e{0}", joiner.appendAll(plugin.getPermissionHandler().getServerGroups().keySet()));
+
+		Set<String> serverGroups = plugin.getPermissionHandler().getServerGroups().keySet();
+		if (! serverGroups.isEmpty())
+			sendMessage("  &e{0}", joiner.appendAll(serverGroups));
+		else
+			sendMessage("  &eNone");
 
 		sendMessage("&3[ &eWorld Groups &3]");
 		for (Entry<String, Map<String, WorldGroup>> entry : plugin.getPermissionHandler().getWorldGroups().entrySet())
