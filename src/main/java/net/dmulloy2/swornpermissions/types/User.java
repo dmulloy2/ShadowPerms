@@ -107,8 +107,14 @@ public class User extends Permissible implements Reloadable
 	@Override
 	public boolean shouldBeSaved()
 	{
-		return ! plugin.getPermissionHandler().getDefaultGroup(worldName).equals(getGroup()) || ! permissionNodes.isEmpty()
-				|| ! subGroupNames.isEmpty() || ! timestamps.isEmpty() || ! options.isEmpty();
+		return ! isInDefault() || ! permissionNodes.isEmpty() || ! subGroupNames.isEmpty() || ! timestamps.isEmpty()
+				|| ! options.isEmpty();
+	}
+
+	private boolean isInDefault()
+	{
+		Group defaultGroup = plugin.getPermissionHandler().getDefaultGroup(worldName);
+		return defaultGroup != null && defaultGroup.equals(getGroup());
 	}
 
 	@Override
