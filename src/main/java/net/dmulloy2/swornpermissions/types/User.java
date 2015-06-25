@@ -616,11 +616,11 @@ public class User extends Permissible implements Reloadable
 			return (String) options.get("prefix");
 
 		// Main group
-		if (! group.getPrefix().isEmpty())
-			return group.getPrefix();
+		if (! getGroup().getPrefix().isEmpty())
+			return getGroup().getPrefix();
 
 		// Sub groups
-		for (Group subGroup : subGroups)
+		for (Group subGroup : getSubGroups())
 		{
 			if (! subGroup.getPrefix().isEmpty())
 				return subGroup.getPrefix();
