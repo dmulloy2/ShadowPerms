@@ -18,6 +18,7 @@
 package net.dmulloy2.swornpermissions;
 
 import lombok.Getter;
+import net.dmulloy2.swornpermissions.commands.CmdCleanUp;
 import net.dmulloy2.swornpermissions.commands.CmdCreateGroup;
 import net.dmulloy2.swornpermissions.commands.CmdHelp;
 import net.dmulloy2.swornpermissions.commands.CmdNick;
@@ -121,6 +122,7 @@ public class SwornPermissions extends JavaPlugin implements Reloadable
 
 		// Register prefixed commands
 		commandHandler.setCommandPrefix("swornperms");
+		commandHandler.registerPrefixedCommand(new CmdCleanUp(this));
 		commandHandler.registerPrefixedCommand(new CmdCreateGroup(this));
 		commandHandler.registerPrefixedCommand(new CmdGroup(this));
 		commandHandler.registerPrefixedCommand(new CmdHelp(this));

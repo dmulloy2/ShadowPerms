@@ -14,7 +14,8 @@ public class CmdSuffixReset extends SwornPermissionsCommand
 	{
 		super(plugin);
 		this.name = "suffixreset";
-		this.aliases.add("prer");
+		this.aliases.add("suffixr");
+		this.aliases.add("sufr");
 		this.optionalArgs.add("player");
 		this.description = "Reset your suffix";
 		this.permission = Permission.CMD_SUFFIX_RESET;

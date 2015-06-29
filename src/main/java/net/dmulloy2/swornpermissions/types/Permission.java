@@ -5,6 +5,7 @@ package net.dmulloy2.swornpermissions.types;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import net.dmulloy2.types.IPermission;
 
 /**
  * @author dmulloy2
@@ -12,7 +13,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum Permission
+public enum Permission implements IPermission
 {
 	// Permission Management
 	USER_ADD_SUBGROUP("user.add.subgroup"),

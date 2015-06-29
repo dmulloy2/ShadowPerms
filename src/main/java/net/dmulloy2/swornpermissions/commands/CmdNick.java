@@ -17,8 +17,8 @@ public class CmdNick extends SwornPermissionsCommand
 	{
 		super(plugin);
 		this.name = "nick";
-		this.requiredArgs.add("nick");
 		this.optionalArgs.add("user");
+		this.requiredArgs.add("nick");
 		this.description = "Set a player''s nickname";
 		this.permission = Permission.CMD_NICK;
 	}

@@ -20,7 +20,6 @@ public class CmdReload extends SwornPermissionsCommand
 		this.optionalArgs.add("type");
 		this.description = "reload SwornPermissions";
 		this.permission = Permission.CMD_RELOAD;
-
 		this.mustBePlayer = false;
 		this.usesPrefix = true;
 	}
@@ -30,20 +29,23 @@ public class CmdReload extends SwornPermissionsCommand
 	{
 		long start = System.currentTimeMillis();
 
-		String type = args.length == 0 ? "all" : args[0];
-		switch (type)
+		if (args.length > 0 && args[0].equalsIgnoreCase("config"))
 		{
-			case "config":
-				sendpMessage("&eReloading &bSwornPermissions &econfig...");
-				plugin.reloadConfig();
-				plugin.getChatHandler().reload();
-				break;
-			default:
-				sendpMessage("&eReloading &bSwornPermissions&e...");
-				plugin.reload();
-				break;
+			plugin.getLogHandler().log("Reloading SwornPermissions config...");
+			sendpMessage("&eReloading &bSwornPermissions &econfig...");
+
+			plugin.reloadConfig();
+			plugin.getChatHandler().reload();
+		}
+		else
+		{
+			plugin.getLogHandler().log("Reloading SwornPermissions...");
+			sendpMessage("&eReloading &bSwornPermissions&e...");
+
+			plugin.reload();
 		}
 
-		sendpMessage("&aReload Complete! Took {0} ms!", System.currentTimeMillis() - start);
+		sendpMessage("&aReload complete. Took {0} ms.", System.currentTimeMillis() - start);
+		plugin.getLogHandler().log("Reload complete. Took {0} ms.", System.currentTimeMillis() - start);
 	}
 }

@@ -5,10 +5,13 @@ package net.dmulloy2.swornpermissions.handlers;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;
 
 import lombok.Getter;
@@ -17,6 +20,7 @@ import net.dmulloy2.swornpermissions.types.Group;
 import net.dmulloy2.swornpermissions.types.ServerGroup;
 import net.dmulloy2.swornpermissions.types.User;
 import net.dmulloy2.swornpermissions.types.WorldGroup;
+import net.dmulloy2.types.IPermission;
 import net.dmulloy2.types.Reloadable;
 import net.dmulloy2.util.Util;
 
@@ -36,7 +40,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 @Getter
 public class PermissionHandler implements Reloadable
 {
-	private Map<String, List<User>> users;
+	private ConcurrentMap<String, List<User>> users;
 	private Map<String, Map<String, WorldGroup>> worldGroups;
 	private Map<String, ServerGroup> serverGroups;
 	private Map<String, Group> defaultGroups;
@@ -45,7 +49,7 @@ public class PermissionHandler implements Reloadable
 	public PermissionHandler(SwornPermissions plugin)
 	{
 		this.plugin = plugin;
-		this.users = new HashMap<>();
+		this.users = new ConcurrentHashMap<>();
 	}
 
 	// ---- User Getters
@@ -185,29 +189,6 @@ public class PermissionHandler implements Reloadable
 		users.get(newUser).add(newUser);
 		return newUser;
 	}
-
-	/* TODO: Figure out if this is needed
-	public final boolean isValidPlayer(Player player)
-	{
-		try
-		{
-			if (player.hasMetadata("NPC"))
-				return false;
-
-			for (Player online : Util.getOnlinePlayers())
-			{
-				if (online.getUniqueId().equals(player.getUniqueId()))
-					return true;
-			}
-
-			return false;
-		}
-		catch (Throwable ex)
-		{
-			plugin.getLogHandler().log(Level.WARNING, Util.getUsefulStack(ex, "validating player " + player.getName()));
-			return true;
-		}
-	}*/
 
 	public final boolean isRegistered(String id, World world)
 	{
@@ -354,7 +335,7 @@ public class PermissionHandler implements Reloadable
 		return plugin.getServer().getPluginManager().getPermissions();
 	}
 
-	public final boolean hasPermission(CommandSender sender, net.dmulloy2.swornpermissions.types.Permission permission)
+	public final boolean hasPermission(CommandSender sender, IPermission permission)
 	{
 		return permission == null || hasPermission(sender, getPermissionString(permission));
 	}
@@ -370,53 +351,48 @@ public class PermissionHandler implements Reloadable
 		return true;
 	}
 
-	public final String getPermissionString(net.dmulloy2.swornpermissions.types.Permission permission)
+	public final String getPermissionString(IPermission permission)
 	{
 		return plugin.getName().toLowerCase() + "." + permission.getNode().toLowerCase();
 	}
 
-	// ---- Cleanup
-
+	// Remove offline users
 	public final void cleanupUsers(long delay)
 	{
-		if (delay <= 0 || plugin.isDisabling())
+		if (plugin.isDisabling() || delay <= 0)
 		{
-			cleanupUsers0();
-			return;
-		}
-
-		new BukkitRunnable()
-		{
-			@Override
-			public void run()
+			try
 			{
-				cleanupUsers0();
-			}
-		}.runTaskLater(plugin, delay);
-	}
+				long start = System.currentTimeMillis();
+				plugin.getLogHandler().log("Cleaning up users...");
 
-	// Remove offline users
-	private final void cleanupUsers0()
-	{
-		try
-		{
-			long start = System.currentTimeMillis();
-			plugin.getLogHandler().log("Cleaning up users...");
-
-			for (Entry<String, List<User>> entry : new HashMap<>(users).entrySet())
-			{
-				for (User user : new ArrayList<>(entry.getValue()))
+				for (List<User> list : users.values())
 				{
-					if (! user.isOnline())
-						users.get(entry.getKey()).remove(user);
+					Iterator<User> iter = list.iterator();
+					while (iter.hasNext())
+					{
+						if (! iter.next().isOnline())
+							iter.remove();
+					}
 				}
-			}
 
-			plugin.getLogHandler().log("Finished cleaning up users. Took {0} ms!", System.currentTimeMillis() - start);
+				plugin.getLogHandler().log("Finished cleaning up users. Took {0} ms!", System.currentTimeMillis() - start);
+			}
+			catch (Throwable ex)
+			{
+				plugin.getLogHandler().log(Level.WARNING, Util.getUsefulStack(ex, "cleaning up users"));
+			}
 		}
-		catch (Throwable ex)
+		else
 		{
-			plugin.getLogHandler().log(Level.WARNING, Util.getUsefulStack(ex, "cleaning up users"));
+			new BukkitRunnable()
+			{
+				@Override
+				public void run()
+				{
+					cleanupUsers(0);
+				}
+			}.runTaskLater(plugin, delay);
 		}
 	}
 

@@ -14,6 +14,7 @@ public class CmdPrefixReset extends SwornPermissionsCommand
 	{
 		super(plugin);
 		this.name = "prefixreset";
+		this.aliases.add("prefixr");
 		this.aliases.add("prer");
 		this.optionalArgs.add("player");
 		this.description = "Reset your prefix";
