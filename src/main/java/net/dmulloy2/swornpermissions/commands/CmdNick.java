@@ -7,6 +7,8 @@ import net.dmulloy2.swornpermissions.SwornPermissions;
 import net.dmulloy2.swornpermissions.types.Permission;
 import net.dmulloy2.swornpermissions.types.User;
 
+import org.bukkit.entity.Player;
+
 /**
  * @author dmulloy2
  */
@@ -53,14 +55,22 @@ public class CmdNick extends SwornPermissionsCommand
 			if (nick.equalsIgnoreCase("off") || nick.equalsIgnoreCase("null"))
 			{
 				user.setOption("name", null);
-				sendpMessage(player, "Your nickname has been removed.");
+
+				Player target = user.getPlayer();
+				if (target != null && ! hasArgument("--silent"))
+					sendpMessage(target, "Your nickname has been removed.");
+
 				sendpMessage("You have removed &b{0}&e''s nickname.", user.getName());
 				return;
 			}
 
 			user.setOption("name", args[1]);
-			sendpMessage(player, "Your nickname is now \"&r{0}&e\"", args[1]);
-			sendpMessage("You have set &b{0}&e''s nickname to \"&r{0}&e\"", user.getName(), args[1]);
+
+			Player target = user.getPlayer();
+			if (target != null && ! hasArgument("--silent"))
+				sendpMessage(target, "Your nickname is now \"&r{0}&e\"", args[1]);
+
+			sendpMessage("You have set &b{0}&e''s nickname to \"&r{1}&e\"", user.getName(), user.getDisplayName());
 		}
 	}
 }

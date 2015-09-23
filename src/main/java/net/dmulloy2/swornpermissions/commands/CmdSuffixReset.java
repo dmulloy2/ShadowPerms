@@ -4,6 +4,8 @@ import net.dmulloy2.swornpermissions.SwornPermissions;
 import net.dmulloy2.swornpermissions.types.Permission;
 import net.dmulloy2.swornpermissions.types.User;
 
+import org.bukkit.entity.Player;
+
 /**
  * @author dmulloy2
  */
@@ -50,7 +52,10 @@ public class CmdSuffixReset extends SwornPermissionsCommand
 			user.resetSuffix();
 
 			sendpMessage("&eYou have reset {0}''s suffix!", user.getName());
-			sendpMessage(user.getPlayer(), "&eYour suffix has been reset!");
+
+			Player target = user.getPlayer();
+			if (target != null && ! hasArgument("--silent"))
+				sendpMessage(target, "&eYour suffix has been reset!");
 		}
 	}
 }

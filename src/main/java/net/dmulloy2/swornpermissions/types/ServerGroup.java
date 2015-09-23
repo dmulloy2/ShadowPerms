@@ -84,6 +84,12 @@ public class ServerGroup extends Group
 		throw new IllegalStateException("Server Groups cannot have parents!");
 	}
 
+	@Override
+	public String findPrefix()
+	{
+		return options.containsKey("prefix") ? (String) options.get("prefix") : "";
+	}
+
 	// ---- Utility
 
 	@Override

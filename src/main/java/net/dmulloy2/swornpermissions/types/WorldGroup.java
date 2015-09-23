@@ -20,7 +20,7 @@ import org.bukkit.configuration.MemorySection;
 
 public class WorldGroup extends Group
 {
-	private boolean defaultGroup;
+	private boolean defaultGroup = false;
 
 	public WorldGroup(SwornPermissions plugin, String name, String world)
 	{
@@ -190,6 +190,43 @@ public class WorldGroup extends Group
 		this.parents = parents;
 	}
 
+	@Override
+	public Object getOption(String key)
+	{
+		if (super.hasOption(key))
+			return super.getOption(key);
+
+		if (hasParentGroup())
+		{
+			for (Group parent : parentGroups)
+			{
+				if (parent.hasOption(key))
+					return parent.getOption(key);
+			}
+		}
+
+		return null;
+	}
+
+	@Override
+	public final String findPrefix()
+	{
+		if (options.containsKey("prefix"))
+			return (String) options.get("prefix");
+
+		// Check parents
+		if (hasParentGroup())
+		{
+			for (Group parent : parentGroups)
+			{
+				if (! parent.getPrefix().isEmpty())
+					return parent.getPrefix();
+			}
+		}
+
+		return "";
+	}
+
 	// ---- Default
 
 	public boolean isDefaultGroup()
@@ -225,6 +262,10 @@ public class WorldGroup extends Group
 			if (group.getParentGroups() != null && group.getParentGroups().contains(this))
 				group.updatePermissions(force, users);
 		}
+
+		// Reset prefix
+		this.prefix = "";
+		this.prefix = findPrefix();
 
 		if (! users)
 			return;

@@ -442,6 +442,14 @@ public abstract class Permissible implements ConfigurationSerializable
 		this.prefix = prefix;
 	}
 
+	public final void resetPrefix()
+	{
+		options.remove("prefix");
+		this.prefix = findPrefix();
+	}
+
+	public abstract String findPrefix();
+
 	public String getSuffix()
 	{
 		return suffix;
@@ -451,6 +459,12 @@ public abstract class Permissible implements ConfigurationSerializable
 	{
 		options.put("suffix", suffix);
 		this.suffix = suffix;
+	}
+
+	public final void resetSuffix()
+	{
+		options.remove("suffix");
+		this.suffix = "";
 	}
 
 	public final World getWorld()

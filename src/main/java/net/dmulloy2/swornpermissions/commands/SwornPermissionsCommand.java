@@ -525,4 +525,15 @@ public abstract class SwornPermissionsCommand implements CommandExecutor
 	{
 		return plugin.getPermissionHandler().getDefaultWorld();
 	}
+
+	protected final boolean hasArgument(String string)
+	{
+		for (String arg : args)
+		{
+			if (arg.equalsIgnoreCase(string))
+				return true;
+		}
+
+		return false;
+	}
 }

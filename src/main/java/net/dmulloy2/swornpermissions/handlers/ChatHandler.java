@@ -46,7 +46,7 @@ public class ChatHandler implements Reloadable
 		// Replace Variables
 		String format = getChatFormat(user)
 				.replace("{prefix}", user.getPrefix())
-				.replace("{name}", "&f" + user.getDisplayName())
+				.replace("{name}", user.getDisplayName())
 				.replace("{suffix}", user.getSuffix())
 				.replace("{world}", player.getWorld().getName());
 

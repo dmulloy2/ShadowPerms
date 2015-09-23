@@ -179,7 +179,8 @@ public class User extends Permissible implements Reloadable
 			this.subGroups = new ArrayList<>();
 			this.subGroups = getSubGroups();
 
-			// Update prefix
+			// Reset prefix
+			this.prefix = "";
 			this.prefix = findPrefix();
 
 			// Update permission map
@@ -604,20 +605,16 @@ public class User extends Permissible implements Reloadable
 		return prefix;
 	}
 
-	public final void resetPrefix()
-	{
-		options.remove("prefix");
-		this.prefix = findPrefix();
-	}
-
-	private final String findPrefix()
+	@Override
+	public final String findPrefix()
 	{
 		if (options.containsKey("prefix"))
 			return (String) options.get("prefix");
 
 		// Main group
-		if (! getGroup().getPrefix().isEmpty())
-			return getGroup().getPrefix();
+		Group group = getGroup();
+		if (group != null && ! group.getPrefix().isEmpty())
+			return group.getPrefix();
 
 		// Sub groups
 		for (Group subGroup : getSubGroups())
@@ -629,21 +626,17 @@ public class User extends Permissible implements Reloadable
 		return "";
 	}
 
-	public final void resetSuffix()
-	{
-		options.remove("suffix");
-		this.suffix = "";
-	}
-
 	@Override
 	public boolean hasOption(String key)
 	{
+		Group group = getGroup();
 		return super.hasOption(key) || (group != null && group.hasOption(key));
 	}
 
 	@Override
 	public Object getOption(String key)
 	{
+		Group group = getGroup();
 		return super.hasOption(key) ? super.getOption(key) : (group != null ? group.getOption(key) : null);
 	}
 
