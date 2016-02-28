@@ -51,7 +51,7 @@ public class WorldGroup extends Group
 			if (group != null)
 				parentGroups.add(group);
 			else
-				plugin.getLogHandler().log(Level.WARNING, "Could not find parent group \"{0}\" for group {1}", parent, name);
+				plugin.getLogHandler().log(Level.WARNING, "Could not find parent group \"{0}\" for group {1} in {2}", parent, name, worldName);
 		}
 	}
 

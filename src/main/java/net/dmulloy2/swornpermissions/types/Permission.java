@@ -59,7 +59,10 @@ public enum Permission implements IPermission
 	CMD_SUFFIX_RESET_OTHERS("cmd.suffix.reset.others"),
 
 	// Other Commands
+	CMD_BACKUP("cmd.backup"),
+	CMD_CLEANUP("cmd.cleanup"),
 	CMD_NICK("cmd.nick"),
+	CMD_PRUNE("cmd.prune"),
 	CMD_REALNAME("cmd.realname"),
 	CMD_RELOAD("cmd.reload"),
 	CMD_SAVE("cmd.save"),

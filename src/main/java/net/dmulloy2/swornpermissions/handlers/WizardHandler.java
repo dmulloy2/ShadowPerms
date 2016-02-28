@@ -136,7 +136,7 @@ public class WizardHandler
 
 					group.addPermission(input);
 					return this;
-				case 5:
+				default:
 					return Prompt.END_OF_CONVERSATION;
 			}
 

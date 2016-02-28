@@ -18,12 +18,14 @@
 package net.dmulloy2.swornpermissions;
 
 import lombok.Getter;
+import net.dmulloy2.swornpermissions.commands.CmdBackup;
 import net.dmulloy2.swornpermissions.commands.CmdCleanUp;
 import net.dmulloy2.swornpermissions.commands.CmdCreateGroup;
 import net.dmulloy2.swornpermissions.commands.CmdHelp;
 import net.dmulloy2.swornpermissions.commands.CmdNick;
 import net.dmulloy2.swornpermissions.commands.CmdPrefix;
 import net.dmulloy2.swornpermissions.commands.CmdPrefixReset;
+import net.dmulloy2.swornpermissions.commands.CmdPrune;
 import net.dmulloy2.swornpermissions.commands.CmdRealName;
 import net.dmulloy2.swornpermissions.commands.CmdReload;
 import net.dmulloy2.swornpermissions.commands.CmdSave;
@@ -122,11 +124,13 @@ public class SwornPermissions extends JavaPlugin implements Reloadable
 
 		// Register prefixed commands
 		commandHandler.setCommandPrefix("swornperms");
+		commandHandler.registerPrefixedCommand(new CmdBackup(this));
 		commandHandler.registerPrefixedCommand(new CmdCleanUp(this));
 		commandHandler.registerPrefixedCommand(new CmdCreateGroup(this));
 		commandHandler.registerPrefixedCommand(new CmdGroup(this));
 		commandHandler.registerPrefixedCommand(new CmdHelp(this));
 		commandHandler.registerPrefixedCommand(new CmdListGroups(this));
+		commandHandler.registerPrefixedCommand(new CmdPrune(this));
 		commandHandler.registerPrefixedCommand(new CmdReload(this));
 		commandHandler.registerPrefixedCommand(new CmdSave(this));
 		commandHandler.registerPrefixedCommand(new CmdUser(this));

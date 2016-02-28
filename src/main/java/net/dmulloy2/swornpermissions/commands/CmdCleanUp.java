@@ -18,7 +18,7 @@ public class CmdCleanUp extends SwornPermissionsCommand
 		this.name = "cleanup";
 		this.aliases.add("unload");
 		this.description = "Unload offline users to save memory";
-		this.permission = Permission.CMD_SAVE;
+		this.permission = Permission.CMD_CLEANUP;
 		this.usesPrefix = true;
 	}
 

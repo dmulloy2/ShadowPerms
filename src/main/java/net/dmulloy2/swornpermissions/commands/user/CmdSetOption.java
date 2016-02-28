@@ -44,9 +44,7 @@ public class CmdSetOption extends UserCommand
 			val = NumberUtil.toInt(valStr);
 		else if (valStr.contains("d:"))
 			val = NumberUtil.toDouble(valStr);
-		else if (valStr.equalsIgnoreCase("null") || valStr.isEmpty())
-			val = null;
-		else
+		else if (! valStr.equalsIgnoreCase("null") && ! valStr.isEmpty())
 			val = valStr;
 
 		user.setOption(key, val);

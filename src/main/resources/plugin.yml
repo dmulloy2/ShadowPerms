@@ -47,8 +47,6 @@ permissions:
       swornpermissions.cmd.suffix: true
       swornpermissions.cmd.nick: true
       swornpermissions.cmd.realname: true
-      swornpermissions.cmd.reload: true
-      swornpermissions.cmd.save: true
       swornpermissions.moderator: true
   swornpermissions.moderator:
     description: Allows access to commands meant for mods
@@ -150,6 +148,7 @@ permissions:
     default: false
   swornpermissions.chat.rainbow:
     default: false
+  # Prefixes & Suffixes
   swornpermissions.cmd.prefix:
     default: false
   swornpermissions.cmd.prefix.reset:
@@ -162,7 +161,14 @@ permissions:
     default: false
   swornpermissions.cmd.suffix.reset.others:
     default: false
+  # Other Commands
+  swornpermissions.cmd.backup:
+    default: false
+  swornpermissions.cmd.cleanup:
+    default: false
   swornpermissions.cmd.nick:
+    default: false
+  swornpermissions.cmd.prune:
     default: false
   swornpermissions.cmd.realname:
     default: false
