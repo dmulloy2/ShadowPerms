@@ -25,7 +25,7 @@ public class CmdPrune extends SwornPermissionsCommand
 	{
 		super(plugin);
 		this.name = "prune";
-		this.description = "Prune users that shouldn\'t have neen saved";
+		this.description = "Prune users that shouldn\'t have been saved";
 		this.permission = Permission.CMD_PRUNE;
 	}
 
