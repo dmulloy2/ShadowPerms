@@ -3,7 +3,8 @@ main: net.dmulloy2.swornpermissions.SwornPermissions
 version: ${project.version}${project.build.number}
 author: dmulloy2
 description: Comprehensive permission, chat, and world management system.
-softdepend: [Vault, Multiverse-Core, Essentials]
+softdepend: [Vault]
+load: postworld
 commands:
   swornperms:
     description: SwornPermissions root command
