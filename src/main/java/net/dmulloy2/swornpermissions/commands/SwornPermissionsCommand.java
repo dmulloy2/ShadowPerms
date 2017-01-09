@@ -141,6 +141,11 @@ public abstract class SwornPermissionsCommand implements CommandExecutor
 		return sender instanceof Player;
 	}
 
+	protected final boolean isConsole()
+	{
+		return sender instanceof ConsoleCommandSender;
+	}
+
 	// ---- Permission Management
 
 	protected final boolean hasPermission(CommandSender sender, Permission permission)
@@ -177,7 +182,7 @@ public abstract class SwornPermissionsCommand implements CommandExecutor
 			case NONE:
 				return false;
 			case OPS:
-				return player.isOp();
+				return sender.isOp();
 			default:
 				return hasPermission(sender, permission);
 		}

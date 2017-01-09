@@ -6,16 +6,16 @@ package net.dmulloy2.swornpermissions.commands.group;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.dmulloy2.swornpermissions.SwornPermissions;
-import net.dmulloy2.swornpermissions.types.Group;
-import net.dmulloy2.swornpermissions.types.Permission;
-import net.dmulloy2.swornpermissions.types.User;
-import net.dmulloy2.util.FormatUtil;
-
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import net.dmulloy2.swornpermissions.SwornPermissions;
+import net.dmulloy2.swornpermissions.types.Group;
+import net.dmulloy2.swornpermissions.types.Permission;
+import net.dmulloy2.swornpermissions.types.User;
+import net.dmulloy2.util.ListUtil;
 
 /**
  * @author dmulloy2
@@ -44,6 +44,8 @@ public class CmdListUsers extends GroupCommand
 
 		// Store important references
 		final Group group = this.group;
+		final String groupName = group.getName().toLowerCase();
+
 		final World world = this.world;
 		final CommandSender sender = this.sender;
 
@@ -57,14 +59,16 @@ public class CmdListUsers extends GroupCommand
 			public void run()
 			{
 				// Build users list
-				final List<User> users = new ArrayList<User>();
+				final List<String> users = new ArrayList<>();
 				for (User user : plugin.getPermissionHandler().getAllUsers(world))
 				{
-					if (user.getGroupName() == null)
-						continue;
-
-					if (user.getGroupName().equals(group.getName()) || user.getSubGroupNames().contains(group.getName()))
-						users.add(user);
+					String userGroup = user.getGroupName() != null ? user.getGroupName().toLowerCase() : "";
+					if (userGroup.equals(groupName) || ListUtil.containsIgnoreCase(user.getSubGroupNames(), groupName))
+					{
+						String name = firstNonNull(user.getName(), user.getLastKnownBy());
+						if (name != null)
+							users.add(name);
+					}
 				}
 
 				new BukkitRunnable()
@@ -76,20 +80,24 @@ public class CmdListUsers extends GroupCommand
 
 						if (users.isEmpty())
 						{
-							sender.sendMessage(FormatUtil.format("&cError: &4No users found in this group!"));
+							err(sender, "No users found in this group!");
 							return;
 						}
 
-						sender.sendMessage(FormatUtil.format("&3====[ &e{0} &3]====", WordUtils.capitalize(group.getName())));
+						sendMessage(sender, "&3---- &eUsers in {0} &3----", WordUtils.capitalize(group.getName()));
 
-						for (User user : users)
+						for (String name : users)
 						{
-							sender.sendMessage(FormatUtil.format("&b - &e{0}", user.getLastKnownBy()));
+							sendMessage(sender, "&b - &e{0}", name);
 						}
 					}
 				}.runTask(plugin);
 			}
 		}.runTaskAsynchronously(plugin);
-	
+	}
+
+	private static <T> T firstNonNull(T first, T second)
+	{
+		return first != null ? first : second;
 	}
 }

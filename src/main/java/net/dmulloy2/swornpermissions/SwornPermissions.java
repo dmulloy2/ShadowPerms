@@ -17,7 +17,6 @@
  */
 package net.dmulloy2.swornpermissions;
 
-import lombok.Getter;
 import net.dmulloy2.swornpermissions.commands.CmdBackup;
 import net.dmulloy2.swornpermissions.commands.CmdCleanUp;
 import net.dmulloy2.swornpermissions.commands.CmdCreateGroup;
@@ -56,6 +55,8 @@ import net.dmulloy2.util.FormatUtil;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import lombok.Getter;
 
 /**
  * @author dmulloy2

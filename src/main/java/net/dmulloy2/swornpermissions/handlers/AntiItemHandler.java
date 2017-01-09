@@ -10,6 +10,7 @@ import net.dmulloy2.swornpermissions.types.User;
 import net.dmulloy2.types.MyMaterial;
 import net.dmulloy2.types.Reloadable;
 import net.dmulloy2.util.FormatUtil;
+import net.dmulloy2.util.MaterialUtil;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -75,12 +76,12 @@ public class AntiItemHandler implements Listener, Reloadable
 							if (level > maxEnchantmentLevel)
 							{
 								item.removeEnchantment(ench);
-								regulatedEnchantment(player, ench, level, item.getType(), "high");
+								regulatedEnchantment(player, ench, level, item, "high");
 							}
 							else if (level < 0)
 							{
 								item.removeEnchantment(ench);
-								regulatedEnchantment(player, ench, level, item.getType(), "low");
+								regulatedEnchantment(player, ench, level, item, "low");
 							}
 						}
 					}
@@ -177,28 +178,28 @@ public class AntiItemHandler implements Listener, Reloadable
 				ItemStack helmet = inv.getHelmet();
 				if (helmet != null && ! user.canUse("-antiitem.item.", new MyMaterial(helmet.getType())))
 				{
-					blockedItem(player, helmet.getType());
+					blockedItem(player, helmet);
 					inv.setHelmet(null);
 				}
 
 				ItemStack chest = inv.getChestplate();
 				if (chest != null && ! user.canUse("-antiitem.item.", new MyMaterial(chest.getType())))
 				{
-					blockedItem(player, chest.getType());
+					blockedItem(player, chest);
 					inv.setChestplate(null);
 				}
 
 				ItemStack legs = inv.getLeggings();
 				if (legs != null && ! user.canUse("-antiitem.item.", new MyMaterial(legs.getType())))
 				{
-					blockedItem(player, legs.getType());
+					blockedItem(player, legs);
 					inv.setLeggings(null);
 				}
 
 				ItemStack boots = inv.getBoots();
 				if (boots != null && ! user.canUse("-antiitem.item.", new MyMaterial(boots.getType())))
 				{
-					blockedItem(player, boots.getType());
+					blockedItem(player, boots);
 					inv.setBoots(null);
 				}
 			}
@@ -209,7 +210,7 @@ public class AntiItemHandler implements Listener, Reloadable
 				{
 					if (enabled && user != null && ! user.canUse("-antiitem.item.", new MyMaterial(item.getType(), item.getData())))
 					{
-						blockedItem(player, item.getType());
+						blockedItem(player, item);
 						inv.remove(item);
 						continue;
 					}
@@ -223,12 +224,12 @@ public class AntiItemHandler implements Listener, Reloadable
 							if (level > maxEnchantmentLevel)
 							{
 								item.removeEnchantment(ench);
-								regulatedEnchantment(player, ench, level, item.getType(), "high");
+								regulatedEnchantment(player, ench, level, item, "high");
 							}
 							else if (level <= 0)
 							{
 								item.removeEnchantment(ench);
-								regulatedEnchantment(player, ench, level, item.getType(), "low");
+								regulatedEnchantment(player, ench, level, item, "low");
 							}
 						}
 					}
@@ -248,12 +249,12 @@ public class AntiItemHandler implements Listener, Reloadable
 							if (level > maxEnchantmentLevel)
 							{
 								armor.removeEnchantment(ench);
-								regulatedEnchantment(player, ench, level, armor.getType(), "high");
+								regulatedEnchantment(player, ench, level, armor, "high");
 							}
 							else if (level <= 0)
 							{
 								armor.removeEnchantment(ench);
-								regulatedEnchantment(player, ench, level, armor.getType(), "low");
+								regulatedEnchantment(player, ench, level, armor, "low");
 							}
 						}
 					}
@@ -262,18 +263,18 @@ public class AntiItemHandler implements Listener, Reloadable
 		}
 	}
 
-	private final void regulatedEnchantment(Player player, Enchantment ench, int level, Material mat, String why)
+	private final void regulatedEnchantment(Player player, Enchantment ench, int level, ItemStack item, String reason)
 	{
 		player.sendMessage(plugin.getPrefix() + FormatUtil.format(
 				"&4Enchantment &c{0}&4:&c{1} &4has been removed from your &c{2} &4because it was too &c{3}&4.",
-				FormatUtil.getFriendlyName(ench.getName()), level, FormatUtil.getFriendlyName(mat), why));
+				FormatUtil.getFriendlyName(ench.getName()), level, MaterialUtil.getName(item), reason));
 	}
 
-	private final void blockedItem(Player player, Material mat)
+	private final void blockedItem(Player player, ItemStack item)
 	{
 		player.sendMessage(plugin.getPrefix() + FormatUtil.format(
 				"&4Item &c{0} &4is not allowed and has been removed from your inventory.",
-				FormatUtil.getFriendlyName(mat)));
+				MaterialUtil.getName(item)));
 	}
 
 	@Override
