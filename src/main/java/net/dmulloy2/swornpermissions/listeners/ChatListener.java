@@ -35,7 +35,9 @@ public class ChatListener implements Listener
 
 		try
 		{
-			event.setFormat(plugin.getChatHandler().parseChatMessage(player, msg));
+			String format = plugin.getChatHandler().formatChat(player, msg);
+			if (format != null)
+				event.setFormat(format);
 		}
 		catch (Throwable ex)
 		{

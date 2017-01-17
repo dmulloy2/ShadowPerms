@@ -17,7 +17,6 @@
  */
 package net.dmulloy2.swornpermissions;
 
-import net.dmulloy2.swornpermissions.commands.CmdBackup;
 import net.dmulloy2.swornpermissions.commands.CmdCleanUp;
 import net.dmulloy2.swornpermissions.commands.CmdCreateGroup;
 import net.dmulloy2.swornpermissions.commands.CmdHelp;
@@ -36,10 +35,10 @@ import net.dmulloy2.swornpermissions.commands.group.CmdListGroups;
 import net.dmulloy2.swornpermissions.commands.user.CmdUser;
 import net.dmulloy2.swornpermissions.commands.wizard.CmdWizard;
 import net.dmulloy2.swornpermissions.conversion.ConversionHandler;
+import net.dmulloy2.swornpermissions.data.DataHandler;
 import net.dmulloy2.swornpermissions.handlers.AntiItemHandler;
 import net.dmulloy2.swornpermissions.handlers.ChatHandler;
 import net.dmulloy2.swornpermissions.handlers.CommandHandler;
-import net.dmulloy2.swornpermissions.handlers.DataHandler;
 import net.dmulloy2.swornpermissions.handlers.LogHandler;
 import net.dmulloy2.swornpermissions.handlers.MirrorHandler;
 import net.dmulloy2.swornpermissions.handlers.PermissionHandler;
@@ -65,6 +64,7 @@ import lombok.Getter;
 @Getter
 public class SwornPermissions extends JavaPlugin implements Reloadable
 {
+	private ConversionHandler conversionHandler;
 	private PermissionHandler permissionHandler;
 	private AntiItemHandler antiItemHandler;
 	private CommandHandler commandHandler;
@@ -103,10 +103,12 @@ public class SwornPermissions extends JavaPlugin implements Reloadable
 		// Register log handler
 		logHandler = new LogHandler(this);
 
+		conversionHandler = new ConversionHandler(this);
+
 		// If this is the first time we've run,
 		// attempt to convert from other systems
 		if (! getDataFolder().exists())
-			ConversionHandler.convert(this);
+			conversionHandler.fromOtherPlugin();
 
 		// Configuration
 		saveDefaultConfig();
@@ -117,15 +119,16 @@ public class SwornPermissions extends JavaPlugin implements Reloadable
 		commandHandler = new CommandHandler(this);
 		mirrorHandler = new MirrorHandler(this);
 		wizardHandler = new WizardHandler(this);
-		dataHandler = new DataHandler(this);
 		chatHandler = new ChatHandler(this);
 
 		permissionHandler = new PermissionHandler(this);
+		dataHandler = new DataHandler(this);
+
 		permissionHandler.load();
 
 		// Register prefixed commands
 		commandHandler.setCommandPrefix("swornperms");
-		commandHandler.registerPrefixedCommand(new CmdBackup(this));
+		// commandHandler.registerPrefixedCommand(new CmdBackup(this));
 		commandHandler.registerPrefixedCommand(new CmdCleanUp(this));
 		commandHandler.registerPrefixedCommand(new CmdCreateGroup(this));
 		commandHandler.registerPrefixedCommand(new CmdGroup(this));

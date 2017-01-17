@@ -13,7 +13,6 @@ import net.dmulloy2.swornpermissions.commands.SwornPermissionsCommand;
 import net.dmulloy2.swornpermissions.types.Permission;
 import net.dmulloy2.swornpermissions.types.User;
 import net.dmulloy2.types.StringJoiner;
-import net.dmulloy2.util.FormatUtil;
 
 import org.bukkit.World;
 
@@ -123,19 +122,19 @@ public class CmdUser extends SwornPermissionsCommand
 			return;
 		}
 
-		sendMessage("&3====[ &e{0} &3]====", user.getName());
+		sendMessage("&3---- &e{0} &3----", user.getName());
 		sendMessage("&bGroup&e: {0}", user.getGroupName());
 
 		List<String> subGroups = user.getSubGroupNames();
-		if (subGroups.size() > 0)
+		if (! subGroups.isEmpty())
 		{
-			sendMessage("&bSub Groups&e: {0}", FormatUtil.join("&b, &e", subGroups.toArray(new String[0])));
+			sendMessage("&bSub Groups&e: {0}", new StringJoiner("&b, &e").appendAll(subGroups));
 		}
 
 		List<String> permissions = user.getPermissionNodes();
-		if (permissions.size() > 0)
+		if (! permissions.isEmpty())
 		{
-			sendMessage("&bPermissions&e: {0}", new StringJoiner("&b, &e").appendAll(permissions.toArray(new String[0])));
+			sendMessage("&bPermissions&e: {0}", new StringJoiner("&b, &e").appendAll(permissions));
 		}
 
 		Map<String, Object> options = user.getOptions();

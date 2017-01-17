@@ -25,7 +25,7 @@ public class CmdVersion extends SwornPermissionsCommand
 	@Override
 	public void perform()
 	{
-		sendMessage("&3====[ &eSwornPermissions &3]====");
+		sendMessage("&3---- &eSwornPermissions &3----");
 		sendMessage("&bVersion&e: {0}", plugin.getDescription().getVersion());
 		sendMessage("&bAuthor&e: dmulloy2");
 		sendMessage("&bIssues&e: https://github.com/dmulloy2/SwornPermissions/issues");

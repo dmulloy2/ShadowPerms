@@ -24,6 +24,9 @@ public class MirrorHandler implements Reloadable
 	private Map<String, List<String>> userMirrors;
 	private Map<String, List<String>> groupMirrors;
 
+	private boolean unifiedUsers;
+	private String mainWorld;
+
 	private String onlyUserWorld;
 	private String defaultUserWorld;
 
@@ -51,8 +54,8 @@ public class MirrorHandler implements Reloadable
 
 	public final String getUsersParent(String world)
 	{
-		if (onlyUserWorld != null)
-			return onlyUserWorld;
+		if (unifiedUsers) return mainWorld;
+		if (onlyUserWorld != null) return onlyUserWorld;
 
 		world = world.toLowerCase();
 
@@ -73,20 +76,17 @@ public class MirrorHandler implements Reloadable
 
 	public final boolean areUsersLinked(String world1, String world2)
 	{
+		if (unifiedUsers) return true;
+
 		world1 = getUsersParent(world1);
 		world2 = getUsersParent(world2);
 
 		return world1.equals(world2);
 	}
 
-	public final boolean areUsersMirroredByDefault()
-	{
-		return defaultUserWorld != null;
-	}
-
 	public final String getDefaultUserWorld()
 	{
-		return defaultUserWorld;
+		return unifiedUsers ? mainWorld : defaultUserWorld;
 	}
 
 	public final void addUserMirror(String parent, String mirrored)
@@ -102,7 +102,7 @@ public class MirrorHandler implements Reloadable
 
 	public final void addUserMirror(String mirrored)
 	{
-		addUserMirror(defaultUserWorld, mirrored);
+		addUserMirror(getDefaultUserWorld(), mirrored);
 	}
 
 	// ---- Group Mirrors
@@ -147,11 +147,6 @@ public class MirrorHandler implements Reloadable
 		return world1.equals(world2);
 	}
 
-	public final boolean areGroupsMirroredByDefault()
-	{
-		return defaultGroupWorld != null;
-	}
-
 	public final String getDefaultGroupWorld()
 	{
 		return defaultGroupWorld;
@@ -170,7 +165,7 @@ public class MirrorHandler implements Reloadable
 
 	public final void addGroupMirror(String mirrored)
 	{
-		addGroupMirror(defaultGroupWorld, mirrored);
+		addGroupMirror(getDefaultGroupWorld(), mirrored);
 	}
 
 	// ---- Loading
@@ -179,6 +174,13 @@ public class MirrorHandler implements Reloadable
 	private final void loadUserMirrors()
 	{
 		FileConfiguration config = plugin.getConfig();
+		if (unifiedUsers = config.getBoolean("unifiedUsers", false))
+		{
+			World main = plugin.getServer().getWorlds().get(0);
+			this.mainWorld = main.getName().toLowerCase();
+			return;
+		}
+
 		if (config.isSet("userMirrors"))
 		{
 			Map<String, Object> values = config.getConfigurationSection("userMirrors").getValues(false);

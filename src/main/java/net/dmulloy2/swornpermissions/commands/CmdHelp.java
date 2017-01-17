@@ -89,7 +89,7 @@ public class CmdHelp extends SwornPermissionsCommand
 	{
 		List<String> header = new ArrayList<>();
 
-		header.add(FormatUtil.format("&3====[ &e{0} Commands &3(&e{1}&3/&e{2}&3) ]====", plugin.getName(), index, getPageCount()));
+		header.add(FormatUtil.format("&3---- &e{0} Commands &3- &e{1}&3/&e{2}&3 ----", plugin.getName(), index, getPageCount()));
 		header.add(FormatUtil.format("&eKey: &3<required> [optional]"));
 
 		return TextComponent.fromLegacyList(header);

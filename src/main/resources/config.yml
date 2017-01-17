@@ -64,6 +64,11 @@ groupMirrors:
   "%main_world":
     - "*"
 
+# Whether or not to have a unified set of users
+# This is required with Bungee setups thru SQL
+# YAML storage will use the main world
+unifiedUsers: true
+
 ##############################################
 #+------------------------------------------+#
 #|                  Chat                    |#
@@ -99,6 +104,9 @@ suffix:
   forceReset: true
   forceSpace: false
 
+# Whether or not to use SwornChat to set a player's display name
+setDisplay: true
+
 ##############################################
 #+------------------------------------------+#
 #|                AntiItem                  |#
@@ -113,3 +121,24 @@ antiItem:
   enabled: false
   regulateEnchantments: false
   maxEnchantmentLevel: 25
+
+##############################################
+#+------------------------------------------+#
+#|                Database                  |#
+#+------------------------------------------+#
+##############################################
+
+# YAML, MySQL, and SQLite are supported for users
+# Only YAML is currently supported for groups
+
+# YAML is the default, MySQL requires more information
+
+database:
+  userType: "YAML"
+  groupType: "YAML"
+  MySQL:
+    url: "url:port"
+    database: "swornperms"
+    username: "user"
+    password: "pass"
+  

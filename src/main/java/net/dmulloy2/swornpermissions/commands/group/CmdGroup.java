@@ -117,12 +117,12 @@ public class CmdGroup extends SwornPermissionsCommand
 			return;
 		}
 
-		sendMessage("&3====[ &e{0} &3]====", group.getName());
+		sendMessage("&3---- &e{0} &3----", group.getName());
 
 		List<String> permissions = group.getPermissionNodes();
 		if (permissions.size() > 0)
 		{
-			sendMessage("&bPermissions&e: {0}", new StringJoiner("&b, &e").appendAll(permissions.toArray(new String[0])));
+			sendMessage("&bPermissions&e: {0}", new StringJoiner("&b, &e").appendAll(permissions));
 		}
 
 		List<Group> parents = group.getParentGroups();

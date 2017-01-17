@@ -11,13 +11,17 @@ import net.dmulloy2.util.FormatUtil;
 
 import org.bukkit.entity.Player;
 
+import lombok.Getter;
+
 /**
  * @author dmulloy2
  */
 
 public class ChatHandler implements Reloadable
 {
+	private @Getter boolean setDisplay;
 	private boolean formatChat;
+
 	private String chatFormat;
 
 	private final SwornPermissions plugin;
@@ -34,14 +38,14 @@ public class ChatHandler implements Reloadable
 	 * @param message Message sent
 	 * @return Formatted chat message
 	 */
-	public final String parseChatMessage(Player player, String message)
+	public final String formatChat(Player player, String message)
 	{
 		if (! formatChat)
-			return message;
+			return null;
 
 		User user = plugin.getPermissionHandler().getUser(player);
 		if (user == null)
-			return message;
+			return null;
 
 		// Replace Variables
 		String format = getChatFormat(user)
@@ -73,7 +77,7 @@ public class ChatHandler implements Reloadable
 	private String getChatFormat(User user)
 	{
 		if (user.hasOption("chatFormat"))
-			return (String) user.getOption("chatFormat");
+			return user.getOption("chatFormat").toString();
 
 		return chatFormat;
 	}
@@ -81,6 +85,7 @@ public class ChatHandler implements Reloadable
 	@Override
 	public void reload()
 	{
+		this.setDisplay = plugin.getConfig().getBoolean("setDisplay", true);
 		this.formatChat = plugin.getConfig().getBoolean("formatChat", true);
 		this.chatFormat = plugin.getConfig().getString("chatFormat");
 	}

@@ -27,6 +27,7 @@ public class CmdPrune extends SwornPermissionsCommand
 		this.name = "prune";
 		this.description = "Prune users that shouldn\'t have been saved";
 		this.permission = Permission.CMD_PRUNE;
+		this.usesPrefix = true;
 	}
 
 	@Override

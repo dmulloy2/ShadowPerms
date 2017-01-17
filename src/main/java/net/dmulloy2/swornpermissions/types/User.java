@@ -4,6 +4,8 @@
 package net.dmulloy2.swornpermissions.types;
 
 import java.lang.reflect.Field;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -11,11 +13,13 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
 
 import net.dmulloy2.swornpermissions.SwornPermissions;
+import net.dmulloy2.swornpermissions.data.backend.SQLBackend;
 import net.dmulloy2.types.MyMaterial;
 import net.dmulloy2.types.Reloadable;
 import net.dmulloy2.util.Util;
@@ -25,7 +29,6 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.MemorySection;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionAttachment;
@@ -73,7 +76,13 @@ public class User extends Permissible implements Reloadable
 		this.loadFromDisk(section);
 	}
 
-	// ---- Memory Management
+	public User(SwornPermissions plugin, OfflinePlayer player, String world, ResultSet results) throws SQLException
+	{
+		this(plugin, player, world);
+		this.loadFromSQL(results);
+	}
+
+	// ---- I/O
 
 	@Override
 	public void loadFromDisk(MemorySection section)
@@ -83,6 +92,16 @@ public class User extends Permissible implements Reloadable
 		this.subGroupNames = section.getStringList("subgroups");
 		this.lastKnownBy = section.getString("lastKnownBy");
 		this.uniqueId = section.getName();
+	}
+
+	@Override
+	public void loadFromSQL(ResultSet results) throws SQLException
+	{
+		super.loadFromSQL(results);
+		this.groupName = results.getString("groupName");
+		this.subGroupNames = SQLBackend.fromArrayString(results.getString("subGroups"));
+		this.lastKnownBy = results.getString("lastKnownBy");
+		this.uniqueId = results.getString("identifier");
 	}
 
 	@Override
@@ -113,8 +132,12 @@ public class User extends Permissible implements Reloadable
 
 	private boolean isInDefault()
 	{
-		Group defaultGroup = plugin.getPermissionHandler().getDefaultGroup(worldName);
-		return defaultGroup != null && defaultGroup.equals(getGroup());
+		try
+		{
+			Group defaultGroup = plugin.getPermissionHandler().getDefaultGroup(worldName);
+			return defaultGroup != null && defaultGroup.equals(getGroup());
+		} catch (Throwable ex) { }
+		return false;
 	}
 
 	@Override
@@ -182,6 +205,8 @@ public class User extends Permissible implements Reloadable
 			// Reset prefix
 			this.prefix = "";
 			this.prefix = findPrefix();
+
+			updateDisplayName();
 
 			// Update permission map
 			updatePermissionMap();
@@ -455,6 +480,17 @@ public class User extends Permissible implements Reloadable
 	public void setDisplayName(String name)
 	{
 		options.put("name", name);
+		updateDisplayName();
+	}
+
+	private void updateDisplayName()
+	{
+		if (! plugin.getChatHandler().isSetDisplay()) return;
+
+		Player player = getPlayer();
+		if (player == null) return;
+
+		player.setDisplayName(getDisplayName());
 	}
 
 	public Group getGroup()
@@ -716,19 +752,13 @@ public class User extends Permissible implements Reloadable
 	@Override
 	public int hashCode()
 	{
-		int hash = 87;
-		hash *= 1 + uniqueId.hashCode();
-		hash *= 1 + worldName.hashCode();
-		return hash;
+		return Objects.hash(uniqueId, worldName);
 	}
 
 	@Override
 	public void reload()
 	{
-		YamlConfiguration users = plugin.getDataHandler().getUserConfig(getWorld());
-		if (users.isSet("users." + uniqueId))
-			loadFromDisk((MemorySection) users.get("users." + uniqueId));
-
+		plugin.getDataHandler().reloadUser(this);
 		updatePermissions(true);
 	}
 }

@@ -3,26 +3,31 @@
  */
 package net.dmulloy2.swornpermissions.types;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import net.dmulloy2.swornpermissions.SwornPermissions;
+import net.dmulloy2.swornpermissions.data.DataSerializable;
+import net.dmulloy2.swornpermissions.data.backend.SQLBackend;
 import net.dmulloy2.util.ListUtil;
+import net.dmulloy2.util.NumberUtil;
 
 import org.bukkit.World;
 import org.bukkit.configuration.MemorySection;
-import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.permissions.Permission;
 
 /**
  * @author dmulloy2
  */
 
-public abstract class Permissible implements ConfigurationSerializable
+public abstract class Permissible implements DataSerializable
 {
 	protected Map<String, Long> timestamps;
 	protected List<String> permissionNodes;
@@ -59,6 +64,12 @@ public abstract class Permissible implements ConfigurationSerializable
 		this.loadFromDisk(section);
 	}
 
+	protected Permissible(SwornPermissions plugin, String name, String world, ResultSet results) throws SQLException
+	{
+		this(plugin, name, world);
+		this.loadFromSQL(results);
+	}
+
 	// ---- I/O
 
 	public void loadFromDisk(MemorySection section)
@@ -72,8 +83,8 @@ public abstract class Permissible implements ConfigurationSerializable
 				if (! entry.getValue().toString().isEmpty())
 					options.put(entry.getKey().toLowerCase(), entry.getValue());
 
-			this.prefix = options.containsKey("prefix") ? (String) options.get("prefix") : "";
-			this.suffix = options.containsKey("suffix") ? (String) options.get("suffix") : "";
+			this.prefix = options.containsKey("prefix") ? options.get("prefix").toString() : "";
+			this.suffix = options.containsKey("suffix") ? options.get("suffix").toString() : "";
 		}
 
 		if (section.isSet("timestamps"))
@@ -81,10 +92,36 @@ public abstract class Permissible implements ConfigurationSerializable
 			Map<String, Object> values = section.getConfigurationSection("timestamps").getValues(false);
 			for (Entry<String, Object> entry : values.entrySet())
 			{
-				long expires = (long) entry.getValue();
+				long expires = NumberUtil.toLong(entry.getValue());
 				if (expires < System.currentTimeMillis())
-					options.put(entry.getKey(), expires);
+					timestamps.put(entry.getKey(), expires);
 			}
+		}
+	}
+
+	public void loadFromSQL(ResultSet results) throws SQLException
+	{
+		results.next();
+
+		List<String> permissions = SQLBackend.fromArrayString(results.getString("permissions"));
+		this.permissionNodes = new ArrayList<>(permissions);
+
+		Map<String, String> options = SQLBackend.fromArrayStrings(results.getString("option_keys"),
+				results.getString("option_values"));
+		for (Entry<String, String> entry : options.entrySet())
+			if (! entry.getValue().toString().isEmpty())
+				this.options.put(entry.getKey().toLowerCase(), entry.getValue());
+
+		this.prefix = options.containsKey("prefix") ? options.get("prefix").toString() : "";
+		this.suffix = options.containsKey("suffix") ? options.get("suffix").toString() : "";
+
+		Map<String, String> timestamps = SQLBackend.fromArrayStrings(results.getString("timestamp_keys"),
+				results.getString("timestamp_values"));
+		for (Entry<String, String> entry : timestamps.entrySet())
+		{
+			long expires = NumberUtil.toLong(entry.getValue());
+			if (expires < System.currentTimeMillis())
+				this.timestamps.put(entry.getKey(), expires);
 		}
 	}
 
@@ -394,10 +431,12 @@ public abstract class Permissible implements ConfigurationSerializable
 
 	protected final void cleanTempPermissions()
 	{
-		for (Entry<String, Long> entry : timestamps.entrySet())
+		Iterator<Entry<String, Long>> iter = timestamps.entrySet().iterator();
+		while (iter.hasNext())
 		{
-			if (entry.getValue() > System.currentTimeMillis())
-				timestamps.remove(entry.getKey());
+			Entry<String, Long> entry = iter.next();
+			if (entry.getKey().isEmpty() || entry.getValue() > System.currentTimeMillis())
+				iter.remove();
 		}
 	}
 
@@ -408,7 +447,12 @@ public abstract class Permissible implements ConfigurationSerializable
 
 	public Map<String, Object> getOptions()
 	{
-		return new LinkedHashMap<String, Object>(options);
+		return options;
+	}
+
+	public Map<String, Long> getTimestamps()
+	{
+		return timestamps;
 	}
 
 	public Object getOption(String key)

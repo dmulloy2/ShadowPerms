@@ -8,14 +8,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;
 
-import lombok.Getter;
 import net.dmulloy2.swornpermissions.SwornPermissions;
+import net.dmulloy2.swornpermissions.data.DataHandler;
 import net.dmulloy2.swornpermissions.types.Group;
 import net.dmulloy2.swornpermissions.types.ServerGroup;
 import net.dmulloy2.swornpermissions.types.User;
@@ -27,11 +26,11 @@ import net.dmulloy2.util.Util;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.MemorySection;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import lombok.Getter;
 
 /**
  * @author dmulloy2
@@ -137,6 +136,12 @@ public class PermissionHandler implements Reloadable
 	public final List<User> getUsers(String world)
 	{
 		return users.get(world.toLowerCase());
+	}
+
+	@Deprecated
+	public final void setUsers(String world, List<User> users)
+	{
+		this.users.put(world, users);
 	}
 
 	public final List<User> getAllUsers(World world)
@@ -401,73 +406,13 @@ public class PermissionHandler implements Reloadable
 	public final void loadGroups()
 	{
 		DataHandler data = plugin.getDataHandler();
+		this.serverGroups = data.loadServerGroups();
+		this.worldGroups = data.loadWorldGroups();
+	}
 
-		// Load server groups first
-		YamlConfiguration config = data.getServerGroups();
-		if (config.isSet("groups"))
-		{
-			Map<String, Object> values = config.getConfigurationSection("groups").getValues(false);
-			for (Entry<String, Object> entry : values.entrySet())
-			{
-				String groupName = entry.getKey();
-
-				try
-				{
-					if (! groupName.startsWith("s:"))
-						groupName = "s:" + groupName;
-
-					MemorySection section = (MemorySection) entry.getValue();
-					ServerGroup group = new ServerGroup(plugin, groupName, section);
-					serverGroups.put(groupName.toLowerCase(), group);
-				}
-				catch (Throwable ex)
-				{
-					plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(ex, "loading server group " + groupName));
-				}
-			}
-		}
-
-		for (Entry<String, YamlConfiguration> entry : data.getGroupConfigs().entrySet())
-		{
-			String world = entry.getKey().toLowerCase();
-
-			if (! worldGroups.containsKey(world))
-			{
-				worldGroups.put(world, new HashMap<String, WorldGroup>());
-			}
-
-			config = entry.getValue();
-			if (! config.isSet("groups"))
-			{
-				plugin.getLogHandler().debug("Found 0 groups to load from world {0}!", world);
-				continue;
-			}
-
-			// Load groups
-			Map<String, Object> values = config.getConfigurationSection("groups").getValues(false);
-			for (Entry<String, Object> entry1 : values.entrySet())
-			{
-				String groupName = entry1.getKey();
-
-				try
-				{
-					MemorySection section = (MemorySection) entry1.getValue();
-					WorldGroup group = new WorldGroup(plugin, groupName, world, section);
-					worldGroups.get(world).put(groupName.toLowerCase(), group);
-
-					if (group.isDefaultGroup())
-						defaultGroups.put(world, group);
-				}
-				catch (Throwable ex)
-				{
-					plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(ex, "loading world group " + groupName));
-				}
-			}
-
-			// Load parent groups
-			for (WorldGroup group : worldGroups.get(world).values())
-				group.loadParentGroups();
-		}
+	public final void markDefault(String world, WorldGroup group)
+	{
+		this.defaultGroups.put(world.toLowerCase(), group);
 	}
 
 	public final void registerWorlds()
