@@ -50,6 +50,8 @@ public class User extends Permissible implements Reloadable
 	private String uniqueId;
 	private String lastKnownBy;
 
+	private Player player;
+
 	// Base constructor
 	private User(SwornPermissions plugin, String name, String uniqueId, String world)
 	{
@@ -68,6 +70,9 @@ public class User extends Permissible implements Reloadable
 	public User(SwornPermissions plugin, OfflinePlayer player, String world)
 	{
 		this(plugin, player.getName(), player.getUniqueId().toString(), world);
+
+		if (player instanceof Player)
+			this.player = (Player) player;
 	}
 
 	public User(SwornPermissions plugin, OfflinePlayer player, String world, MemorySection section)
@@ -169,7 +174,7 @@ public class User extends Permissible implements Reloadable
 	{
 		if (player == null)
 		{
-			plugin.getLogHandler().log(Level.WARNING, "{0} does not have a valid player instance!", name);
+			plugin.getLogHandler().debug(Level.WARNING, "{0} does not have a valid player instance!", name);
 			return;
 		}
 
@@ -335,16 +340,21 @@ public class User extends Permissible implements Reloadable
 
 	public final Player getPlayer()
 	{
-		return Util.matchPlayer(uniqueId);
+		if (player == null)
+			this.player = Util.matchPlayer(uniqueId);
+		return player;
 	}
 
 	public final boolean isOnline()
 	{
 		Player player = getPlayer();
-		if (player != null)
-			return plugin.getMirrorHandler().areUsersLinked(getWorld(), player.getWorld());
+		return player != null && plugin.getMirrorHandler().areUsersLinked(getWorld(), player.getWorld());
+	}
 
-		return false;
+	public void logout()
+	{
+		removeAttachment();
+		this.player = null;
 	}
 
 	// ---- UUID Management
@@ -399,7 +409,7 @@ public class User extends Permissible implements Reloadable
 		attachment = getPlayer().addAttachment(plugin);
 	}
 
-	public final void removeAttachment()
+	private void removeAttachment()
 	{
 		if (attachment != null)
 		{
@@ -479,7 +489,10 @@ public class User extends Permissible implements Reloadable
 
 	public void setDisplayName(String name)
 	{
-		options.put("name", name);
+		if (name != null && name.equals(getName()))
+			name = null;
+
+		setOption("name", name);
 		updateDisplayName();
 	}
 

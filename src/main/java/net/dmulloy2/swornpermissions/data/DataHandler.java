@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,11 +24,8 @@ import net.dmulloy2.swornpermissions.types.ServerGroup;
 import net.dmulloy2.swornpermissions.types.User;
 import net.dmulloy2.swornpermissions.types.WorldGroup;
 import net.dmulloy2.types.Reloadable;
-import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.Util;
 
-import org.apache.commons.io.FileUtils;
-import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -45,6 +41,7 @@ import lombok.Getter;
 @Getter
 public class DataHandler implements Reloadable
 {
+	public static final DateFormat BACKUP_FORMAT = new SimpleDateFormat("yy-MM-dd_kk-mm");
 	private static final String DATA_YML = "data.yml";
 
 	private final Backend userBackend;
@@ -263,17 +260,13 @@ public class DataHandler implements Reloadable
 		}
 	}
 
-	// TODO debug
 	public final User loadUser(Player player)
 	{
-		System.out.println("loadUser(" + player.getName() + ")");
 		String world = player.getWorld().getName();
 		world = plugin.getMirrorHandler().getUsersParent(world);
-		System.out.println("world=" + world);
 
 		try
 		{
-			System.out.println(userBackend + "#loadUser");
 			return userBackend.loadUser(world, player);
 		}
 		catch (Throwable ex)
@@ -348,74 +341,21 @@ public class DataHandler implements Reloadable
 		}
 	}
 
-	private static final DateFormat BACKUP_FORMAT = new SimpleDateFormat("yy-MM-dd_kk-mm");
-
-	// TODO: Implement for other backends
-	// Should be very easy with SQLite, idk about MySQL though
-	public boolean backup(CommandSender sender)
+	public void backup(CommandSender sender)
 	{
-		logMessage(sender, "Backing up files...");
-
-		File dataFolder = plugin.getDataFolder();
-		File backups = new File(dataFolder, "Backups");
-		if (! backups.exists())
-			backups.mkdir();
-
-		File backup = new File(backups, BACKUP_FORMAT.format(new Date()));
-		if (backup.exists())
-		{
-			logMessage(sender, "A backup from this minute already exists, overwriting...");
-
-			try
-			{
-				FileUtils.deleteDirectory(backup);
-			}
-			catch (IOException ex)
-			{
-				logMessage(sender, "&cFailed to delete previous backup: {0}", ex);
-				plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(ex, "deleting old backup"));
-				return false;
-			}
-		}
-
-		backup.mkdir();
-
-		for (File child : dataFolder.listFiles())
-		{
-			if (child.getName().contains("Backup"))
-				continue;
-
-			try
-			{
-				if (child.isDirectory())
-				{
-					FileUtils.copyDirectory(child, new File(backup, child.getName()));
-				}
-				else
-				{
-					FileUtils.copyFile(child, new File(backup, child.getName()));
-				}
-			}
-			catch (IOException ex)
-			{
-				logMessage(sender, "&cFailed to backup file {0}: {1}", child.getName(), ex);
-				plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(ex, "backing up file {0}", child.getName()));
-				return false;
-			}
-		}
-
-		sender.sendMessage(plugin.getPrefix() + FormatUtil.format("&eBackup complete!"));
-		return true;
-	}
-
-	private void logMessage(CommandSender sender, String message, Object... args)
-	{
-		message = FormatUtil.format(message, args);
-
+		save();
+		
+		plugin.getLogHandler().log("Backing up users and groups...");
 		if (sender instanceof Player)
-			sender.sendMessage(plugin.getPrefix() + message);
+			sender.sendMessage(plugin.getPrefix() + "Backing up users and groups...");
 
-		plugin.getLogHandler().log(ChatColor.stripColor(message));
+		userBackend.backup(sender);
+		if (groupBackend != userBackend)
+			groupBackend.backup(sender);
+
+		plugin.getLogHandler().log("Backup complete!");
+		if (sender instanceof Player)
+			sender.sendMessage(plugin.getPrefix() + "Backup complete!");
 	}
 
 	@Override

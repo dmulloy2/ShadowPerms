@@ -10,7 +10,6 @@ import net.dmulloy2.swornpermissions.types.Permission;
  * @author dmulloy2
  */
 
-// TODO: Add automatic backup?
 public class CmdBackup extends SwornPermissionsCommand
 {
 	public CmdBackup(SwornPermissions plugin)
@@ -18,6 +17,7 @@ public class CmdBackup extends SwornPermissionsCommand
 		super(plugin);
 		this.description = "Backs up all SwornPermissions files";
 		this.permission = Permission.CMD_BACKUP;
+		this.usesPrefix = true;
 	}
 
 	@Override

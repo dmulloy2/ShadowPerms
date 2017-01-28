@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.List;
 
 import net.dmulloy2.swornpermissions.SwornPermissions;
+import net.dmulloy2.swornpermissions.data.backend.YAMLBackend;
 import net.dmulloy2.swornpermissions.types.Permission;
 import net.dmulloy2.swornpermissions.types.User;
 import net.dmulloy2.util.FormatUtil;
@@ -33,10 +34,16 @@ public class CmdPrune extends SwornPermissionsCommand
 	@Override
 	public void perform()
 	{
-		if (! plugin.getDataHandler().backup(sender))
-			return;
-
-		sendpMessage("Pruned &b{0} &eusers!", prune());
+		if (plugin.getDataHandler().getUserBackend() instanceof YAMLBackend)
+		{
+			plugin.getDataHandler().backup(sender);
+			sendpMessage("Pruned &b{0} &eusers!", prune());
+		}
+		else
+		{
+			err("Pruning is not supported on non-YAML backends.");
+			err("Luckily, pruning shouldn't be an issue.");
+		}
 	}
 
 	private int prune()

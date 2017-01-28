@@ -63,12 +63,7 @@ public class PlayerListener implements Listener
 	{
 		Player player = event.getPlayer();
 		User user = plugin.getPermissionHandler().getUser(player);
-		if (user == null)
-		{
-			player.sendMessage(plugin.getPrefix() + FormatUtil.format("Failed to get a user instance! Contact an administrator!"));
-			return;
-		}
-
-		user.removeAttachment();
+		if (user != null)
+			user.logout();
 	}
 }

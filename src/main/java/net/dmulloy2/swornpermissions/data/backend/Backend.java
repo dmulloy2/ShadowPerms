@@ -13,6 +13,7 @@ import net.dmulloy2.types.Reloadable;
 
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
+import org.bukkit.command.CommandSender;
 
 /**
  * @author dmulloy2
@@ -34,6 +35,8 @@ public interface Backend extends Reloadable
 	Map<String, ServerGroup> loadServerGroups() throws Exception;
 
 	Set<String> getUsers(String world);
+
+	void backup(CommandSender sender);
 
 	public static enum BackendType
 	{

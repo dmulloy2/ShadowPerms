@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,18 +18,24 @@ import java.util.logging.Level;
 
 import net.dmulloy2.io.Closer;
 import net.dmulloy2.swornpermissions.SwornPermissions;
+import net.dmulloy2.swornpermissions.data.DataHandler;
 import net.dmulloy2.swornpermissions.handlers.MirrorHandler;
 import net.dmulloy2.swornpermissions.types.Group;
 import net.dmulloy2.swornpermissions.types.ServerGroup;
 import net.dmulloy2.swornpermissions.types.User;
 import net.dmulloy2.swornpermissions.types.WorldGroup;
+import net.dmulloy2.util.FormatUtil;
 import net.dmulloy2.util.Util;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.Validate;
+import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 
 /**
  * @author dmulloy2
@@ -320,6 +327,66 @@ public class YAMLBackend implements Backend
 	{
 		this.userConfigs = new HashMap<>();
 		this.groupConfigs = new HashMap<>();
+	}
+
+	private void logMessage(CommandSender sender, String message, Object... args)
+	{
+		message = FormatUtil.format(message, args);
+
+		if (sender instanceof Player)
+			sender.sendMessage(plugin.getPrefix() + message);
+
+		plugin.getLogHandler().log(ChatColor.stripColor(message));
+	}
+
+	@Override
+	public void backup(CommandSender sender)
+	{
+		File dataFolder = plugin.getDataFolder();
+		File backups = new File(dataFolder, "Backups");
+		if (! backups.exists())
+			backups.mkdir();
+
+		File backup = new File(backups, DataHandler.BACKUP_FORMAT.format(new Date()));
+		if (backup.exists())
+		{
+			logMessage(sender, "A backup from this minute already exists, overwriting...");
+
+			try
+			{
+				FileUtils.deleteDirectory(backup);
+			}
+			catch (IOException ex)
+			{
+				throw new RuntimeException("Failed to delete old backup:", ex);
+			}
+		}
+
+		backup.mkdir();
+
+		for (File child : dataFolder.listFiles())
+		{
+			if (child.getName().contains("Backup"))
+				continue;
+
+			try
+			{
+				if (child.isDirectory())
+				{
+					FileUtils.copyDirectory(child, new File(backup, child.getName()));
+				}
+				else
+				{
+					FileUtils.copyFile(child, new File(backup, child.getName()));
+				}
+			}
+			catch (IOException ex)
+			{
+				throw new RuntimeException("Failed to backup file " + child + ":", ex);
+			}
+		}
+
+		sender.sendMessage(plugin.getPrefix() + FormatUtil.format("&eBackup complete!"));
 	}
 
 	private void copy(InputStream stream, File destination) throws IOException

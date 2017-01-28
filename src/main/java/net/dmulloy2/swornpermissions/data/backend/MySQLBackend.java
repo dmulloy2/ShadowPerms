@@ -11,6 +11,7 @@ import java.sql.Statement;
 import net.dmulloy2.swornpermissions.SwornPermissions;
 
 import org.apache.commons.lang.Validate;
+import org.bukkit.command.CommandSender;
 
 /**
  * @author dmulloy2
@@ -62,6 +63,13 @@ public class MySQLBackend extends SQLBackend
 		// System.out.println(sql);
 		Statement statement = connection.createStatement();
 		statement.executeUpdate(sql);
+	}
+
+	@Override
+	public void backup(CommandSender sender)
+	{
+		// TODO It may be possible to backup MySQL databases with commands
+		throw new IllegalStateException("Backups are currently not supported with MySQL");
 	}
 
 	@Override

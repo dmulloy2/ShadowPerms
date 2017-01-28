@@ -4,23 +4,31 @@
 package net.dmulloy2.swornpermissions.data.backend;
 
 import java.io.File;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Date;
 
 import net.dmulloy2.swornpermissions.SwornPermissions;
+import net.dmulloy2.swornpermissions.data.DataHandler;
+
+import org.apache.commons.io.FileUtils;
+import org.bukkit.command.CommandSender;
 
 /**
  * @author dmulloy2
  */
 public class SQLiteBackend extends SQLBackend
 {
-	private static final String DATABASE = "jdbc:sqlite:%s/permissions.db";
+	private static final String DATABASE = "jdbc:sqlite:%s";
+	private final String file;
 
 	public SQLiteBackend(SwornPermissions plugin)
 	{
 		super(plugin);
+		this.file = plugin.getDataFolder().getPath() + "/permissions.db";
 	}
 
 	@Override
@@ -28,8 +36,7 @@ public class SQLiteBackend extends SQLBackend
 	{
 		Class.forName("org.sqlite.JDBC");
 
-		File data = plugin.getDataFolder();
-		Connection con = DriverManager.getConnection(String.format(DATABASE, data.getPath()));
+		Connection con = DriverManager.getConnection(String.format(DATABASE, file));
 		if (con == null)
 			throw new IllegalStateException("Failed to connect to database!");
 
@@ -53,6 +60,29 @@ public class SQLiteBackend extends SQLBackend
 
 		Statement statement = connection.createStatement();
 		statement.executeUpdate(sql);
+	}
+
+	// TODO It's possible (and also maybe safer?) to backup via commands
+
+	@Override
+	public void backup(CommandSender sender)
+	{
+		File database = new File(file);
+		if (! database.exists())
+			return;
+
+		File backup = new File(file.substring(0, file.length() - 3) + "-" + DataHandler.BACKUP_FORMAT.format(new Date()) + ".db");
+		if (backup.exists())
+			backup.delete();
+
+		try
+		{
+			FileUtils.copyFile(database, backup);
+		}
+		catch (IOException ex)
+		{
+			throw new RuntimeException("Failed to back " + database + " up to " + backup, ex);
+		}
 	}
 
 	@Override
