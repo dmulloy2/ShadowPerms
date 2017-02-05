@@ -160,16 +160,13 @@ public abstract class SQLBackend implements Backend
 		String key = player.getUniqueId().toString();
 		if (! rowExists(table, "identifier", key))
 		{
-			System.out.println("row does not exist");
 			return new User(plugin, player, world);
 		}
 
 		String sql = "SELECT * FROM " + table + " WHERE identifier=?;";
 		PreparedStatement statement = connection.prepareStatement(sql);
 		statement.setString(1, key);
-		System.out.println("statement=" + statement);
 		ResultSet results = statement.executeQuery();
-		System.out.println("results=" + results);
 
 		return new User(plugin, player, world, results);
 	}
