@@ -237,7 +237,7 @@ public class User extends Permissible implements Reloadable
 	}
 
 	@Override
-	protected final List<String> sortPermissions()
+	protected final Set<String> sortPermissions()
 	{
 		Map<String, Boolean> permissions = new LinkedHashMap<>();
 

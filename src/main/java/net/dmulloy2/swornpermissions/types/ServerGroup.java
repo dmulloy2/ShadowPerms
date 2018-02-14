@@ -6,6 +6,7 @@ package net.dmulloy2.swornpermissions.types;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import net.dmulloy2.swornpermissions.SwornPermissions;
 
@@ -50,7 +51,7 @@ public class ServerGroup extends Group
 	// ---- Permissions
 
 	@Override
-	public List<String> sortPermissions()
+	public Set<String> sortPermissions()
 	{
 		List<String> groupPerms = getPermissionNodes();
 		groupPerms = getAllChildren(groupPerms);

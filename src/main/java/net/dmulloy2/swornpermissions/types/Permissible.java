@@ -9,14 +9,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import net.dmulloy2.swornpermissions.SwornPermissions;
 import net.dmulloy2.swornpermissions.data.DataSerializable;
 import net.dmulloy2.swornpermissions.data.backend.SQLBackend;
-import net.dmulloy2.util.ListUtil;
 import net.dmulloy2.util.NumberUtil;
 
 import org.bukkit.World;
@@ -31,7 +32,7 @@ public abstract class Permissible implements DataSerializable
 {
 	protected Map<String, Long> timestamps;
 	protected List<String> permissionNodes;
-	protected List<String> sortedPermissions;
+	protected Set<String> sortedPermissions;
 	protected Map<String, Boolean> permissions;
 
 	protected Map<String, Object> options;
@@ -51,7 +52,7 @@ public abstract class Permissible implements DataSerializable
 		this.worldName = world;
 		this.timestamps = new HashMap<>();
 		this.permissionNodes = new ArrayList<>();
-		this.sortedPermissions = new ArrayList<>();
+		this.sortedPermissions = new LinkedHashSet<>();
 		this.permissions = new LinkedHashMap<>();
 		this.options = new HashMap<>();
 		this.prefix = "";
@@ -212,44 +213,31 @@ public abstract class Permissible implements DataSerializable
 	protected final void updatePermissionMap()
 	{
 		// Sort the nodes
-		List<String> permissionNodes = sortPermissions();
+		Set<String> permissionNodes = sortPermissions();
 
 		// Update sorted permissions list
 		this.sortedPermissions = permissionNodes;
-
-		// Moved to individual permissible instances
-
-		// Get matching permissions
-		// permissionNodes = getMatchingNodes(permissionNodes);
-
-		// Get children
-		// permissionNodes = getAllChildren(permissionNodes);
-
+		
+		// Translate the set to a hash map
 		Map<String, Boolean> permissions = new LinkedHashMap<>();
 
-		// Add * first
 		if (permissionNodes.contains("*"))
 		{
 			permissionNodes.remove("*");
 			permissions.put("*", true);
 		}
 
-		// Add negative nodes next
-		for (String permission : new ArrayList<>(permissionNodes))
+		for (String permission : permissionNodes)
 		{
 			if (permission.startsWith("-"))
 			{
-				permissionNodes.remove(permission);
 				permission = permission.substring(1);
 				permissions.put(permission, false);
 			}
-		}
-
-		// Add positive nodes last to override any negatives
-		for (String permission : new ArrayList<>(permissionNodes))
-		{
-			permissionNodes.remove(permission);
-			permissions.put(permission, true);
+			else
+			{
+				permissions.put(permission, true);
+			}
 		}
 
 		// Update permission map
@@ -258,12 +246,12 @@ public abstract class Permissible implements DataSerializable
 
 	public abstract void updatePermissions(boolean force);
 
-	protected abstract List<String> sortPermissions();
+	protected abstract Set<String> sortPermissions();
 
 	// Order: *, negative, positive
-	protected final List<String> sort(List<String> permissions)
+	protected final Set<String> sort(List<String> permissions)
 	{
-		List<String> ret = new ArrayList<>();
+		Set<String> ret = new LinkedHashSet<>();
 
 		// Add * permission first
 		if (permissions.contains("*"))
@@ -273,26 +261,29 @@ public abstract class Permissible implements DataSerializable
 		}
 
 		// Add negative nodes next
-		for (String permission : new ArrayList<>(permissions))
+		Iterator<String> iter = permissions.iterator();
+		while (iter.hasNext())
 		{
+			String permission = iter.next();
 			if (permission.startsWith("-"))
 			{
-				permissions.remove(permission);
+				iter.remove();
 				ret.add(permission);
 			}
 		}
 
-		// Add positive nodes last, overrides negatives
-		for (String permission : new ArrayList<>(permissions))
+		// Add positive nodes last, overriding negatives
+		iter = permissions.iterator();
+		while (iter.hasNext())
 		{
-			permissions.remove(permission);
+			String permission = iter.next();
+			iter.remove();
 			if (ret.contains("-" + permission))
 				ret.remove("-" + permission);
 			ret.add(permission);
 		}
 
-		// Remove duplicates
-		return ListUtil.removeDuplicates(ret);
+		return ret;
 	}
 
 	// Wildcard support

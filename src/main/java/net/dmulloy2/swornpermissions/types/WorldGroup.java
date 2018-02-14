@@ -8,6 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.logging.Level;
 
 import net.dmulloy2.swornpermissions.SwornPermissions;
@@ -122,7 +123,7 @@ public class WorldGroup extends Group
 	}
 
 	@Override
-	public List<String> sortPermissions()
+	public Set<String> sortPermissions()
 	{
 		Map<String, Boolean> permissions = new LinkedHashMap<String, Boolean>();
 
