@@ -1,7 +1,7 @@
 # SwornPermissions
 
 ### Useful Links
-  - [Download](http://ci.shadowvolt.com/job/SwornPermissions)
+  - [Download](http://ci.dmulloy2.net/job/SwornPermissions)
   - [Issues](https://github.com/dmulloy2/SwornPermissions/issues/)
   - [Permissions](https://github.com/dmulloy2/SwornPermissions/blob/master/src/main/resources/plugin.yml)
 
