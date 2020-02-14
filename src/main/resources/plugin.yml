@@ -1,15 +1,15 @@
-name: SwornPermissions
-main: net.dmulloy2.swornpermissions.SwornPermissions
+name: ShadowPerms
+main: net.dmulloy2.shadowperms.ShadowPerms
 version: ${project.version}${project.build.number}
 author: dmulloy2
 description: Comprehensive permission, chat, and world management system.
 softdepend: [Vault]
-load: postworld
+load: POSTWORLD
 commands:
   swornperms:
-    description: SwornPermissions root command
+    description: ShadowPerms root command
     usage: /<command> <args>
-    aliases: [perms, perm, swornpermissions]
+    aliases: [perms, perm, shadowperms]
   nick:
     description: Set a player's nickname
     usage: /<command> [player] <nick>
@@ -33,149 +33,149 @@ commands:
     usage: /<command> [player]
     aliases: [sufr]
 permissions:
-  swornpermissions.admin:
-    description: Full access to SwornPermissions commands
+  shadowperms.admin:
+    description: Full access to ShadowPerms commands
     default: op
     children:
-      swornpermissions.manage.users: true
-      swornpermissions.manage.groups: true
-      swornpermissions.chat.color: true
-      swornpermissions.chat.formatting: true
-      swornpermissions.chat.rainbow: true
-      swornpermissions.cmd.prefix: true
-      swornpermissions.cmd.reload: true
-      swornpermissions.cmd.save: true
-      swornpermissions.cmd.suffix: true
-      swornpermissions.cmd.nick: true
-      swornpermissions.cmd.realname: true
-      swornpermissions.moderator: true
-  swornpermissions.moderator:
+      shadowperms.manage.users: true
+      shadowperms.manage.groups: true
+      shadowperms.chat.color: true
+      shadowperms.chat.formatting: true
+      shadowperms.chat.rainbow: true
+      shadowperms.cmd.prefix: true
+      shadowperms.cmd.reload: true
+      shadowperms.cmd.save: true
+      shadowperms.cmd.suffix: true
+      shadowperms.cmd.nick: true
+      shadowperms.cmd.realname: true
+      shadowperms.moderator: true
+  shadowperms.moderator:
     description: Allows access to commands meant for mods
     default: false
     children:
-      swornpermissions.cmd.prefix.reset: true
-      swornpermissions.cmd.prefix.reset.others: true
-      swornpermissions.cmd.suffix.reset: true
-      swornpermissions.cmd.suffix.reset.others: true
-  swornpermissions.manage.users:
+      shadowperms.cmd.prefix.reset: true
+      shadowperms.cmd.prefix.reset.others: true
+      shadowperms.cmd.suffix.reset: true
+      shadowperms.cmd.suffix.reset.others: true
+  shadowperms.manage.users:
     description: Manage users' permissions
     default: false
     children:
-      swornpermissions.user.view.info: true
-      swornpermissions.user.add.subgroup: true
-      swornpermissions.user.add.permission: true
-      swornpermissions.user.remove.subgroup: true
-      swornpermissions.user.remove.permission: true
-      swornpermissions.user.set.group: true
-      swornpermissions.user.set.prefix: true
-      swornpermissions.user.set.suffix: true
-      swornpermissions.user.set.option: true
-      swornpermissions.user.has.permission: true
-      swornpermissions.user.has.group: true
-      swornpermissions.user.has.option: true
-      swornpermissions.user.list.permissions: true
-      swornpermissions.user.reset: true
-  swornpermissions.user.view.info:
+      shadowperms.user.view.info: true
+      shadowperms.user.add.subgroup: true
+      shadowperms.user.add.permission: true
+      shadowperms.user.remove.subgroup: true
+      shadowperms.user.remove.permission: true
+      shadowperms.user.set.group: true
+      shadowperms.user.set.prefix: true
+      shadowperms.user.set.suffix: true
+      shadowperms.user.set.option: true
+      shadowperms.user.has.permission: true
+      shadowperms.user.has.group: true
+      shadowperms.user.has.option: true
+      shadowperms.user.list.permissions: true
+      shadowperms.user.reset: true
+  shadowperms.user.view.info:
     default: false
-  swornpermissions.user.add.subgroup:
+  shadowperms.user.add.subgroup:
     default: false
-  swornpermissions.user.add.permission:
+  shadowperms.user.add.permission:
     default: false
-  swornpermissions.user.remove.subgroup:
+  shadowperms.user.remove.subgroup:
     default: false
-  swornpermissions.user.remove.permission:
+  shadowperms.user.remove.permission:
     default: false
-  swornpermissions.user.set.group:
+  shadowperms.user.set.group:
     default: false
-  swornpermissions.user.set.prefix:
+  shadowperms.user.set.prefix:
     default: false
-  swornpermissions.user.set.suffix:
+  shadowperms.user.set.suffix:
     default: false
-  swornpermissions.user.set.option:
+  shadowperms.user.set.option:
     default: false
-  swornpermissions.user.has.permission:
+  shadowperms.user.has.permission:
     default: false
-  swornpermissions.user.has.group:
+  shadowperms.user.has.group:
     default: false
-  swornpermissions.user.has.option:
+  shadowperms.user.has.option:
     default: false
-  swornpermissions.user.list.permissions:
+  shadowperms.user.list.permissions:
     default: false
-  swornpermissions.user.reset:
+  shadowperms.user.reset:
     default: false
-  swornpermissions.manage.groups:
+  shadowperms.manage.groups:
     description: Manage groups' permissions
     default: false
     children:
-      swornpermissions.group.view.info: true
-      swornpermissions.group.add.permission: true
-      swornpermissions.group.remove.permission: true
-      swornpermissions.group.set.prefix: true
-      swornpermissions.group.set.suffix: true
-      swornpermissions.group.set.option: true
-      swornpermissions.group.has.permission: true
-      swornpermissions.group.has.option: true
-      swornpermissions.group.list.permissions: true
-      swornpermissions.group.list.users: true
-      swornpermissions.group.list: true
-      swornpermissions.group.create: true
-  swornpermissions.group.view.info:
+      shadowperms.group.view.info: true
+      shadowperms.group.add.permission: true
+      shadowperms.group.remove.permission: true
+      shadowperms.group.set.prefix: true
+      shadowperms.group.set.suffix: true
+      shadowperms.group.set.option: true
+      shadowperms.group.has.permission: true
+      shadowperms.group.has.option: true
+      shadowperms.group.list.permissions: true
+      shadowperms.group.list.users: true
+      shadowperms.group.list: true
+      shadowperms.group.create: true
+  shadowperms.group.view.info:
     default: false
-  swornpermissions.group.add.permission:
+  shadowperms.group.add.permission:
     default: false
-  swornpermissions.group.remove.permission:
+  shadowperms.group.remove.permission:
     default: false
-  swornpermissions.group.set.prefix:
+  shadowperms.group.set.prefix:
     default: false
-  swornpermissions.group.set.suffix:
+  shadowperms.group.set.suffix:
     default: false
-  swornpermissions.group.set.option:
+  shadowperms.group.set.option:
     default: false
-  swornpermissions.group.has.permission:
+  shadowperms.group.has.permission:
     default: false
-  swornpermissions.group.has.option:
+  shadowperms.group.has.option:
     default: false
-  swornpermissions.group.list.users:
+  shadowperms.group.list.users:
     default: false
-  swornpermissions.group.list.permissions:
+  shadowperms.group.list.permissions:
     default: false
-  swornpermissions.group.list:
+  shadowperms.group.list:
     default: false
-  swornpermissions.group.create:
+  shadowperms.group.create:
     default: false
-  swornpermissions.chat.color:
+  shadowperms.chat.color:
     default: false
-  swornpermissions.chat.formatting:
+  shadowperms.chat.formatting:
     default: false
-  swornpermissions.chat.rainbow:
+  shadowperms.chat.rainbow:
     default: false
   # Prefixes & Suffixes
-  swornpermissions.cmd.prefix:
+  shadowperms.cmd.prefix:
     default: false
-  swornpermissions.cmd.prefix.reset:
+  shadowperms.cmd.prefix.reset:
     default: false
-  swornpermissions.cmd.prefix.reset.others:
+  shadowperms.cmd.prefix.reset.others:
     default: false
-  swornpermissions.cmd.suffix:
+  shadowperms.cmd.suffix:
     default: false
-  swornpermissions.cmd.suffix.reset:
+  shadowperms.cmd.suffix.reset:
     default: false
-  swornpermissions.cmd.suffix.reset.others:
+  shadowperms.cmd.suffix.reset.others:
     default: false
   # Other Commands
-  swornpermissions.cmd.backup:
+  shadowperms.cmd.backup:
     default: false
-  swornpermissions.cmd.cleanup:
+  shadowperms.cmd.cleanup:
     default: false
-  swornpermissions.cmd.nick:
+  shadowperms.cmd.nick:
     default: false
-  swornpermissions.cmd.prune:
+  shadowperms.cmd.prune:
     default: false
-  swornpermissions.cmd.realname:
+  shadowperms.cmd.realname:
     default: false
-  swornpermissions.cmd.reload:
+  shadowperms.cmd.reload:
     default: false
-  swornpermissions.cmd.save:
+  shadowperms.cmd.save:
     default: false
-  swornpermissions.cmd.version:
+  shadowperms.cmd.version:
     default: true

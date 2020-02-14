@@ -1,15 +1,15 @@
-# SwornPermissions
+# ShadowPerms
 
 ### Useful Links
-  - [Download](http://ci.shadowvolt.com/job/SwornPermissions)
+  - [Download](https://ci.dmulloy2.net/job/SwornPermissions)
   - [Issues](https://github.com/dmulloy2/SwornPermissions/issues/)
   - [Permissions](https://github.com/dmulloy2/SwornPermissions/blob/master/src/main/resources/plugin.yml)
 
 ### Installation
 1. Remove any other permission or chat systems
-2. Drop SwornPermissions.jar into /plugins/
+2. Drop ShadowPerms.jar into /plugins/
 3. Start the server
-4. SwornPermissions will automatically convert from PermissionsEx or GroupManager
+4. ShadowPerms will automatically convert from PermissionsEx or GroupManager
 
 ### Integration
 1. Essentials
@@ -17,8 +17,8 @@
   - Remove the ````player-commands```` section of the Essentials config.yml
   - Remove EssentialsChat (if installed)
 2. SwornNations / Factions
-  - For chat formatting, append ````[FACTION]```` to the front of ````chatFormat```` of SwornPermissions config.yml
-  - Make sure ````SwornPermissions```` is in the ````softdepend```` section of the Factions plugin.yml
+  - For chat formatting, append ````[FACTION]```` to the front of ````chatFormat```` of ShadowPerms config.yml
+  - Make sure ````ShadowPerms```` is in the ````softdepend```` section of the Factions plugin.yml
 
 ### Command Structure
 1. Information

@@ -1,8 +1,8 @@
-# Contributing to SwornPermissions
+# Contributing to ShadowPerms
 
 ## Issues
 
-SwornPermissions' issue tracker can be found here: https://github.com/dmulloy2/SwornPermissions/issues. Please follow the templates below.
+ShadowPerms' issue tracker can be found here: https://github.com/dmulloy2/ShadowPerms/issues. Please follow the templates below.
 
 ### Bug
 
@@ -12,7 +12,7 @@ Provide a DETAILED description of your problem and how it came about, as well as
 Provide any RELEVANT stack traces or error logs (use pastebin or I will delete your ticket)
 
 
-What version of SwornPermissions and Bukkit/Spigot are you using? (Please provide the full version string, found with /perm version and /version)
+What version of ShadowPerms and Bukkit/Spigot are you using? (Please provide the full version string, found with /perm version and /version)
 
 
 Provide any additional information below.

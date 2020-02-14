@@ -1,16 +1,16 @@
 ########################################################################################
 #+------------------------------------------------------------------------------------+#
 #|                                                                                    |#
-#|                           SwornPermissions Configuration                           |#
+#|                               ShadowPerms Configuration                            |#
 #|                                    By: dmulloy2                                    |#
 #|                                                                                    |#
 #+------------------------------------------------------------------------------------+#
 ########################################################################################
 
-# This is the main configuration file for SwornPermissions
+# This is the main configuration file for ShadowPerms
 # It follows standard YAML procedure
 # If there is an error on startup, make sure the config matches up with this:
-# https://github.com/dmulloy2/SwornPermissions/blob/master/src/main/resources/config.yml
+# https://github.com/dmulloy2/ShadowPerms/blob/master/src/main/resources/config.yml
 # Input: boolean - true/false, String - "text", integer - number
 
 ##############################################
