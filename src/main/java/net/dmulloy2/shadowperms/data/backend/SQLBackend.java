@@ -145,9 +145,16 @@ public abstract class SQLBackend implements Backend
 	}
 
 	@Override
-	public void loadWorld(World world) throws Exception
+	public void loadWorld(String world) throws Exception
 	{
 		// We have nothing to do here
+	}
+
+	@Override
+	public List<String> listWorlds()
+	{
+		// TODO
+		return null;
 	}
 
 	@Override

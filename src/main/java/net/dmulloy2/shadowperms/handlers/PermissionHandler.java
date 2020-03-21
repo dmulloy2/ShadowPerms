@@ -3,14 +3,8 @@
  */
 package net.dmulloy2.shadowperms.handlers;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;
 
 import net.dmulloy2.shadowperms.ShadowPerms;
@@ -19,13 +13,11 @@ import net.dmulloy2.shadowperms.types.Group;
 import net.dmulloy2.shadowperms.types.ServerGroup;
 import net.dmulloy2.shadowperms.types.User;
 import net.dmulloy2.shadowperms.types.WorldGroup;
-import net.dmulloy2.types.IPermission;
 import net.dmulloy2.types.Reloadable;
 import net.dmulloy2.util.Util;
 
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -39,10 +31,11 @@ import lombok.Getter;
 @Getter
 public class PermissionHandler extends net.dmulloy2.handlers.PermissionHandler implements Reloadable
 {
-	private ConcurrentMap<String, List<User>> users;
 	private Map<String, Map<String, WorldGroup>> worldGroups;
 	private Map<String, ServerGroup> serverGroups;
 	private Map<String, Group> defaultGroups;
+
+	private Map<String, Map<String, User>> users;
 
 	private final ShadowPerms plugin;
 
@@ -57,29 +50,22 @@ public class PermissionHandler extends net.dmulloy2.handlers.PermissionHandler i
 
 	public final User getUser(Player player)
 	{
-		return getUser(plugin.getMirrorHandler().getUsersParent(player.getWorld()), player);
+		return getUser(player.getWorld().getName(), player);
 	}
 
 	public final User getUser(String world, Player player)
 	{
 		try
 		{
-			// First, attempt to grab from online users
-			String identifier = player.getUniqueId().toString();
-			for (User user : users.get(world))
-			{
-				if (user.getUniqueId().equals(identifier))
-					return user;
-			}
+			world = plugin.getMirrorHandler().getUsersParent(world);
+			Map<String, User> worldUsers = users.computeIfAbsent(world, x -> new ConcurrentHashMap<>());
 
-			// Last, load the user
-			User user = plugin.getDataHandler().loadUser(player);
-			users.get(world).add(user);
-			return user;
+			String identifier = player.getUniqueId().toString();
+			return worldUsers.computeIfAbsent(identifier, x -> plugin.getDataHandler().loadUser(player));
 		}
 		catch (Throwable ex)
 		{
-			plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(ex, "getting user for: " + player.getName()));
+			plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(ex, "getting user for " + player.getName()));
 			return null;
 		}
 	}
@@ -94,7 +80,9 @@ public class PermissionHandler extends net.dmulloy2.handlers.PermissionHandler i
 		try
 		{
 			if (world == null)
+			{
 				world = getDefaultWorld().getName();
+			}
 
 			world = plugin.getMirrorHandler().getUsersParent(world);
 
@@ -103,59 +91,73 @@ public class PermissionHandler extends net.dmulloy2.handlers.PermissionHandler i
 			if (player != null)
 				return getUser(world, player);
 
-			// Then, attempt to grab from online users
-			for (User user : users.get(world))
+			// Then, attempt to grab from the map
+			Map<String, User> worldUsers = users.computeIfAbsent(world, x -> new ConcurrentHashMap<>());
+
+			User user = worldUsers.get(identifier);
+			if (user != null)
 			{
-				if (user.matches(identifier))
-					return user;
+				return user;
+			}
+
+			// Then, attempt to grab from online users
+			for (User aUser : worldUsers.values())
+			{
+				if (aUser.matches(identifier))
+					return aUser;
 			}
 
 			// Finally, attempt to load the user
-			User user = plugin.getDataHandler().loadUser(world, identifier);
+			user = plugin.getDataHandler().loadUser(world, identifier);
 			if (user == null)
+			{
 				return null;
+			}
 
-			users.get(world).add(user);
+			users.get(world).put(identifier, user);
 			return user;
 		}
 		catch (Throwable ex)
 		{
-			plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(ex, "getting user: " + identifier));
+			plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(ex, "getting user for " + identifier));
 			return null;
 		}
 	}
 
-	public final List<User> getUsers()
+	public final Collection<User> getUsers()
 	{
 		List<User> ret = new ArrayList<>();
 
-		for (List<User> list : users.values())
-			ret.addAll(list);
+		for (Map<String, User> worldUsers : users.values())
+			ret.addAll(worldUsers.values());
 
 		return ret;
 	}
 
-	public final List<User> getUsers(String world)
+	public final Collection<User> getUsers(String world)
 	{
-		return users.get(world.toLowerCase());
+		return users.get(world.toLowerCase()).values();
 	}
 
 	@Deprecated
 	public final void setUsers(String world, List<User> users)
 	{
-		this.users.put(world, users);
+		Map<String, User> worldUsers = new ConcurrentHashMap<>();
+		users.forEach(user -> worldUsers.put(user.getUniqueId(), user));
+
+		this.users.put(world, worldUsers);
 	}
 
-	public final List<User> getAllUsers(World world)
+	public final Collection<User> getAllUsers(World world)
 	{
 		return getAllUsers(world.getName());
 	}
 
-	public final List<User> getAllUsers(String world)
+	public final Collection<User> getAllUsers(String world)
 	{
 		world = world.toLowerCase();
 
-		List<User> ret = new ArrayList<User>();
+		List<User> ret = new ArrayList<>();
 
 		ret.addAll(getUsers(world));
 		ret.addAll(plugin.getDataHandler().loadAllUsers(world));
@@ -184,6 +186,12 @@ public class PermissionHandler extends net.dmulloy2.handlers.PermissionHandler i
 		newWorld = plugin.getMirrorHandler().getUsersParent(newWorld);
 
 		User oldUser = getUser(oldWorld, player.getName());
+		if (oldUser == null)
+		{
+			throw new IllegalArgumentException("Failed to get user for " + player.getName());
+		}
+
+		users.get(oldWorld).remove(oldUser.getUniqueId());
 
 		if (oldWorld.equalsIgnoreCase(newWorld))
 		{
@@ -193,7 +201,13 @@ public class PermissionHandler extends net.dmulloy2.handlers.PermissionHandler i
 
 		// Get the new user, update, and return
 		User newUser = getUser(newWorld, player.getName());
-		users.get(newUser).add(newUser);
+		if (newUser == null)
+		{
+			throw new IllegalArgumentException("Failed to get user for " + player.getName());
+		}
+
+		users.computeIfAbsent(newWorld, x -> new ConcurrentHashMap<>())
+				.put(newUser.getUniqueId(), newUser);
 		return newUser;
 	}
 
@@ -273,9 +287,8 @@ public class PermissionHandler extends net.dmulloy2.handlers.PermissionHandler i
 
 	public List<Group> getAllGroups()
 	{
-		List<Group> ret = new ArrayList<>();
+		List<Group> ret = new ArrayList<>(serverGroups.values());
 
-		ret.addAll(serverGroups.values());
 		for (Map<String, WorldGroup> groups : worldGroups.values())
 		{
 			ret.addAll(groups.values());
@@ -356,14 +369,9 @@ public class PermissionHandler extends net.dmulloy2.handlers.PermissionHandler i
 				long start = System.currentTimeMillis();
 				plugin.getLogHandler().log("Cleaning up users...");
 
-				for (List<User> list : users.values())
+				for (Map<String, User> worldUsers : users.values())
 				{
-					Iterator<User> iter = list.iterator();
-					while (iter.hasNext())
-					{
-						if (! iter.next().isOnline())
-							iter.remove();
-					}
+					worldUsers.values().removeIf(user -> !user.isOnline());
 				}
 
 				plugin.getLogHandler().log("Finished cleaning up users. Took {0} ms!", System.currentTimeMillis() - start);
@@ -408,10 +416,15 @@ public class PermissionHandler extends net.dmulloy2.handlers.PermissionHandler i
 			registerWorld(world);
 	}
 
-	public final void registerWorld(World world)
+	public void registerWorld(World world)
 	{
-		if (! users.containsKey(world.getName().toLowerCase()))
-			users.put(world.getName().toLowerCase(), new ArrayList<User>());
+		registerWorld(world.getName());
+	}
+
+	public void registerWorld(String worldName)
+	{
+		worldName = worldName.toLowerCase();
+		users.putIfAbsent(worldName, new ConcurrentHashMap<>());
 	}
 
 	public final void load()
@@ -450,11 +463,11 @@ public class PermissionHandler extends net.dmulloy2.handlers.PermissionHandler i
 		updateUsers();
 	}
 
-	private final void updateUsers()
+	private void updateUsers()
 	{
-		for (List<User> list : users.values())
+		for (Map<String, User> worldUsers : users.values())
 		{
-			for (User user : list)
+			for (User user : worldUsers.values())
 				user.updatePermissions(true);
 		}
 	}
@@ -474,11 +487,11 @@ public class PermissionHandler extends net.dmulloy2.handlers.PermissionHandler i
 		this.reloadUsers();
 	}
 
-	private final void reloadUsers()
+	private void reloadUsers()
 	{
-		for (List<User> list : users.values())
+		for (Map<String, User> worldUsers : users.values())
 		{
-			for (User user : list)
+			for (User user : worldUsers.values())
 				user.reload();
 		}
 	}

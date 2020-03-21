@@ -113,7 +113,7 @@ public class ShadowPerms extends SwornPlugin implements Reloadable
 		permissionHandler.load();
 
 		// Register prefixed commands
-		commandHandler.setCommandPrefix("swornperms");
+		commandHandler.setCommandPrefix("perm");
 		commandHandler.registerPrefixedCommand(new CmdBackup(this));
 		commandHandler.registerPrefixedCommand(new CmdCleanUp(this));
 		commandHandler.registerPrefixedCommand(new CmdCreateGroup(this));

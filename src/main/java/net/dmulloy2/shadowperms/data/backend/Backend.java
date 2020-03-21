@@ -3,6 +3,7 @@
  */
 package net.dmulloy2.shadowperms.data.backend;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -24,7 +25,8 @@ public interface Backend extends Reloadable
 	void saveGroups(String world) throws Exception;
 	void saveServerGroups() throws Exception;
 
-	void loadWorld(World world) throws Exception;
+	List<String> listWorlds();
+	void loadWorld(String world) throws Exception;
 
 	User loadUser(String world, OfflinePlayer player) throws Exception;
 	User loadUser(String world, String identifier) throws Exception;
@@ -38,7 +40,7 @@ public interface Backend extends Reloadable
 
 	void backup(CommandSender sender);
 
-	public static enum BackendType
+	enum BackendType
 	{
 		MY_SQL("mysql", "sql"),
 		SQL_LITE("sqlite"),

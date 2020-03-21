@@ -15,6 +15,7 @@ public class CmdBackup extends ShadowPermsCommand
 	public CmdBackup(ShadowPerms plugin)
 	{
 		super(plugin);
+		this.name = "backup";
 		this.description = "Backs up all ShadowPerms files";
 		this.permission = Permission.CMD_BACKUP;
 		this.usesPrefix = true;

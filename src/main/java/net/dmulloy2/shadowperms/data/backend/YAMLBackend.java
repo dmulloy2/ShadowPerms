@@ -141,13 +141,20 @@ public class YAMLBackend implements Backend
 	}
 
 	@Override
-	public void loadWorld(World world) throws Exception
+	public List<String> listWorlds()
+	{
+		File worlds = new File(plugin.getDataFolder(), "worlds");
+		return Arrays.asList(worlds.list());
+	}
+
+	@Override
+	public void loadWorld(String world) throws Exception
 	{
 		File worlds = new File(plugin.getDataFolder(), "worlds");
 		if (! worlds.exists())
 			worlds.mkdirs();
 
-		String name = world.getName().toLowerCase();
+		String name = world.toLowerCase();
 		File folder = new File(worlds, name);
 		if (! folder.exists())
 			folder.mkdirs();

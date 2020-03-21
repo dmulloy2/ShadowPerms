@@ -29,7 +29,8 @@ public class CmdGroup extends ShadowPermsCommand
 		super(plugin);
 		this.name = "group";
 		this.addRequiredArg("group");
-		this.description = "Modify a group's permissions";
+		this.description = "View information about a group";
+		this.permission = Permission.GROUP_VIEW_INFO;
 
 		addSubCommand(new CmdAddPermission(plugin));
 		addSubCommand(new CmdHasPermission(plugin));

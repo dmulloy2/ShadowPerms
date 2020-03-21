@@ -23,7 +23,8 @@ public class CmdUser extends ShadowPermsCommand
 	{
 		super(plugin);
 		this.name = "user";
-		this.description = "Modify a user's permissions";
+		this.description = "View information about a user";
+		this.permission = Permission.USER_VIEW_INFO;
 
 		addSubCommand(new CmdAddPermission(plugin));
 		addSubCommand(new CmdAddSubgroup(plugin));
@@ -44,12 +45,6 @@ public class CmdUser extends ShadowPermsCommand
 	{
 		User user = getUser(0);
 		if (user == null) return;
-
-		if (! hasPermission(Permission.USER_VIEW_INFO))
-		{
-			err("You do not have permission to perform this command!");
-			return;
-		}
 
 		sendMessage("&3---- &e{0} &3----", user.getName());
 		sendMessage("&bGroup&e: {0}", user.getGroupName());

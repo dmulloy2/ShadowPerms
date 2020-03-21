@@ -39,19 +39,19 @@ import lombok.Getter;
  */
 
 @Getter
-public class DataHandler implements Reloadable
+public final class DataHandler implements Reloadable
 {
-	public static final DateFormat BACKUP_FORMAT = new SimpleDateFormat("yy-MM-dd_kk-mm");
-	private static final String DATA_YML = "data.yml";
+	public static DateFormat BACKUP_FORMAT = new SimpleDateFormat("yy-MM-dd_kk-mm");
+	private static String DATA_YML = "data.yml";
 
-	private final Backend userBackend;
-	private final Backend groupBackend;
+	private Backend userBackend;
+	private Backend groupBackend;
 
 	private List<String> loadedWorlds;
 
 	private YamlConfiguration serverGroups;
 
-	private final ShadowPerms plugin;
+	private ShadowPerms plugin;
 	public DataHandler(ShadowPerms plugin)
 	{
 		this.plugin = plugin;
@@ -147,7 +147,7 @@ public class DataHandler implements Reloadable
 
 	// ---- I/O
 
-	private final void scheduleSaveTask()
+	private void scheduleSaveTask()
 	{
 		if (plugin.getConfig().getBoolean("autoSave.enabled"))
 		{
@@ -165,7 +165,7 @@ public class DataHandler implements Reloadable
 		}
 	}
 
-	public final void save()
+	public void save()
 	{
 		long start = System.currentTimeMillis();
 		plugin.getLogHandler().log("Saving users and groups...");
@@ -176,7 +176,7 @@ public class DataHandler implements Reloadable
 		plugin.getLogHandler().log("Saved! Took {0} ms!", System.currentTimeMillis() - start);
 	}
 
-	private final void saveUsers()
+	private void saveUsers()
 	{
 		for (String world : loadedWorlds)
 		{
@@ -196,7 +196,7 @@ public class DataHandler implements Reloadable
 		plugin.getPermissionHandler().cleanupUsers(20L);
 	}
 
-	private final void saveGroups()
+	private void saveGroups()
 	{
 		for (String world : loadedWorlds)
 		{
@@ -217,9 +217,15 @@ public class DataHandler implements Reloadable
 	}
 
 	// ---- Loading
-
-	public final void loadWorld(World world)
+	
+	public void loadWorld(World world)
 	{
+		loadWorld(world.getName());
+	}
+
+	public void loadWorld(String world)
+	{
+		world = world.toLowerCase();
 		if (isWorldLoaded(world))
 			return;
 
@@ -229,25 +235,20 @@ public class DataHandler implements Reloadable
 			if (userBackend != groupBackend)
 				groupBackend.loadWorld(world);
 
-			loadedWorlds.add(world.getName());
+			loadedWorlds.add(world);
 		}
 		catch (Throwable ex)
 		{
-			plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(ex, "loading world: " + world.getName()));
+			plugin.getLogHandler().log(Level.SEVERE, Util.getUsefulStack(ex, "loading world: " + world));
 		}
 	}
 
-	public final boolean isWorldLoaded(World world)
-	{
-		return isWorldLoaded(world.getName());
-	}
-
-	public final boolean isWorldLoaded(String world)
+	public boolean isWorldLoaded(String world)
 	{
 		return loadedWorlds.contains(world.toLowerCase());
 	}
 
-	public final User loadUser(String world, String identifier)
+	public User loadUser(String world, String identifier)
 	{
 		try
 		{
@@ -261,7 +262,7 @@ public class DataHandler implements Reloadable
 		}
 	}
 
-	public final User loadUser(Player player)
+	public User loadUser(Player player)
 	{
 		String world = player.getWorld().getName();
 		world = plugin.getMirrorHandler().getUsersParent(world);
@@ -282,7 +283,7 @@ public class DataHandler implements Reloadable
 		userBackend.reloadUser(user);
 	}
 
-	public final List<User> loadAllUsers(String world)
+	public List<User> loadAllUsers(String world)
 	{
 		world = plugin.getMirrorHandler().getUsersParent(world);
 
@@ -330,7 +331,7 @@ public class DataHandler implements Reloadable
 		return new HashMap<>();
 	}
 
-	public final void saveServerGroups()
+	public void saveServerGroups()
 	{
 		try
 		{
@@ -359,6 +360,11 @@ public class DataHandler implements Reloadable
 			sender.sendMessage(plugin.getPrefix() + "Backup complete!");
 	}
 
+	public List<String> listWorlds()
+	{
+		return groupBackend.listWorlds();
+	}
+
 	@Override
 	public void reload()
 	{
@@ -368,7 +374,7 @@ public class DataHandler implements Reloadable
 
 		// ---- Load Worlds
 		this.loadedWorlds = new ArrayList<>();
-		for (World world : plugin.getServer().getWorlds())
+		for (String world : listWorlds())
 			loadWorld(world);
 
 		// ---- Load Server Groups

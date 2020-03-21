@@ -27,6 +27,7 @@ public abstract class ShadowPermsCommand extends Command
 	public ShadowPermsCommand(ShadowPerms plugin)
 	{
 		super(plugin);
+		this.plugin = plugin;
 		this.usesPrefix = true;
 	}
 
@@ -62,6 +63,8 @@ public abstract class ShadowPermsCommand extends Command
 
 	protected final User getUser(int index)
 	{
+		checkArgument(args.length >= index, "You must specify a user!");
+
 		User user = plugin.getPermissionHandler().getUser(getWorld().getName(), args[index]);
 		checkNotNull(user,"User \"&c{0}&4\" not found!", args[index]);
 		return user;
@@ -69,6 +72,8 @@ public abstract class ShadowPermsCommand extends Command
 
 	protected final Group getGroup(int index)
 	{
+		checkArgument(args.length >= index, "You must specify a group!");
+
 		Group group = plugin.getPermissionHandler().getGroup(getWorld().getName(), args[index]);
 		checkNotNull(group,"Group \"&c{0}&4\" not found!", args[index]);
 		return group;

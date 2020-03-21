@@ -6,10 +6,10 @@ description: Comprehensive permission, chat, and world management system.
 softdepend: [Vault]
 load: POSTWORLD
 commands:
-  swornperms:
+  shadowperms:
     description: ShadowPerms root command
     usage: /<command> <args>
-    aliases: [perms, perm, shadowperms]
+    aliases: [perms, perm]
   nick:
     description: Set a player's nickname
     usage: /<command> [player] <nick>

@@ -5,6 +5,7 @@ package net.dmulloy2.shadowperms.commands;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 
 import net.dmulloy2.shadowperms.ShadowPerms;
@@ -98,7 +99,7 @@ public class CmdPrune extends ShadowPermsCommand
 		YamlConfiguration config = new YamlConfiguration();
 		int pruned = 0;
 
-		List<User> users = plugin.getPermissionHandler().getAllUsers(world);
+		Collection<User> users = plugin.getPermissionHandler().getAllUsers(world);
 		for (User user : users)
 		{
 			if (user.shouldBeSaved())
