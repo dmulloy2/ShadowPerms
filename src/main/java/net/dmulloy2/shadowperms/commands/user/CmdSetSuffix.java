@@ -7,7 +7,6 @@ import net.dmulloy2.shadowperms.ShadowPerms;
 import net.dmulloy2.shadowperms.commands.ShadowPermsCommand;
 import net.dmulloy2.shadowperms.types.Permission;
 import net.dmulloy2.shadowperms.types.User;
-import net.dmulloy2.util.FormatUtil;
 
 /**
  * @author dmulloy2

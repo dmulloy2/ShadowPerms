@@ -11,7 +11,7 @@ import net.dmulloy2.shadowperms.ShadowPerms;
 import net.dmulloy2.shadowperms.commands.ShadowPermsCommand;
 import net.dmulloy2.shadowperms.types.Permission;
 import net.dmulloy2.shadowperms.types.WorldGroup;
-import net.dmulloy2.types.StringJoiner;
+import net.dmulloy2.swornapi.types.StringJoiner;
 
 /**
  * @author dmulloy2

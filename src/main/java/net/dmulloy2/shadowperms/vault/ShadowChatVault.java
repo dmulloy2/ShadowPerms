@@ -3,15 +3,15 @@
  */
 package net.dmulloy2.shadowperms.vault;
 
+import org.bukkit.OfflinePlayer;
+
 import net.dmulloy2.shadowperms.ShadowPerms;
 import net.dmulloy2.shadowperms.types.Group;
 import net.dmulloy2.shadowperms.types.User;
-import net.dmulloy2.util.NumberUtil;
-import net.dmulloy2.util.Util;
+import net.dmulloy2.swornapi.util.NumberUtil;
+import net.dmulloy2.swornapi.util.Util;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.permission.Permission;
-
-import org.bukkit.OfflinePlayer;
 
 /**
  * @author dmulloy2

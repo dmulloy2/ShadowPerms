@@ -1,6 +1,6 @@
 name: ShadowPerms
 main: net.dmulloy2.shadowperms.ShadowPerms
-version: ${project.version}${project.build.number}
+version: ${version}
 author: dmulloy2
 description: Comprehensive permission, chat, and world management system.
 softdepend: [Vault]

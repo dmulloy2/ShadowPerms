@@ -23,8 +23,8 @@ import net.dmulloy2.shadowperms.data.backend.YAMLBackend;
 import net.dmulloy2.shadowperms.types.ServerGroup;
 import net.dmulloy2.shadowperms.types.User;
 import net.dmulloy2.shadowperms.types.WorldGroup;
-import net.dmulloy2.types.Reloadable;
-import net.dmulloy2.util.Util;
+import net.dmulloy2.swornapi.types.Reloadable;
+import net.dmulloy2.swornapi.util.Util;
 
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
@@ -63,7 +63,7 @@ public final class DataHandler implements Reloadable
 		BackendType groupType = BackendType.YAML; // BackendType.find(groupBackend);
 
 		Tuple<BackendType, BackendType> stored = previousBackends();
-		if (stored != null && stored.getFirst() != userType)
+		if (stored != null && stored.first() != userType)
 		{
 			// Conversion time, boys
 			// TODO bring this back
@@ -94,15 +94,12 @@ public final class DataHandler implements Reloadable
 
 	public static Backend newBackend(BackendType type, ShadowPerms plugin)
 	{
-		switch (type)
+		return switch (type)
 		{
-			case MY_SQL:
-				return new MySQLBackend(plugin);
-			case SQL_LITE:
-				return new SQLiteBackend(plugin);
-			default:
-				return new YAMLBackend(plugin);
-		}
+			case MY_SQL -> new MySQLBackend(plugin);
+			case SQL_LITE -> new SQLiteBackend(plugin);
+			default -> new YAMLBackend(plugin);
+		};
 	}
 
 	private Tuple<BackendType, BackendType> previousBackends()

@@ -10,10 +10,9 @@ import java.util.Set;
 import net.dmulloy2.shadowperms.types.ServerGroup;
 import net.dmulloy2.shadowperms.types.User;
 import net.dmulloy2.shadowperms.types.WorldGroup;
-import net.dmulloy2.types.Reloadable;
+import net.dmulloy2.swornapi.types.Reloadable;
 
 import org.bukkit.OfflinePlayer;
-import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 
 /**
@@ -47,7 +46,8 @@ public interface Backend extends Reloadable
 		YAML("yaml", "yml"),
 		;
 
-		String[] ids;
+		private final String[] ids;
+
 		BackendType(String... ids)
 		{
 			this.ids = ids;

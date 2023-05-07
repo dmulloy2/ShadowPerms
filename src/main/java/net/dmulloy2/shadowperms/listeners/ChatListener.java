@@ -7,7 +7,7 @@ import java.util.logging.Level;
 
 import lombok.AllArgsConstructor;
 import net.dmulloy2.shadowperms.ShadowPerms;
-import net.dmulloy2.util.Util;
+import net.dmulloy2.swornapi.util.Util;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

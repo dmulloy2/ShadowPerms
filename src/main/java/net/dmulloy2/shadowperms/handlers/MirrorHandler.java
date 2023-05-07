@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import net.dmulloy2.shadowperms.ShadowPerms;
-import net.dmulloy2.types.Reloadable;
+import net.dmulloy2.swornapi.types.Reloadable;
 
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -171,10 +171,12 @@ public class MirrorHandler implements Reloadable
 	// ---- Loading
 
 	@SuppressWarnings("unchecked")
-	private final void loadUserMirrors()
+	private void loadUserMirrors()
 	{
 		FileConfiguration config = plugin.getConfig();
-		if (unifiedUsers = config.getBoolean("unifiedUsers", false))
+		this.unifiedUsers = config.getBoolean("unifiedUsers", false);
+
+		if (unifiedUsers)
 		{
 			World main = plugin.getServer().getWorlds().get(0);
 			this.mainWorld = main.getName().toLowerCase();
@@ -218,7 +220,7 @@ public class MirrorHandler implements Reloadable
 	}
 
 	@SuppressWarnings("unchecked")
-	private final void loadGroupMirrors()
+	private void loadGroupMirrors()
 	{
 		FileConfiguration config = plugin.getConfig();
 

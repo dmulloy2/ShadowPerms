@@ -16,7 +16,7 @@ import net.dmulloy2.shadowperms.commands.ShadowPermsCommand;
 import net.dmulloy2.shadowperms.types.Group;
 import net.dmulloy2.shadowperms.types.Permission;
 import net.dmulloy2.shadowperms.types.User;
-import net.dmulloy2.util.ListUtil;
+import net.dmulloy2.swornapi.util.ListUtil;
 
 /**
  * @author dmulloy2

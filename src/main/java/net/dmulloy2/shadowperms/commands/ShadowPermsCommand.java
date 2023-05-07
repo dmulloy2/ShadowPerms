@@ -5,7 +5,7 @@ package net.dmulloy2.shadowperms.commands;
 
 import java.util.logging.Level;
 
-import net.dmulloy2.commands.Command;
+import net.dmulloy2.swornapi.commands.Command;
 import net.dmulloy2.shadowperms.ShadowPerms;
 import net.dmulloy2.shadowperms.types.Group;
 import net.dmulloy2.shadowperms.types.Permission;

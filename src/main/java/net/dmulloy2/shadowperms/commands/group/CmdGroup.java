@@ -3,7 +3,6 @@
  */
 package net.dmulloy2.shadowperms.commands.group;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -12,9 +11,7 @@ import net.dmulloy2.shadowperms.ShadowPerms;
 import net.dmulloy2.shadowperms.commands.ShadowPermsCommand;
 import net.dmulloy2.shadowperms.types.Group;
 import net.dmulloy2.shadowperms.types.Permission;
-import net.dmulloy2.types.StringJoiner;
-
-import org.bukkit.World;
+import net.dmulloy2.swornapi.types.StringJoiner;
 
 /**
  * @author dmulloy2

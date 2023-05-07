@@ -13,8 +13,8 @@ import net.dmulloy2.shadowperms.types.Group;
 import net.dmulloy2.shadowperms.types.ServerGroup;
 import net.dmulloy2.shadowperms.types.User;
 import net.dmulloy2.shadowperms.types.WorldGroup;
-import net.dmulloy2.types.Reloadable;
-import net.dmulloy2.util.Util;
+import net.dmulloy2.swornapi.types.Reloadable;
+import net.dmulloy2.swornapi.util.Util;
 
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
@@ -29,7 +29,7 @@ import lombok.Getter;
  */
 
 @Getter
-public class PermissionHandler extends net.dmulloy2.handlers.PermissionHandler implements Reloadable
+public class PermissionHandler extends net.dmulloy2.swornapi.handlers.PermissionHandler implements Reloadable
 {
 	private Map<String, Map<String, WorldGroup>> worldGroups;
 	private Map<String, ServerGroup> serverGroups;

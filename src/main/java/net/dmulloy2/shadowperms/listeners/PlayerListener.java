@@ -6,7 +6,7 @@ package net.dmulloy2.shadowperms.listeners;
 import lombok.AllArgsConstructor;
 import net.dmulloy2.shadowperms.ShadowPerms;
 import net.dmulloy2.shadowperms.types.User;
-import net.dmulloy2.util.FormatUtil;
+import net.dmulloy2.swornapi.util.FormatUtil;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

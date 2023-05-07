@@ -12,11 +12,11 @@ import java.util.logging.Level;
 
 import net.dmulloy2.shadowperms.ShadowPerms;
 import net.dmulloy2.shadowperms.data.backend.SQLBackend;
-import net.dmulloy2.types.MyMaterial;
-import net.dmulloy2.types.Reloadable;
-import net.dmulloy2.util.Util;
+import net.dmulloy2.swornapi.types.Reloadable;
+import net.dmulloy2.swornapi.util.Util;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
@@ -384,7 +384,7 @@ public class User extends Permissible implements Reloadable
 
 	// ---- Attachment
 
-	private final void resetAttachment()
+	private void resetAttachment()
 	{
 		removeAttachment();
 		attachment = getPlayer().addAttachment(plugin);
@@ -406,13 +406,6 @@ public class User extends Permissible implements Reloadable
 		List<String> ret = new ArrayList<>();
 		ret.add(getGroupName());
 		ret.addAll(subGroupNames);
-
-		if (ret.isEmpty())
-		{
-			Group group = getGroup();
-			ret.add(group.getName());
-		}
-
 		return ret;
 	}
 
@@ -641,32 +634,14 @@ public class User extends Permissible implements Reloadable
 
 	// ---- AntiItem
 
-	public final boolean canUse(String regexPrefix, MyMaterial material)
+	public final boolean isMaterialBlocked(String regexPrefix, Material material)
 	{
-		if (! regexPrefix.startsWith("-"))
+		if (!regexPrefix.startsWith("-"))
 			regexPrefix = "-" + regexPrefix;
+		if (!regexPrefix.endsWith("."))
+			regexPrefix = regexPrefix + ".";
 
-		for (String permission : sortedPermissions)
-		{
-			// Data-specific
-			if (permission.contains(":"))
-			{
-				String node = permission.substring(0, permission.lastIndexOf(":"));
-				if (node.matches(regexPrefix + material.getMaterial().name()))
-				{
-					String data = permission.substring(permission.lastIndexOf(":") + 1);
-					if (data.matches(material.getData() + ""))
-						return false;
-				}
-			}
-			else
-			{
-				if (permission.matches(regexPrefix + material.getMaterial().name()))
-					return false;
-			}
-		}
-
-		return true;
+		return hasPermission(regexPrefix + material.name());
 	}
 
 	public final boolean matches(String identifier)
@@ -682,10 +657,9 @@ public class User extends Permissible implements Reloadable
 
 	public final String describeTo(CommandSender sender, boolean possession)
 	{
-		if (sender instanceof Player)
+		if (sender instanceof Player otherPlayer)
 		{
-			Player player = (Player) sender;
-			if (player.getUniqueId().toString().equals(uniqueId))
+			if (otherPlayer.getUniqueId().toString().equals(uniqueId))
 				return "You" + (possession ? "r" : "");
 		}
 
@@ -703,13 +677,8 @@ public class User extends Permissible implements Reloadable
 	@Override
 	public boolean equals(Object obj)
 	{
-		if (obj instanceof User)
-		{
-			User that = (User) obj;
-			return this.uniqueId.equals(that.uniqueId) && this.worldName.equals(that.worldName);
-		}
-
-		return false;
+		return obj instanceof User that
+			&& this.uniqueId.equals(that.uniqueId) && this.worldName.equals(that.worldName);
 	}
 
 	@Override

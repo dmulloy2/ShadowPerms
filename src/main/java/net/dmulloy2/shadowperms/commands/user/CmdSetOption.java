@@ -9,9 +9,9 @@ import net.dmulloy2.shadowperms.ShadowPerms;
 import net.dmulloy2.shadowperms.commands.ShadowPermsCommand;
 import net.dmulloy2.shadowperms.types.Permission;
 import net.dmulloy2.shadowperms.types.User;
-import net.dmulloy2.util.FormatUtil;
-import net.dmulloy2.util.NumberUtil;
-import net.dmulloy2.util.Util;
+import net.dmulloy2.swornapi.util.FormatUtil;
+import net.dmulloy2.swornapi.util.NumberUtil;
+import net.dmulloy2.swornapi.util.Util;
 
 /**
  * @author dmulloy2

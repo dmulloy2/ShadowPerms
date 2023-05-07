@@ -3,30 +3,20 @@
  */
 package net.dmulloy2.shadowperms.data.backend;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.sql.*;
+import java.util.*;
 import java.util.logging.Level;
+
+import org.bukkit.OfflinePlayer;
 
 import net.dmulloy2.shadowperms.ShadowPerms;
 import net.dmulloy2.shadowperms.data.Tuple;
 import net.dmulloy2.shadowperms.types.ServerGroup;
 import net.dmulloy2.shadowperms.types.User;
 import net.dmulloy2.shadowperms.types.WorldGroup;
-import net.dmulloy2.types.StringJoiner;
-import net.dmulloy2.util.ListUtil;
-import net.dmulloy2.util.Util;
-
-import org.bukkit.OfflinePlayer;
-import org.bukkit.World;
+import net.dmulloy2.swornapi.types.StringJoiner;
+import net.dmulloy2.swornapi.util.ListUtil;
+import net.dmulloy2.swornapi.util.Util;
 
 /**
  * @author dmulloy2
@@ -108,8 +98,8 @@ public abstract class SQLBackend implements Backend
 					statement.setString(i++, user.getGroupName());
 					statement.setString(i++, toArrayString(user.getSubGroupNames()));
 					statement.setString(i++, toArrayString(user.getPermissionNodes()));
-					statement.setString(i++, options.getFirst());
-					statement.setString(i++, options.getSecond());
+					statement.setString(i++, options.first());
+					statement.setString(i++, options.second());
 					if (!idFirst) statement.setString(i++, id);
 
 					statement.executeUpdate();

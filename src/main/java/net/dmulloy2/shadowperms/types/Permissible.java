@@ -8,12 +8,9 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.Map.Entry;
 
-import com.google.common.collect.ImmutableList;
-
 import net.dmulloy2.shadowperms.ShadowPerms;
 import net.dmulloy2.shadowperms.data.DataSerializable;
 import net.dmulloy2.shadowperms.data.backend.SQLBackend;
-import net.dmulloy2.util.NumberUtil;
 
 import org.bukkit.World;
 import org.bukkit.configuration.MemorySection;

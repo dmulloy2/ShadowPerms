@@ -5,7 +5,7 @@ package net.dmulloy2.shadowperms.types;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import net.dmulloy2.types.IPermission;
+import net.dmulloy2.swornapi.types.IPermission;
 
 /**
  * @author dmulloy2

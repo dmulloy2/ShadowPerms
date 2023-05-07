@@ -12,7 +12,7 @@ import net.dmulloy2.shadowperms.ShadowPerms;
 import net.dmulloy2.shadowperms.data.backend.YAMLBackend;
 import net.dmulloy2.shadowperms.types.Permission;
 import net.dmulloy2.shadowperms.types.User;
-import net.dmulloy2.util.FormatUtil;
+import net.dmulloy2.swornapi.util.FormatUtil;
 
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;

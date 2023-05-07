@@ -3,16 +3,21 @@
  */
 package net.dmulloy2.shadowperms.data.backend;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
+import java.nio.file.Files;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 
-import net.dmulloy2.io.Closer;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.Validate;
+import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.MemorySection;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
+
 import net.dmulloy2.shadowperms.ShadowPerms;
 import net.dmulloy2.shadowperms.data.DataHandler;
 import net.dmulloy2.shadowperms.handlers.MirrorHandler;
@@ -20,18 +25,9 @@ import net.dmulloy2.shadowperms.types.Group;
 import net.dmulloy2.shadowperms.types.ServerGroup;
 import net.dmulloy2.shadowperms.types.User;
 import net.dmulloy2.shadowperms.types.WorldGroup;
-import net.dmulloy2.util.FormatUtil;
-import net.dmulloy2.util.Util;
-
-import org.apache.commons.lang.Validate;
-import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.World;
-import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.MemorySection;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.craftbukkit.libs.org.apache.commons.io.FileUtils;
-import org.bukkit.entity.Player;
+import net.dmulloy2.swornapi.io.Closer;
+import net.dmulloy2.swornapi.util.FormatUtil;
+import net.dmulloy2.swornapi.util.Util;
 
 /**
  * @author dmulloy2
@@ -47,6 +43,10 @@ public class YAMLBackend implements Backend
 	public YAMLBackend(ShadowPerms plugin)
 	{
 		this.plugin = plugin;
+
+		File worlds = new File(plugin.getDataFolder(), "worlds");
+		if (! worlds.exists())
+			worlds.mkdirs();
 	}
 
 	@Override

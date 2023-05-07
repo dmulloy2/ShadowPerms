@@ -17,10 +17,10 @@
  */
 package net.dmulloy2.shadowperms;
 
-import net.dmulloy2.SwornPlugin;
-import net.dmulloy2.commands.CmdHelp;
-import net.dmulloy2.handlers.CommandHandler;
-import net.dmulloy2.handlers.LogHandler;
+import net.dmulloy2.swornapi.SwornPlugin;
+import net.dmulloy2.swornapi.commands.CmdHelp;
+import net.dmulloy2.swornapi.handlers.CommandHandler;
+import net.dmulloy2.swornapi.handlers.LogHandler;
 import net.dmulloy2.shadowperms.commands.CmdBackup;
 import net.dmulloy2.shadowperms.commands.CmdCleanUp;
 import net.dmulloy2.shadowperms.commands.CmdCreateGroup;
@@ -47,8 +47,8 @@ import net.dmulloy2.shadowperms.listeners.PlayerListener;
 import net.dmulloy2.shadowperms.listeners.ServerListener;
 import net.dmulloy2.shadowperms.listeners.WorldListener;
 import net.dmulloy2.shadowperms.vault.VaultHandler;
-import net.dmulloy2.types.Reloadable;
-import net.dmulloy2.util.FormatUtil;
+import net.dmulloy2.swornapi.types.Reloadable;
+import net.dmulloy2.swornapi.util.FormatUtil;
 
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -71,7 +71,7 @@ public class ShadowPerms extends SwornPlugin implements Reloadable
 	private boolean disabling;
 	private boolean updated;
 
-	private String prefix = FormatUtil.format("&3[&eShadowPerms&3] » &e");
+	private final String prefix = FormatUtil.format("&3[&eShadowPerms&3] » &e");
 
 	@Override
 	public void onLoad()
